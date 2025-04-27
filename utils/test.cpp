@@ -1,12 +1,14 @@
 #include "mempool.hpp"
 #include <exception>
 
+#include <vector>
+
 #include <iostream>
+
 
 int main()
 {
-  utils::unique_pool<int> pl(1024ULL * 1024 * 1024 * 1024);
-  pl.init();
+  utils::unique_pool<int> pl;
 
   return 0;
 }

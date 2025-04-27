@@ -1,53 +1,48 @@
-#ifndef HASHMAP_FACILITY_UTILS_MEMPOOL_HPP
-#define HASHMAP_FACILITY_UTILS_MEMPOOL_HPP
+#ifndef HASHMAP_UTILS_MEMPOOL_HPP
+#define HASHMAP_UTILS_MEMPOOL_HPP
 
 
 #include "__errs.hpp"
 #include "__def.hpp"
 
-/*
-namespace utils {
-  class mempool {
-    protected:
-      void *memblk = nullptr;
+#include <thread>
 
-    public:
-      mempool() = default;
-      void init();
-
-      template <typename T> T * alloc();
-      template <typename T> void free(T *ptr);
-  };
-}
-*/
 
 namespace utils {
 
-class _abs_mempool {
-  protected:
-    void *membegin = nullptr;
-
-  public:
-    _abs_mempool() = default;
-    virtual ~_abs_mempool() = 0;
-
-    virtual void init() {};
-};
-_abs_mempool::~_abs_mempool() {}
 
 template <typename T>
-class unique_pool : public _abs_mempool {
+class _abs_allocator {
+  public:
+    using value_type = T;
+
+  public:
+    virtual T* allocate(ulint n) = 0;
+    virtual void deallocate(T *p, ulint n) = 0;
+};
+
+template <typename T>
+class unique_pool {
   protected:
-    ulint blk_piece_count = 1024 * 4;   // 默认: 4KB
+    T *membegin = nullptr;
+    T *availptr = nullptr;
+
+    ulint blk_piece_count = 1024 * 4;   // 默认: 4096
     ulint used_count = 0;
     ulint avail_count = 0;
+    std::thread t;
 
   public:
-    using target_type = T;
+    unique_pool(bool is_init = true) {
+      if (is_init)
+        this->init();
+    }
 
-  public:
-    unique_pool() = default;
-    unique_pool(ulint n) : blk_piece_count(n) {}
+    unique_pool(ulint n, bool is_init = true) : blk_piece_count(n) {
+      if (is_init)
+        this->init();
+    }
+
     ~unique_pool() {
       delete[] static_cast<T *>(this->membegin);
     }
@@ -60,6 +55,30 @@ class unique_pool : public _abs_mempool {
       }
 
       this->avail_count = this->blk_piece_count;
+
+      auto lookfor_free_loop = [this]() -> void {
+        for (;;) {
+          if (this->)
+        }
+      };
+
+      this->t = std::thread(lookfor_free_loop);
+      t.detach();
+    }
+
+    template <typename ...Args>
+    T* allocate(Args ...args) {
+
+      // TODO
+      if (!sizeof...(args))
+        return new T;
+      else 
+        return new T(std::forward(args...));
+    }
+
+    void deallocate(T *p) {
+      // TODO
+      delete p;
     }
 };
 
@@ -67,4 +86,4 @@ class unique_pool : public _abs_mempool {
 } // namespace utils
 
 
-#endif  // HASHMAP_FACILITY_UTILS_MEMPOOL_HPP
+#endif  // HASHMAP_UTILS_MEMPOOL_HPP
