@@ -58,7 +58,6 @@ class unique_pool {
 
       auto lookfor_free_loop = [this]() -> void {
         for (;;) {
-          if (this->)
         }
       };
 
