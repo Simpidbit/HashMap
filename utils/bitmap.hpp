@@ -2,45 +2,57 @@
 #define HASHMAP_UTILS_BITMAP_HPP
 
 #include "__def.hpp"
+#include "__errs.hpp"
+
+#include <cstring>
 
 namespace utils {
-
-struct _byte {
-  /* 低位 */
-  unsigned char b1 : 1;
-  unsigned char b2 : 1;
-  unsigned char b3 : 1;
-  unsigned char b4 : 1;
-  unsigned char b5 : 1;
-  unsigned char b6 : 1;
-  unsigned char b7 : 1;
-  unsigned char b8 : 1;
-  /* 高位 */
-};
 
 template <typename Allocator = std::allocator<unsigned char> >
 class bitmap {
   protected:
-    unsigned char *bits = nullptr;
-    ulint bit_count = 0;
     Allocator allocator;
 
   public:
-    bitmap() = delete;
-    bitmap(ulint bit_count) : bit_count(bit_count) {
-      ulint bit_byte = bit_count % 8 ? bit_count / 8 + 1 : bit_count / 8;
+    unsigned char *bits = nullptr;
+    unsigned char init_pad = 0b0000'0000;
+    ulint bit_count = 0;
+    ulint bit_byte = 0;
 
-      this->bits = this->allocator.allocate(bit_byte);
-    }
+  public:
+    bitmap() = default;
+    bitmap(unsigned char init_pad) : init_pad(init_pad) {}
 
     ~bitmap() {
-      delete this->bits;
+      this->allocator.deallocate(this->bits, this->bit_byte);
+    }
+
+    void init(ulint bit_count) {
+      this->bit_count = bit_count;
+      this->bit_byte = bit_count % 8 ? bit_count / 8 + 1 : bit_count / 8;
+      this->bits = this->allocator.allocate(this->bit_byte);
+      std::memset(this->bits, this->init_pad, this->bit_byte);
     }
 
     void set(ulint location, bool value) {
+      if (location > this->bit_count)
+        throw utils_exception("bitmap::set(): location > bit_count!");
+
+      ulint byte_offset = location / 8;
+      ulint bit_offset = location % 8;
+      if (value)
+        this->bits[byte_offset] |= static_cast<unsigned char>(0b0000'0001) << bit_offset;
+      else
+        this->bits[byte_offset] &= ~(static_cast<unsigned char>(0b0000'0001) << bit_offset);
     }
 
     bool get(ulint location) {
+      ulint byte_offset = location / 8;
+      ulint bit_offset = location % 8;
+
+      return static_cast<bool>(
+          this->bits[byte_offset] & (static_cast<unsigned char>(0b0000'0001) << bit_offset)
+      );
     }
 };
 
