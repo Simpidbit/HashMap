@@ -5,6 +5,7 @@
 #include "__errs.hpp"
 #include "__def.hpp"
 #include "bitmap.hpp"
+#include "queue.hpp"
 
 #include <thread>
 
@@ -18,8 +19,29 @@ class _abs_allocator {
     using value_type = T;
 
   public:
-    virtual T* allocate(ulint n) = 0;
-    virtual void deallocate(T *p, ulint n) = 0;
+    virtual T* allocate(size_t n) = 0;
+    virtual void deallocate(T *p, size_t n) = 0;
+};
+
+/*
+mempool_allocator:
+  初始时是一大块内存区域.
+  定义：
+    内存状态图      memory_state_map
+    待分配指针队列  allocating_queue
+    待释放指针队列  deallocating_queue
+
+*/
+
+template <typename T>
+class mempool_allocator : public _abs_allocator<T> {
+  protected:
+    bitmap<> memory_state_map;
+    static_deque<T*> allocating_queue;
+    static_deque<T*> deallocating_queue;
+
+  public:
+    mempool_allocator
 };
 
 template <typename T>
@@ -31,9 +53,9 @@ class unique_pool {
     T *tailptr = nullptr;
     T *last_availptr = nullptr;
 
-    ulint blk_piece_count = 1024 * 4;   // 默认: 4096
-    ulint used_count = 0;
-    ulint avail_count = 0;
+    size_t blk_piece_count = 1024 * 4;   // 默认: 4096
+    size_t used_count = 0;
+    size_t avail_count = 0;
     std::thread search_thread;
 
     bitmap<> blkmap {0b1111'1111};
@@ -44,7 +66,7 @@ class unique_pool {
         this->init();
     }
 
-    unique_pool(ulint n, bool is_init = true) : blk_piece_count(n) {
+    unique_pool(size_t n, bool is_init = true) : blk_piece_count(n) {
       if (is_init)
         this->init();
     }
@@ -70,11 +92,11 @@ class unique_pool {
       auto search_loop = [this]() -> void {
         for (;;) {
           if (!this->availptr) {
-            for (ulint byte_offset = this->last_availptr - this->membegin;
+            for (size_t byte_offset = this->last_availptr - this->membegin;
                 byte_offset < this->blk_piece_count; byte_offset++) {
               if (this->blkmap.bits[byte_offset]) {
-                ulint bit_offset = 0;
-                for (ulint bit_offset = 0; bit_offset < 8; bit_offset++) {
+                size_t bit_offset = 0;
+                for (size_t bit_offset = 0; bit_offset < 8; bit_offset++) {
                   if (
                       (static_cast<unsigned char>(0b0000'0001) << bit_offset)
                       & this->blkmap.bits[byte_offset]) {
@@ -103,7 +125,7 @@ class unique_pool {
         }
       }
 
-      this->blkmap.set(static_cast<ulint>(ptr - this->membegin), false);
+      this->blkmap.set(static_cast<size_t>(ptr - this->membegin), false);
 
       if constexpr (std::is_fundamental_v<T>) {
         *ptr = {args...};
@@ -120,7 +142,7 @@ class unique_pool {
     void deallocate(T *p) {
       for (;;) {
         if (this->availptr) {
-          this->blkmap.set(static_cast<ulint>(p - this->membegin), true);
+          this->blkmap.set(static_cast<size_t>(p - this->membegin), true);
           if (p < this->availptr)
             this->availptr = p;
         }

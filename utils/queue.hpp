@@ -9,13 +9,41 @@ namespace utils {
 
 template <typename T, typename Allocator = std::allocator<T> >
 class static_deque {
+  public:
+    friend class iterator;
+    class iterator : public utils::_iterator<T*, iterator> {
+      protected:
+        static_deque *self {nullptr};
+
+      public:
+        using utils::_iterator<T*, iterator>::_iterator;
+        void setself(static_deque *self) {
+          this->self = self;
+        }
+
+        void goback() override {
+          self->circle_backstep(this->ptr);
+        }
+        void goback(size_t n) override {
+          for (size_t i = 0; i != n; i++)
+            this->goback();
+        }
+        void gofront() override {
+          self->circle_frontstep(this->ptr);
+        }
+        void gofront(size_t n) override {
+          for (size_t i = 0; i != n; i++)
+            this->gofront();
+        }
+    };
+
   protected:
-    T *membegin = nullptr;
-    T *memback = nullptr;
-    T *head = nullptr;
-    T *tail = nullptr;
-    ulint ccount = 0;
-    ulint ecount = 0;
+    T *membegin = nullptr;  // 内存块首地址
+    T *memback = nullptr;   // 内存块末地址后一位置
+    T *head = nullptr;      // 逻辑首元素前一逻辑位置
+    T *tail = nullptr;      // 逻辑末元素后一逻辑位置
+    ulint ccount = 0;   // capacity
+    ulint ecount = 0;   // element
     Allocator allocator;
   
 
@@ -55,13 +83,8 @@ class static_deque {
       this->tail = this->membegin + 1;
     }
 
-    ulint count() noexcept {
-      return this->ecount;
-    }
-
-    ulint capacity() noexcept {
-      return this->ccount;
-    }
+    inline ulint count() const noexcept { return this->ecount; }
+    inline ulint capacity() const noexcept { return this->ccount; }
 
     bool push_back(T &&element) {
       if (this->ecount < this->ccount) {
@@ -107,6 +130,22 @@ class static_deque {
       return *tailtmp;
     }
 
+    iterator begin() {
+      iterator iter;
+      iter.setself(this);
+      T *headtmp = this->head;
+      this->circle_backstep(headtmp);
+      iter.point_to(headtmp);
+      return iter;
+    }
+
+    iterator end() {
+      iterator iter;
+      iter.setself(this);
+      T *tailtmp = this->tail;
+      iter.point_to(tailtmp);
+      return iter;
+    }
 };
 
 

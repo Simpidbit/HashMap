@@ -17,16 +17,6 @@ class vector {
   public:
     class iterator : public utils::_iterator<T*, iterator> {
       public:
-        /*
-        iterator() = default;
-        iterator(const iterator &iter) {
-          this->ptr = iter.ptr;
-        }
-        iterator(iterator &&iter) {
-          this->ptr = iter.ptr;
-          iter.ptr = nullptr;
-        }
-        */
         using utils::_iterator<T*, iterator>::_iterator;
 
         void goback() override {
