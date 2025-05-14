@@ -1,0 +1,161 @@
+\doxysection{vector.\+hpp}
+\hypertarget{vector_8hpp_source}{}\label{vector_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ HASHMAP\_UTILS\_VECTOR\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ HASHMAP\_UTILS\_VECTOR\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\_\_iterator.hpp"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <initializer\_list>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{namespace\ }utils\ \{}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator\ =\ std::allocator<T>\ >}
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }vector\ \{}
+\DoxyCodeLine{00017\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classutils_1_1__iterator}{utils::\_iterator}}<T*,\ iterator>\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classutils_1_1__iterator}{utils::\_iterator}}<T*,\ \mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}}>\mbox{\hyperlink{classutils_1_1__iterator}{::\_iterator}};}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ goback()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \ \ this-\/>ptr++;}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ goback(\textcolor{keywordtype}{size\_t}\ n)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \ \ this-\/>ptr\ +=\ n;}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ gofront()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ this-\/>ptr-\/-\/;}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ gofront(\textcolor{keywordtype}{size\_t}\ n)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ this-\/>ptr\ -\/=\ n;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00034\ \ \ \ \ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00037\ \ \ \ \ Allocator\ allocator;}
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}}\ begin\_iter;}
+\DoxyCodeLine{00039\ \ \ \ \ \mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}}\ end\_iter;}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ T*\ data\ \{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ capcount\ \{0\};}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ elecount\ \{0\};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ std::atomic<bool>\ new\_ok\ \{\textcolor{keyword}{true}\};}
+\DoxyCodeLine{00046\ \ \ \ \ std::atomic<bool>\ signal\ \{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{void}\ new\_data\_block(\textcolor{keywordtype}{size\_t}\ ncap,\ \textcolor{keywordtype}{size\_t}\ ocap)\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ T*\ ndata\ =\ this-\/>allocator.allocate(ncap);}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ this-\/>begin\_iter.point\_to(ndata);}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ this-\/>end\_iter.point\_to(ndata);}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ocap)\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ memcpy(ndata,\ this-\/>data,\ ocap\ *\ \textcolor{keyword}{sizeof}(T));}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ this-\/>allocator.deallocate(this-\/>data,\ ocap);}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ this-\/>end\_iter.goback(ocap);}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ this-\/>data\ =\ ndata;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ this-\/>capcount\ =\ ncap;}
+\DoxyCodeLine{00061\ \ \ \ \ \}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordtype}{void}\ check\_capacity(\textcolor{keywordtype}{size\_t}\ init\_capacity\ =\ 2)\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ target\ =\ [\textcolor{keyword}{this},\ init\_capacity]()\ -\/>\ \textcolor{keywordtype}{void}\ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ this-\/>new\_ok.store(\textcolor{keyword}{false});}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ this-\/>signal.store(\textcolor{keyword}{true});}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>capcount\ ==\ this-\/>elecount)\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Expand}}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>capcount\ ==\ 0)}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>new\_data\_block(init\_capacity,\ 0);}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>new\_data\_block(this-\/>capcount\ *\ 2,\ this-\/>capcount);}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ this-\/>new\_ok.store(\textcolor{keyword}{true});}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ std::thread(target).detach();}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>signal.load())\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ this-\/>signal.store(\textcolor{keyword}{false});}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00084\ \ \ \ \ \}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{comment}{//\ CONSTRUCTOR,\ DESTRUCTOR}}
+\DoxyCodeLine{00090\ \ \ \ \ vector()\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ this-\/>check\_capacity();}
+\DoxyCodeLine{00092\ \ \ \ \ \}}
+\DoxyCodeLine{00093\ \ \ \ \ vector(std::initializer\_list<T>\ list)\ \{}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (list.size())\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ this-\/>check\_capacity(list.size()\ *\ 2);}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\ e\ :\ list)\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ this-\/>push\_back(e);}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ this-\/>check\_capacity();}
+\DoxyCodeLine{00100\ \ \ \ \ \}}
+\DoxyCodeLine{00101\ \ \ \ \ \string~vector()\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ this-\/>allocator.deallocate(this-\/>data,\ this-\/>capcount);}
+\DoxyCodeLine{00103\ \ \ \ \ \}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{comment}{//\ INSERT}}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordtype}{void}\ push\_back(\textcolor{keyword}{const}\ T\ \&value)\ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \textcolor{keywordflow}{if}\ (this-\/>new\_ok.load())\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \ \ *(this-\/>end\_iter)\ =\ value;}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ this-\/>end\_iter++;}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ this-\/>elecount++;}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \ \ this-\/>check\_capacity();}
+\DoxyCodeLine{00116\ \ \ \ \ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordtype}{void}\ push\_back(T\ \&\&value)\ \{}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \textcolor{keywordflow}{if}\ (this-\/>new\_ok.load())\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \ \ \ \ *(this-\/>end\_iter)\ =\ std::move(value);}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ this-\/>end\_iter++;}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ this-\/>elecount++;}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \ \ \ \ this-\/>check\_capacity();}
+\DoxyCodeLine{00126\ \ \ \ \ \}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{comment}{//\ ITERATOR}}
+\DoxyCodeLine{00131\ \ \ \ \ \mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}}\ begin()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \textcolor{keywordflow}{if}\ (this-\/>new\_ok.load())\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>begin\_iter;}
+\DoxyCodeLine{00135\ \ \ \ \ \}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \ \ \mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}}\ end()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \textcolor{keywordflow}{if}\ (this-\/>new\_ok.load())\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>end\_iter;}
+\DoxyCodeLine{00141\ \ \ \ \ \}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{comment}{//\ OVERLOAD}}
+\DoxyCodeLine{00146\ \ \ \ \ T\&\ operator[](\textcolor{keywordtype}{size\_t}\ index)\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \textcolor{keywordflow}{if}\ (this-\/>new\_ok.load())\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *(this-\/>begin\_iter\ +\ index);}
+\DoxyCodeLine{00149\ \ \ \ \ \}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keyword}{const}\ T\&\ operator[](\textcolor{keywordtype}{size\_t}\ index)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \textcolor{keywordflow}{if}\ (this-\/>new\_ok.load())\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *(this-\/>begin\_iter\ +\ index);}
+\DoxyCodeLine{00154\ \ \ \ \ \}}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{comment}{//\ QUERY}}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ size()\ const\ noexcept\ \{}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>elecount;}
+\DoxyCodeLine{00161\ \ \ \ \ \}}
+\DoxyCodeLine{00162\ \};}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \}\ \textcolor{comment}{//\ namespace\ utils}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ HASHMAP\_UTILS\_VECTOR\_HPP}}
+
+\end{DoxyCode}

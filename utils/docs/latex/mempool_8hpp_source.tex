@@ -1,0 +1,251 @@
+\doxysection{mempool.\+hpp}
+\hypertarget{mempool_8hpp_source}{}\label{mempool_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ HASHMAP\_UTILS\_MEMPOOL\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ HASHMAP\_UTILS\_MEMPOOL\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{____errs_8hpp}{\_\_errs.hpp}}"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\_\_def.hpp"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}bitmap.hpp"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}queue.hpp"{}}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{namespace\ }utils\ \{}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1__abs__allocator}{\_abs\_allocator}}\ \{}
+\DoxyCodeLine{00018\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{using\ }value\_type\ =\ T;}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{virtual}\ T*\ allocate(\textcolor{keywordtype}{size\_t}\ n)\ =\ 0;}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ deallocate(T\ *p,\ \textcolor{keywordtype}{size\_t}\ n)\ =\ 0;}
+\DoxyCodeLine{00024\ \};}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00027\ \textcolor{comment}{mempool\_allocator:}}
+\DoxyCodeLine{00028\ \textcolor{comment}{\ \ 初始时是一大块内存区域.}}
+\DoxyCodeLine{00029\ \textcolor{comment}{\ \ 定义}}
+\DoxyCodeLine{00030\ \textcolor{comment}{\ \ \ \ 内存状态图\ \ \ \ \ \ memory\_state\_map}}
+\DoxyCodeLine{00031\ \textcolor{comment}{\ \ \ \ 待分配指针队列\ \ allocating\_queue}}
+\DoxyCodeLine{00032\ \textcolor{comment}{\ \ \ \ 待释放指针队列\ \ deallocating\_queue}}
+\DoxyCodeLine{00033\ \textcolor{comment}{}}
+\DoxyCodeLine{00034\ \textcolor{comment}{\ \ 分配}}
+\DoxyCodeLine{00035\ \textcolor{comment}{\ \ \ \ 取待分配指针队列前端的指针分配给外部.}}
+\DoxyCodeLine{00036\ \textcolor{comment}{\ \ \ \ 发送信号给守护线程，信号包括分配操作信号和被分配指针.}}
+\DoxyCodeLine{00037\ \textcolor{comment}{}}
+\DoxyCodeLine{00038\ \textcolor{comment}{\ \ \ \ 详细过程}}
+\DoxyCodeLine{00039\ \textcolor{comment}{\ \ \ \ \ \ 检查}}
+\DoxyCodeLine{00040\ \textcolor{comment}{}}
+\DoxyCodeLine{00041\ \textcolor{comment}{\ \ 释放}}
+\DoxyCodeLine{00042\ \textcolor{comment}{\ \ \ \ 将待释放指针放入待释放指针队列队尾.}}
+\DoxyCodeLine{00043\ \textcolor{comment}{\ \ \ \ 发送信号给守护线程，信号包括释放操作信号.}}
+\DoxyCodeLine{00044\ \textcolor{comment}{}}
+\DoxyCodeLine{00045\ \textcolor{comment}{}}
+\DoxyCodeLine{00046\ \textcolor{comment}{\ \ 守护线程}}
+\DoxyCodeLine{00047\ \textcolor{comment}{\ \ \ \ 会根据若干信号工作.}}
+\DoxyCodeLine{00048\ \textcolor{comment}{\ \ \ \ 信号}}
+\DoxyCodeLine{00049\ \textcolor{comment}{\ \ \ \ \ \ tran\_signal\_for\_daemon\ (bool)}}
+\DoxyCodeLine{00050\ \textcolor{comment}{\ \ \ \ \ \ \ \ 守护线程的超越信号，用于指示守护线程发出的新信号的出现.}}
+\DoxyCodeLine{00051\ \textcolor{comment}{\ \ \ \ \ \ \ \ 静息状态为\ false.}}
+\DoxyCodeLine{00052\ \textcolor{comment}{\ \ \ \ \ \ \ \ 由守护线程触发为动作状态，主线程收到后重置为静息状态.}}
+\DoxyCodeLine{00053\ \textcolor{comment}{\ \ \ \ \&}}
+\DoxyCodeLine{00054\ \textcolor{comment}{\ \ \ \ \ \ tran\_signal\_for\_main\ (bool)}}
+\DoxyCodeLine{00055\ \textcolor{comment}{\ \ \ \ \ \ \ \ 主线程的超越信号，用于指示主线程发出的新信号的出现.}}
+\DoxyCodeLine{00056\ \textcolor{comment}{\ \ \ \ \ \ \ \ 静息状态为\ false.}}
+\DoxyCodeLine{00057\ \textcolor{comment}{\ \ \ \ \ \ \ \ 由主线程触发为动作状态，守护线程收到后重置为静息状态.}}
+\DoxyCodeLine{00058\ \textcolor{comment}{\ \ \ \ \ \ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00059\ \textcolor{comment}{\ \ \ \ \ \ type\_signal\_for\_daemon\ (unsigned\ char)}}
+\DoxyCodeLine{00060\ \textcolor{comment}{\ \ \ \ \ \ \ \ 信号类型信号，用于指示守护线程发出的信号的类型.}}
+\DoxyCodeLine{00061\ \textcolor{comment}{\ \ \ \ \&}}
+\DoxyCodeLine{00062\ \textcolor{comment}{\ \ \ \ \ \ type\_signal\_for\_main\ (unsigned\ char)}}
+\DoxyCodeLine{00063\ \textcolor{comment}{\ \ \ \ \ \ \ \ 信号类型信号，用于指示主线程发出的信号的类型.}}
+\DoxyCodeLine{00064\ \textcolor{comment}{}}
+\DoxyCodeLine{00065\ \textcolor{comment}{\ \ \ \ \ \ \ \ 信号类型表}}
+\DoxyCodeLine{00066\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ 0x01\ -\/\ }}
+\DoxyCodeLine{00067\ \textcolor{comment}{}}
+\DoxyCodeLine{00068\ \textcolor{comment}{\ \ 发送信号的流程}}
+\DoxyCodeLine{00069\ \textcolor{comment}{\ \ \ \ (1)\ 脉冲信号\ A\ -\/-\/S(X)-\/-\/>\ B}}
+\DoxyCodeLine{00070\ \textcolor{comment}{\ \ \ \ \ \ 线程A}}
+\DoxyCodeLine{00071\ \textcolor{comment}{\ \ \ \ \ \ \ \ S\ <-\/\ X;}}
+\DoxyCodeLine{00072\ \textcolor{comment}{\ \ \ \ \ \ \ \ type\_signal\_for\_A\ <-\/\ typeid(S);}}
+\DoxyCodeLine{00073\ \textcolor{comment}{\ \ \ \ \ \ \ \ tran\_signal\_for\_A\ <-\/\ true;}}
+\DoxyCodeLine{00074\ \textcolor{comment}{}}
+\DoxyCodeLine{00075\ \textcolor{comment}{\ \ \ \ \ \ 线程B}}
+\DoxyCodeLine{00076\ \textcolor{comment}{\ \ \ \ \ \ \ \ if\ tran\_signal\_for\_A:}}
+\DoxyCodeLine{00077\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ signal\_type\ <-\/\ type\_signal\_for\_A;}}
+\DoxyCodeLine{00078\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ rcp\_S\ <-\/\ S;}}
+\DoxyCodeLine{00079\ \textcolor{comment}{}}
+\DoxyCodeLine{00080\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ tran\_signal\_for\_A\ <-\/\ false;}}
+\DoxyCodeLine{00081\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ type\_signal\_for\_A\ <-\/\ 0;}}
+\DoxyCodeLine{00082\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ S\ <-\/\ 0;}}
+\DoxyCodeLine{00083\ \textcolor{comment}{\ \ \ \ (2)\ 状态信号\ A\ -\/-\/X-\/-\/>\ S}}
+\DoxyCodeLine{00084\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00087\ \textcolor{keyword}{class\ }mempool\_allocator\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classutils_1_1__abs__allocator}{\_abs\_allocator}}<T>\ \{}
+\DoxyCodeLine{00088\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00089\ \ \ \ \ \mbox{\hyperlink{classutils_1_1bitmap}{bitmap<>}}\ \ \ \ \ \ \ \ \ \ memory\_state\_map;}
+\DoxyCodeLine{00090\ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque}{static\_deque<T*>}}\ \ allocating\_queue;}
+\DoxyCodeLine{00091\ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque}{static\_deque<T*>}}\ \ deallocating\_queue;}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ std::atomic<bool>\ tran\_signal\_for\_daemon\ \{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00094\ \ \ \ \ std::atomic<bool>\ tran\_signal\_for\_main\ \{\textcolor{keyword}{false}\};}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ std::atomic<unsigned\ char>\ type\_signal\_for\_daemon\ \{0\};}
+\DoxyCodeLine{00097\ \ \ \ \ std::atomic<unsigned\ char>\ type\_signal\_for\_main\ \{0\};}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ std::atomic<bool>\ }
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ std::atomic<unsigned\ char>\ operation\_signal;}
+\DoxyCodeLine{00102\ \ \ \ \ std::atomic<T\ *>\ ptr\_signal;}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{comment}{//\ 守护线程}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ daemon()\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ }
+\DoxyCodeLine{00108\ \ \ \ \ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00111\ \ \ \ \ mempool\_allocator()\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ std::thread(mempool\_allocator::daemon).detach();}
+\DoxyCodeLine{00113\ \ \ \ \ \}}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ T*\ allocate(\textcolor{keywordtype}{size\_t}\ n)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>allocating\_queue.\mbox{\hyperlink{classutils_1_1static__deque_a8824baffdb503a744b7ec2cd5cbaeb75}{empty}}())\ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 等待守护线程寻找空闲内存}}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \textcolor{keywordflow}{if}\ (this-\/>tran\_signal\_for\_daemon)\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (this-\/>type\_signal\_for\_daemon)}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>allocating\_queue.top();}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 给守护线程发信号}}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00124\ \ \ \ \ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keywordtype}{void}\ deallocate(T\ *p,\ \textcolor{keywordtype}{size\_t}\ n)\ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \textcolor{comment}{//\ 给守护线程发信号}}
+\DoxyCodeLine{00128\ \ \ \ \ \}}
+\DoxyCodeLine{00129\ \};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00135\ \textcolor{comment}{}}
+\DoxyCodeLine{00136\ \textcolor{comment}{}}
+\DoxyCodeLine{00137\ \textcolor{comment}{template\ <typename\ T>}}
+\DoxyCodeLine{00138\ \textcolor{comment}{class\ unique\_pool\ \{}}
+\DoxyCodeLine{00139\ \textcolor{comment}{\ \ protected:}}
+\DoxyCodeLine{00140\ \textcolor{comment}{\ \ \ \ T\ *membegin\ =\ nullptr;}}
+\DoxyCodeLine{00141\ \textcolor{comment}{\ \ \ \ T\ *memend\ =\ nullptr;}}
+\DoxyCodeLine{00142\ \textcolor{comment}{\ \ \ \ T\ *availptr\ =\ nullptr;}}
+\DoxyCodeLine{00143\ \textcolor{comment}{\ \ \ \ T\ *tailptr\ =\ nullptr;}}
+\DoxyCodeLine{00144\ \textcolor{comment}{\ \ \ \ T\ *last\_availptr\ =\ nullptr;}}
+\DoxyCodeLine{00145\ \textcolor{comment}{}}
+\DoxyCodeLine{00146\ \textcolor{comment}{\ \ \ \ size\_t\ blk\_piece\_count\ =\ 1024\ *\ 4;\ \ \ //\ 默认:\ 4096}}
+\DoxyCodeLine{00147\ \textcolor{comment}{\ \ \ \ size\_t\ used\_count\ =\ 0;}}
+\DoxyCodeLine{00148\ \textcolor{comment}{\ \ \ \ size\_t\ avail\_count\ =\ 0;}}
+\DoxyCodeLine{00149\ \textcolor{comment}{\ \ \ \ std::thread\ search\_thread;}}
+\DoxyCodeLine{00150\ \textcolor{comment}{}}
+\DoxyCodeLine{00151\ \textcolor{comment}{\ \ \ \ bitmap<>\ blkmap\ \{0b1111'1111\};}}
+\DoxyCodeLine{00152\ \textcolor{comment}{}}
+\DoxyCodeLine{00153\ \textcolor{comment}{\ \ public:}}
+\DoxyCodeLine{00154\ \textcolor{comment}{\ \ \ \ unique\_pool(bool\ is\_init\ =\ true)\ \{}}
+\DoxyCodeLine{00155\ \textcolor{comment}{\ \ \ \ \ \ if\ (is\_init)}}
+\DoxyCodeLine{00156\ \textcolor{comment}{\ \ \ \ \ \ \ \ this-\/>init();}}
+\DoxyCodeLine{00157\ \textcolor{comment}{\ \ \ \ \}}}
+\DoxyCodeLine{00158\ \textcolor{comment}{}}
+\DoxyCodeLine{00159\ \textcolor{comment}{\ \ \ \ unique\_pool(size\_t\ n,\ bool\ is\_init\ =\ true)\ :\ blk\_piece\_count(n)\ \{}}
+\DoxyCodeLine{00160\ \textcolor{comment}{\ \ \ \ \ \ if\ (is\_init)}}
+\DoxyCodeLine{00161\ \textcolor{comment}{\ \ \ \ \ \ \ \ this-\/>init();}}
+\DoxyCodeLine{00162\ \textcolor{comment}{\ \ \ \ \}}}
+\DoxyCodeLine{00163\ \textcolor{comment}{}}
+\DoxyCodeLine{00164\ \textcolor{comment}{\ \ \ \ \string~unique\_pool()\ \{}}
+\DoxyCodeLine{00165\ \textcolor{comment}{\ \ \ \ \ \ delete[]\ static\_cast<T\ *>(this-\/>membegin);}}
+\DoxyCodeLine{00166\ \textcolor{comment}{\ \ \ \ \}}}
+\DoxyCodeLine{00167\ \textcolor{comment}{}}
+\DoxyCodeLine{00168\ \textcolor{comment}{\ \ \ \ void\ init()\ \{}}
+\DoxyCodeLine{00169\ \textcolor{comment}{\ \ \ \ \ \ this-\/>blkmap.init(this-\/>blk\_piece\_count);}}
+\DoxyCodeLine{00170\ \textcolor{comment}{\ \ \ \ \ \ try\ \{}}
+\DoxyCodeLine{00171\ \textcolor{comment}{\ \ \ \ \ \ \ \ this-\/>membegin\ =\ new\ T[this-\/>blk\_piece\_count];}}
+\DoxyCodeLine{00172\ \textcolor{comment}{\ \ \ \ \ \ \ \ this-\/>memend\ =\ this-\/>membegin\ +\ this-\/>blk\_piece\_count;}}
+\DoxyCodeLine{00173\ \textcolor{comment}{\ \ \ \ \ \ \ \ this-\/>tailptr\ =\ this-\/>membegin;}}
+\DoxyCodeLine{00174\ \textcolor{comment}{\ \ \ \ \ \ \ \ this-\/>availptr\ =\ this-\/>membegin;}}
+\DoxyCodeLine{00175\ \textcolor{comment}{\ \ \ \ \ \ \ \ this-\/>last\_availptr\ =\ this-\/>availptr;}}
+\DoxyCodeLine{00176\ \textcolor{comment}{\ \ \ \ \ \ \}\ catch\ (std::bad\_alloc\ \&e)\ \{}}
+\DoxyCodeLine{00177\ \textcolor{comment}{\ \ \ \ \ \ \ \ throw\ utils\_exception("{}unique\_pool::init():\ Too\ huge\ memory\ wanted!"{});}}
+\DoxyCodeLine{00178\ \textcolor{comment}{\ \ \ \ \ \ \}}}
+\DoxyCodeLine{00179\ \textcolor{comment}{}}
+\DoxyCodeLine{00180\ \textcolor{comment}{\ \ \ \ \ \ this-\/>avail\_count\ =\ this-\/>blk\_piece\_count;}}
+\DoxyCodeLine{00181\ \textcolor{comment}{}}
+\DoxyCodeLine{00182\ \textcolor{comment}{\ \ \ \ \ \ auto\ search\_loop\ =\ [this]()\ -\/>\ void\ \{}}
+\DoxyCodeLine{00183\ \textcolor{comment}{\ \ \ \ \ \ \ \ for\ (;;)\ \{}}
+\DoxyCodeLine{00184\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ if\ (!this-\/>availptr)\ \{}}
+\DoxyCodeLine{00185\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ for\ (size\_t\ byte\_offset\ =\ this-\/>last\_availptr\ -\/\ this-\/>membegin;}}
+\DoxyCodeLine{00186\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ byte\_offset\ <\ this-\/>blk\_piece\_count;\ byte\_offset++)\ \{}}
+\DoxyCodeLine{00187\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ if\ (this-\/>blkmap.bits[byte\_offset])\ \{}}
+\DoxyCodeLine{00188\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ size\_t\ bit\_offset\ =\ 0;}}
+\DoxyCodeLine{00189\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ for\ (size\_t\ bit\_offset\ =\ 0;\ bit\_offset\ <\ 8;\ bit\_offset++)\ \{}}
+\DoxyCodeLine{00190\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ if\ (}}
+\DoxyCodeLine{00191\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (static\_cast<unsigned\ char>(0b0000'0001)\ <<\ bit\_offset)}}
+\DoxyCodeLine{00192\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&\ this-\/>blkmap.bits[byte\_offset])\ \{}}
+\DoxyCodeLine{00193\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>availptr\ =\ this-\/>membegin\ +\ (byte\_offset\ *\ sizeof(unsigned\ char))\ +\ bit\_offset;}}
+\DoxyCodeLine{00194\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00195\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00196\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00197\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00198\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00199\ \textcolor{comment}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00200\ \textcolor{comment}{\ \ \ \ \ \ \};}}
+\DoxyCodeLine{00201\ \textcolor{comment}{}}
+\DoxyCodeLine{00202\ \textcolor{comment}{\ \ \ \ \ \ this-\/>search\_thread\ =\ std::thread(search\_loop);}}
+\DoxyCodeLine{00203\ \textcolor{comment}{\ \ \ \ \ \ search\_thread.detach();}}
+\DoxyCodeLine{00204\ \textcolor{comment}{\ \ \ \ \}}}
+\DoxyCodeLine{00205\ \textcolor{comment}{}}
+\DoxyCodeLine{00206\ \textcolor{comment}{\ \ \ \ template\ <typename\ ...Args>}}
+\DoxyCodeLine{00207\ \textcolor{comment}{\ \ \ \ T*\ allocate(Args\ ...args)\ \{}}
+\DoxyCodeLine{00208\ \textcolor{comment}{\ \ \ \ \ \ T*\ ptr\ =\ nullptr;}}
+\DoxyCodeLine{00209\ \textcolor{comment}{\ \ \ \ \ \ for\ (;;)\ \{}}
+\DoxyCodeLine{00210\ \textcolor{comment}{\ \ \ \ \ \ \ \ if\ (this-\/>availptr)\ \{}}
+\DoxyCodeLine{00211\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ this-\/>last\_availptr\ =\ this-\/>availptr;}}
+\DoxyCodeLine{00212\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ ptr\ =\ this-\/>availptr;}}
+\DoxyCodeLine{00213\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ this-\/>availptr\ =\ nullptr;}}
+\DoxyCodeLine{00214\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ break;}}
+\DoxyCodeLine{00215\ \textcolor{comment}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00216\ \textcolor{comment}{\ \ \ \ \ \ \}}}
+\DoxyCodeLine{00217\ \textcolor{comment}{}}
+\DoxyCodeLine{00218\ \textcolor{comment}{\ \ \ \ \ \ this-\/>blkmap.set(static\_cast<size\_t>(ptr\ -\/\ this-\/>membegin),\ false);}}
+\DoxyCodeLine{00219\ \textcolor{comment}{}}
+\DoxyCodeLine{00220\ \textcolor{comment}{\ \ \ \ \ \ if\ constexpr\ (std::is\_fundamental\_v<T>)\ \{}}
+\DoxyCodeLine{00221\ \textcolor{comment}{\ \ \ \ \ \ \ \ *ptr\ =\ \{args...\};}}
+\DoxyCodeLine{00222\ \textcolor{comment}{\ \ \ \ \ \ \}\ else\ \{}}
+\DoxyCodeLine{00223\ \textcolor{comment}{\ \ \ \ \ \ \ \ if\ (!sizeof...(args))}}
+\DoxyCodeLine{00224\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ ptr-\/>T();}}
+\DoxyCodeLine{00225\ \textcolor{comment}{\ \ \ \ \ \ \ \ else\ }}
+\DoxyCodeLine{00226\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ ptr-\/>T(std::forward(args...));}}
+\DoxyCodeLine{00227\ \textcolor{comment}{\ \ \ \ \ \ \}}}
+\DoxyCodeLine{00228\ \textcolor{comment}{}}
+\DoxyCodeLine{00229\ \textcolor{comment}{\ \ \ \ \ \ return\ ptr;}}
+\DoxyCodeLine{00230\ \textcolor{comment}{\ \ \ \ \}}}
+\DoxyCodeLine{00231\ \textcolor{comment}{}}
+\DoxyCodeLine{00232\ \textcolor{comment}{\ \ \ \ void\ deallocate(T\ *p)\ \{}}
+\DoxyCodeLine{00233\ \textcolor{comment}{\ \ \ \ \ \ for\ (;;)\ \{}}
+\DoxyCodeLine{00234\ \textcolor{comment}{\ \ \ \ \ \ \ \ if\ (this-\/>availptr)\ \{}}
+\DoxyCodeLine{00235\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ this-\/>blkmap.set(static\_cast<size\_t>(p\ -\/\ this-\/>membegin),\ true);}}
+\DoxyCodeLine{00236\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ if\ (p\ <\ this-\/>availptr)}}
+\DoxyCodeLine{00237\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ this-\/>availptr\ =\ p;}}
+\DoxyCodeLine{00238\ \textcolor{comment}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00239\ \textcolor{comment}{\ \ \ \ \ \ \}}}
+\DoxyCodeLine{00240\ \textcolor{comment}{\ \ \ \ \}}}
+\DoxyCodeLine{00241\ \textcolor{comment}{\};}}
+\DoxyCodeLine{00242\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \}\ \textcolor{comment}{//\ namespace\ utils}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ HASHMAP\_UTILS\_MEMPOOL\_HPP}}
+
+\end{DoxyCode}

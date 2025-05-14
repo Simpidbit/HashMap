@@ -1,0 +1,87 @@
+\doxysection{utils\+::mempool\+\_\+allocator\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classutils_1_1mempool__allocator}{}\label{classutils_1_1mempool__allocator}\index{utils::mempool\_allocator$<$ T $>$@{utils::mempool\_allocator$<$ T $>$}}
+Inheritance diagram for utils\+::mempool\+\_\+allocator\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classutils_1_1mempool__allocator}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+T \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classutils_1_1mempool__allocator_a1845cdc3e8406e23f7d9b1a2a69efcb1}{allocate}} (size\+\_\+t n) override
+\item 
+void \mbox{\hyperlink{classutils_1_1mempool__allocator_a1bba9ce0989e65c5d9cc46ef6af814a1}{deallocate}} (T \texorpdfstring{$\ast$}{*}p, size\+\_\+t n)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_a2eeed59ac2e2848c69e3157d4741cb69}\label{classutils_1_1mempool__allocator_a2eeed59ac2e2848c69e3157d4741cb69} 
+static void {\bfseries daemon} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_a7220081c575a70afa04115848e73cfa8}\label{classutils_1_1mempool__allocator_a7220081c575a70afa04115848e73cfa8} 
+\mbox{\hyperlink{classutils_1_1bitmap}{bitmap}} {\bfseries memory\+\_\+state\+\_\+map}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_af71cfb18eb6409082ab6f7e7b2df4696}\label{classutils_1_1mempool__allocator_af71cfb18eb6409082ab6f7e7b2df4696} 
+\mbox{\hyperlink{classutils_1_1static__deque}{static\+\_\+deque}}$<$ T \texorpdfstring{$\ast$}{*} $>$ {\bfseries allocating\+\_\+queue}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_acb84c84ceb073a66faaa85f951c9a41e}\label{classutils_1_1mempool__allocator_acb84c84ceb073a66faaa85f951c9a41e} 
+\mbox{\hyperlink{classutils_1_1static__deque}{static\+\_\+deque}}$<$ T \texorpdfstring{$\ast$}{*} $>$ {\bfseries deallocating\+\_\+queue}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_a224c997c02ffad403ed06f60ef7ff402}\label{classutils_1_1mempool__allocator_a224c997c02ffad403ed06f60ef7ff402} 
+std\+::atomic$<$ bool $>$ {\bfseries tran\+\_\+signal\+\_\+for\+\_\+daemon} \{false\}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_ae8ab2d0228c065e0613c181c74880143}\label{classutils_1_1mempool__allocator_ae8ab2d0228c065e0613c181c74880143} 
+std\+::atomic$<$ bool $>$ {\bfseries tran\+\_\+signal\+\_\+for\+\_\+main} \{false\}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_ac21c7585d7302e5dc35c513fde28bd61}\label{classutils_1_1mempool__allocator_ac21c7585d7302e5dc35c513fde28bd61} 
+std\+::atomic$<$ unsigned char $>$ {\bfseries type\+\_\+signal\+\_\+for\+\_\+daemon} \{0\}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_a8dad94ec770413b5b947c327e7077364}\label{classutils_1_1mempool__allocator_a8dad94ec770413b5b947c327e7077364} 
+std\+::atomic$<$ unsigned char $>$ {\bfseries type\+\_\+signal\+\_\+for\+\_\+main} \{0\}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_a311233b8c865c42c6831a001dd998b26}\label{classutils_1_1mempool__allocator_a311233b8c865c42c6831a001dd998b26} 
+std\+::atomic$<$ bool $>$ std\+::atomic$<$ unsigned char $>$ {\bfseries operation\+\_\+signal}
+\item 
+\Hypertarget{classutils_1_1mempool__allocator_a0803ac9d67ebee4da59dee6973dd3df7}\label{classutils_1_1mempool__allocator_a0803ac9d67ebee4da59dee6973dd3df7} 
+std\+::atomic$<$ T \texorpdfstring{$\ast$}{*} $>$ {\bfseries ptr\+\_\+signal}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{classutils_1_1__abs__allocator}{utils\+::\+\_\+abs\+\_\+allocator$<$ T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+using {\bfseries value\+\_\+type} = T
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classutils_1_1mempool__allocator_a1845cdc3e8406e23f7d9b1a2a69efcb1}\index{utils::mempool\_allocator$<$ T $>$@{utils::mempool\_allocator$<$ T $>$}!allocate@{allocate}}
+\index{allocate@{allocate}!utils::mempool\_allocator$<$ T $>$@{utils::mempool\_allocator$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{allocate()}{allocate()}}
+{\footnotesize\ttfamily \label{classutils_1_1mempool__allocator_a1845cdc3e8406e23f7d9b1a2a69efcb1} 
+template$<$typename T$>$ \\
+T \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classutils_1_1mempool__allocator}{utils\+::mempool\+\_\+allocator}}$<$ T $>$\+::allocate (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{n}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classutils_1_1__abs__allocator}{utils\+::\+\_\+abs\+\_\+allocator$<$ T $>$}}.
+
+\Hypertarget{classutils_1_1mempool__allocator_a1bba9ce0989e65c5d9cc46ef6af814a1}\index{utils::mempool\_allocator$<$ T $>$@{utils::mempool\_allocator$<$ T $>$}!deallocate@{deallocate}}
+\index{deallocate@{deallocate}!utils::mempool\_allocator$<$ T $>$@{utils::mempool\_allocator$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{deallocate()}{deallocate()}}
+{\footnotesize\ttfamily \label{classutils_1_1mempool__allocator_a1bba9ce0989e65c5d9cc46ef6af814a1} 
+template$<$typename T$>$ \\
+void \mbox{\hyperlink{classutils_1_1mempool__allocator}{utils\+::mempool\+\_\+allocator}}$<$ T $>$\+::deallocate (\begin{DoxyParamCaption}\item[{T \texorpdfstring{$\ast$}{*}}]{p}{, }\item[{size\+\_\+t}]{n}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classutils_1_1__abs__allocator}{utils\+::\+\_\+abs\+\_\+allocator$<$ T $>$}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+mempool.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,133 @@
+\doxysection{\+\_\+\+\_\+iterator.\+hpp}
+\hypertarget{____iterator_8hpp_source}{}\label{____iterator_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ HASHMAP\_UTILS\_\_\_ITERATOR\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ HASHMAP\_UTILS\_\_\_ITERATOR\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{namespace\ }utils\ \{}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ PT>}
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1__iterator}{\_iterator}}\ \{\ \mbox{\hyperlink{classutils_1_1__iterator}{\string~\_iterator}}()\ =\ \textcolor{keyword}{delete};\ \};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00014\ \textcolor{comment}{template\ <typename\ PT>}}
+\DoxyCodeLine{00015\ \textcolor{comment}{class\ \_iterator<void\ *,\ PT>\ \{\ \string~\_iterator()\ =\ delete;\ \};}}
+\DoxyCodeLine{00016\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ PT>}
+\DoxyCodeLine{00019\ \textcolor{keyword}{class\ }\_iterator<T*,\ PT>\ \{}
+\DoxyCodeLine{00020\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00021\ \ \ \ \ T*\ ptr\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00024\ \ \ \ \ \_iterator()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00025\ \ \ \ \ \_iterator(\textcolor{keyword}{const}\ \_iterator\ \&iter)\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ this-\/>ptr\ =\ iter.ptr;}
+\DoxyCodeLine{00027\ \ \ \ \ \}}
+\DoxyCodeLine{00028\ \ \ \ \ \_iterator(\_iterator\ \&\&iter)\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ this-\/>ptr\ =\ iter.ptr;}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ iter.ptr\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00031\ \ \ \ \ \}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ number()\ \textcolor{keyword}{const}\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(this-\/>ptr);}
+\DoxyCodeLine{00035\ \ \ \ \ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ point\_to(T*\ nptr)\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ this-\/>ptr\ =\ nptr;}
+\DoxyCodeLine{00039\ \ \ \ \ \}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ T\&\ operator*()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ *(this-\/>ptr);\ \}}
+\DoxyCodeLine{00043\ \ \ \ \ T*\ operator-\/>()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ this-\/>ptr;\ \}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ PT\&\ operator=(\textcolor{keyword}{const}\ \_iterator\ \&iter)\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ this-\/>ptr\ =\ iter.ptr;}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}PT\&\textcolor{keyword}{>}(*this);}
+\DoxyCodeLine{00049\ \ \ \ \ \}}
+\DoxyCodeLine{00050\ \ \ \ \ PT\&\ operator=(\_iterator\ \&\&iter)\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ this-\/>ptr\ =\ iter.ptr;}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ iter.ptr\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}PT\&\textcolor{keyword}{>}(*this);}
+\DoxyCodeLine{00054\ \ \ \ \ \}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{comment}{//\ before}}
+\DoxyCodeLine{00057\ \ \ \ \ PT\ operator++()\ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ this-\/>goback();}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{dynamic\_cast<}PT*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00060\ \ \ \ \ \}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{comment}{//\ after}}
+\DoxyCodeLine{00063\ \ \ \ \ PT\ operator++(\textcolor{keywordtype}{int})\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ PT\ tmp(\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }PT\ \&\textcolor{keyword}{>}(*\textcolor{keyword}{this}));}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ this-\/>goback();}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tmp;}
+\DoxyCodeLine{00067\ \ \ \ \ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{comment}{//\ before}}
+\DoxyCodeLine{00070\ \ \ \ \ PT\ operator-\/-\/()\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ this-\/>gofront();}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{dynamic\_cast<}PT*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00073\ \ \ \ \ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{comment}{//\ after}}
+\DoxyCodeLine{00076\ \ \ \ \ PT\ operator-\/-\/(\textcolor{keywordtype}{int})\ \{}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ PT\ tmp(\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }PT\&\textcolor{keyword}{>}(*\textcolor{keyword}{this}));}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ this-\/>gofront();}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tmp;}
+\DoxyCodeLine{00080\ \ \ \ \ \}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ PT\&\ operator+=(\textcolor{keywordtype}{size\_t}\ n)\ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ this-\/>goback(n);}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}PT\&\textcolor{keyword}{>}(*this);}
+\DoxyCodeLine{00085\ \ \ \ \ \}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ PT\&\ operator-\/=(\textcolor{keywordtype}{size\_t}\ n)\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ this-\/>gofront(n);}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}PT\&\textcolor{keyword}{>}(*this);}
+\DoxyCodeLine{00090\ \ \ \ \ \}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ PT\ operator+(\textcolor{keywordtype}{size\_t}\ n)\ \{}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ PT\ tmp(\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }PT\&\textcolor{keyword}{>}(*\textcolor{keyword}{this}));}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ tmp.goback(n);}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tmp;}
+\DoxyCodeLine{00096\ \ \ \ \ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ PT\ operator-\/(\textcolor{keywordtype}{size\_t}\ n)\ \{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ PT\ tmp(\textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }PT\&\textcolor{keyword}{>}(*\textcolor{keyword}{this}));}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ tmp.gofront(n);}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ tmp;}
+\DoxyCodeLine{00102\ \ \ \ \ \}}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ operator<(\textcolor{keyword}{const}\ \_iterator\ \&iter)\ \{}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (this-\/>ptr\ <\ iter.ptr);}
+\DoxyCodeLine{00106\ \ \ \ \ \}}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ \_iterator\ \&iter)\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (this-\/>ptr\ ==\ iter.ptr);}
+\DoxyCodeLine{00109\ \ \ \ \ \}}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ \_iterator\ \&iter)\ \{}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (this-\/>ptr\ !=\ iter.ptr);}
+\DoxyCodeLine{00112\ \ \ \ \ \}}
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ operator>(\textcolor{keyword}{const}\ \_iterator\ \&iter)\ \{}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (this-\/>ptr\ ==\ iter.ptr);}
+\DoxyCodeLine{00115\ \ \ \ \ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ goback()\ =\ 0;}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ goback(\textcolor{keywordtype}{size\_t}\ n)\ =\ 0;}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ gofront()\ =\ 0;}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ gofront(\textcolor{keywordtype}{size\_t}\ n)\ =\ 0;}
+\DoxyCodeLine{00122\ \};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \}\ \textcolor{comment}{//\ namespace\ utils}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

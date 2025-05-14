@@ -1,0 +1,87 @@
+\doxysection{list.\+hpp}
+\hypertarget{list_8hpp_source}{}\label{list_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ HASHMAP\_UTILS\_LIST\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ HASHMAP\_UTILS\_LIST\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ }
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\_\_iterator.hpp"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{namespace\ }utils\ \{}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ Allocator\ =\ std::allocator<T>>}
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }list\ \{}
+\DoxyCodeLine{00011\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1list_1_1iterator}{iterator}};}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1list_1_1iterator}{iterator}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classutils_1_1__iterator}{utils::\_iterator}}<T*,\ iterator>\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ list\ *self\ \{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classutils_1_1__iterator}{utils::\_iterator}}<T*,\ \mbox{\hyperlink{classutils_1_1list_1_1iterator}{iterator}}>\mbox{\hyperlink{classutils_1_1__iterator}{::\_iterator}};}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setself(list\ *self)\ \{}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ this-\/>self\ =\ self;}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ goback()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ goback(\textcolor{keywordtype}{size\_t}\ n)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ gofront()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ gofront(\textcolor{keywordtype}{size\_t}\ n)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00031\ \ \ \ \ \};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{template}\ <T>}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structutils_1_1list_1_1node}{node}}\ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ T\ *data;}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \mbox{\hyperlink{structutils_1_1list_1_1node}{node}}\ *next;}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \mbox{\hyperlink{structutils_1_1list_1_1node}{node}}\ *last;}
+\DoxyCodeLine{00038\ \ \ \ \ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00041\ \ \ \ \ Allocator\ allocator;}
+\DoxyCodeLine{00042\ \ \ \ \ \mbox{\hyperlink{classutils_1_1list_1_1iterator}{iterator}}\ begin\_iter;}
+\DoxyCodeLine{00043\ \ \ \ \ \mbox{\hyperlink{classutils_1_1list_1_1iterator}{iterator}}\ end\_iter;}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ capcount\ \{0\};}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ elecount\ \{0\};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ node\ front\_node\ \{\ \textcolor{keyword}{nullptr},\ \textcolor{keyword}{nullptr},\ \textcolor{keyword}{nullptr}\ \};}
+\DoxyCodeLine{00049\ \ \ \ \ \mbox{\hyperlink{structutils_1_1list_1_1node}{node}}\ back\_node\ \ \{\ \textcolor{keyword}{nullptr},\ \textcolor{keyword}{nullptr},\ \textcolor{keyword}{nullptr}\ \};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00052\ \ \ \ \ list()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ size()\ const\ noexcept\ \ \ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ this-\/>elecount;\ \}}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ capacity()\ const\ noexcept;\ \ \{\ \textcolor{keywordflow}{return}\ this-\/>capcount;\ \}}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ empty()\ const\ noexcept;\ \ \ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ !this-\/>elecount;\ \}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordtype}{void}\ push\_back(\textcolor{keyword}{const}\ T\ \&e)\ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{void}\ push\_back(T\ \&\&e)\ \{}
+\DoxyCodeLine{00062\ \ \ \ \ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordtype}{void}\ push\_front(\textcolor{keyword}{const}\ T\ \&e)\ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{void}\ push\_front(T\ \&\&e)\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{void}\ pop\_back()\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ pop\_front()\ \{}
+\DoxyCodeLine{00074\ \ \ \ \ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{comment}{//\ TODO}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \}\ \textcolor{comment}{//\ namespace\ utils}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

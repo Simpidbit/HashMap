@@ -1,0 +1,314 @@
+\doxysection{utils\+::static\+\_\+deque\texorpdfstring{$<$}{<} T, Allocator \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classutils_1_1static__deque}{}\label{classutils_1_1static__deque}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+
+
+\doxylink{classutils_1_1static__deque}{static\+\_\+deque} 是一个最大容量固定的双端队列，它可以在队首和队尾新增、删除元素.  
+
+
+
+
+{\ttfamily \#include $<$queue.\+hpp$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classutils_1_1static__deque_ae45edd27d6501c6a21791fce97875460}{init}} (size\+\_\+t ccount)
+\begin{DoxyCompactList}\small\item\em 初始化容器，此函数仅当以默认构造函数构造时才应被调用. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classutils_1_1static__deque_a889f502ce9b2518fe65c5c5d41ae75f4}{static\+\_\+deque}} ()=default
+\begin{DoxyCompactList}\small\item\em 稍后再手动调用 init 成员函数进行初始化，未初始化之前此容器不可用. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classutils_1_1static__deque_ab73be5c0ba7f8c8c1cea6aaa2152bb2e}{static\+\_\+deque}} (size\+\_\+t ccount)
+\begin{DoxyCompactList}\small\item\em 初始化时就指定最大容量. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classutils_1_1static__deque_afcaa5d48f2b7eff6824b544784f51a52}{size}} () const noexcept
+\begin{DoxyCompactList}\small\item\em 容器目前有多少个元素. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classutils_1_1static__deque_a7158d4ae61ae8ce2b450bbd0c32029e3}{capacity}} () const noexcept
+\begin{DoxyCompactList}\small\item\em 容器最多能容纳多少个元素. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classutils_1_1static__deque_a8824baffdb503a744b7ec2cd5cbaeb75}{empty}} () const noexcept
+\begin{DoxyCompactList}\small\item\em 容器是否为空. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classutils_1_1static__deque_aeb293cf9dabcedb8a5b2717c011ccb27}{push\+\_\+back}} (const T \&element)
+\begin{DoxyCompactList}\small\item\em 尝试在队尾通过拷贝的方式插入元素. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classutils_1_1static__deque_a4ebab966dd05347eabe692303fcd7214}{push\+\_\+back}} (T \&\&element)
+\begin{DoxyCompactList}\small\item\em 尝试在队尾通过移动的方式插入元素. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classutils_1_1static__deque_ac0bab9caba8a46070134f6564fd0252d}{push\+\_\+front}} (const T \&element)
+\begin{DoxyCompactList}\small\item\em 尝试在队首通过拷贝的方式插入元素. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classutils_1_1static__deque_a27a2e10029351917fda4a2921ccadd2c}{push\+\_\+front}} (T \&\&element)
+\begin{DoxyCompactList}\small\item\em 尝试在队首通过移动的方式插入元素. \end{DoxyCompactList}\item 
+\Hypertarget{classutils_1_1static__deque_aebda8db383bfb76726d65188e3bf3219}\label{classutils_1_1static__deque_aebda8db383bfb76726d65188e3bf3219} 
+void {\bfseries pop\+\_\+back} ()
+\begin{DoxyCompactList}\small\item\em 如果容器非空，移除队尾元素. \end{DoxyCompactList}\item 
+\Hypertarget{classutils_1_1static__deque_af5399cca780f74ede6742b940be47272}\label{classutils_1_1static__deque_af5399cca780f74ede6742b940be47272} 
+void {\bfseries pop\+\_\+front} ()
+\begin{DoxyCompactList}\small\item\em 如果容器非空，移除队首元素. \end{DoxyCompactList}\item 
+T \& \mbox{\hyperlink{classutils_1_1static__deque_ac8c869d23d98092ebc087847ccdded3c}{front}} ()
+\begin{DoxyCompactList}\small\item\em 获取队首元素的引用，可通过此引用修改队首元素. \end{DoxyCompactList}\item 
+T \& \mbox{\hyperlink{classutils_1_1static__deque_aad15faad3f232d59cf0943c97d341a59}{back}} ()
+\begin{DoxyCompactList}\small\item\em 获取队尾元素的引用，可通过此引用修改队尾元素. \end{DoxyCompactList}\item 
+\Hypertarget{classutils_1_1static__deque_a90ff23287e4932510b3dc6be230233e0}\label{classutils_1_1static__deque_a90ff23287e4932510b3dc6be230233e0} 
+\mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}} {\bfseries begin} ()
+\begin{DoxyCompactList}\small\item\em 获取队首元素的迭代器. \end{DoxyCompactList}\item 
+\Hypertarget{classutils_1_1static__deque_aa09f262e1c6f52fb1925c9648c533b81}\label{classutils_1_1static__deque_aa09f262e1c6f52fb1925c9648c533b81} 
+\mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}} {\bfseries end} ()
+\begin{DoxyCompactList}\small\item\em 获取队尾元素下一位置的迭代器. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1static__deque_a33bd5dc0df9dfcaf9e3f05f30bf2d13f}\label{classutils_1_1static__deque_a33bd5dc0df9dfcaf9e3f05f30bf2d13f} 
+void {\bfseries insert\+\_\+at} (T \texorpdfstring{$\ast$}{*}ptr, const T \&element)
+\item 
+\Hypertarget{classutils_1_1static__deque_ab677507e867df2584b368987001bba9f}\label{classutils_1_1static__deque_ab677507e867df2584b368987001bba9f} 
+void {\bfseries insert\+\_\+at} (T \texorpdfstring{$\ast$}{*}ptr, T \&\&element)
+\item 
+\Hypertarget{classutils_1_1static__deque_a804536be6abb96836c56d5dfd49925af}\label{classutils_1_1static__deque_a804536be6abb96836c56d5dfd49925af} 
+void {\bfseries circle\+\_\+backstep} (T \texorpdfstring{$\ast$}{*}\&ptr)
+\item 
+\Hypertarget{classutils_1_1static__deque_ae95cc31de2589631c1c4d8c5d3235e03}\label{classutils_1_1static__deque_ae95cc31de2589631c1c4d8c5d3235e03} 
+void {\bfseries circle\+\_\+frontstep} (T \texorpdfstring{$\ast$}{*}\&ptr)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1static__deque_a3a251e82acbb8c9e07b84df22dec243e}\label{classutils_1_1static__deque_a3a251e82acbb8c9e07b84df22dec243e} 
+T \texorpdfstring{$\ast$}{*} {\bfseries membegin} = nullptr
+\item 
+\Hypertarget{classutils_1_1static__deque_a523c9580399b78f229a9c664c6f3606f}\label{classutils_1_1static__deque_a523c9580399b78f229a9c664c6f3606f} 
+T \texorpdfstring{$\ast$}{*} {\bfseries memback} = nullptr
+\item 
+\Hypertarget{classutils_1_1static__deque_a88a600de8d7965ae60694ad79202d6e7}\label{classutils_1_1static__deque_a88a600de8d7965ae60694ad79202d6e7} 
+T \texorpdfstring{$\ast$}{*} {\bfseries head} = nullptr
+\item 
+\Hypertarget{classutils_1_1static__deque_a3b655304f878bd7ea5268076a044a527}\label{classutils_1_1static__deque_a3b655304f878bd7ea5268076a044a527} 
+T \texorpdfstring{$\ast$}{*} {\bfseries tail} = nullptr
+\item 
+\Hypertarget{classutils_1_1static__deque_ad2df59db7938ea60c9a5a145c89d880f}\label{classutils_1_1static__deque_ad2df59db7938ea60c9a5a145c89d880f} 
+size\+\_\+t {\bfseries ccount} = 0
+\item 
+\Hypertarget{classutils_1_1static__deque_ac7e19541122b6928061b1276ddc7b31e}\label{classutils_1_1static__deque_ac7e19541122b6928061b1276ddc7b31e} 
+size\+\_\+t {\bfseries ecount} = 0
+\item 
+\Hypertarget{classutils_1_1static__deque_a99ba240476e19368f0e99c569965a527}\label{classutils_1_1static__deque_a99ba240476e19368f0e99c569965a527} 
+Allocator {\bfseries allocator}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1static__deque_a67171474c4da6cc8efe0c7fafefd2b2d}\label{classutils_1_1static__deque_a67171474c4da6cc8efe0c7fafefd2b2d} 
+class {\bfseries iterator}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$\newline
+class utils\+::static\+\_\+deque$<$ T, Allocator $>$}
+\doxylink{classutils_1_1static__deque}{static\+\_\+deque} 是一个最大容量固定的双端队列，它可以在队首和队尾新增、删除元素. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & 元素类型 \\
+\hline
+{\em Allocator} & 分配器类型 \\
+\hline
+\end{DoxyTemplParams}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classutils_1_1static__deque_a889f502ce9b2518fe65c5c5d41ae75f4}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!static\_deque@{static\_deque}}
+\index{static\_deque@{static\_deque}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{static\_deque()}{static\_deque()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_a889f502ce9b2518fe65c5c5d41ae75f4} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+\mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::static\+\_\+deque (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+稍后再手动调用 init 成员函数进行初始化，未初始化之前此容器不可用. 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{classutils_1_1static__deque_ae45edd27d6501c6a21791fce97875460}{static\+\_\+deque\+::init(size\+\_\+t)} 
+\end{DoxySeeAlso}
+\Hypertarget{classutils_1_1static__deque_ab73be5c0ba7f8c8c1cea6aaa2152bb2e}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!static\_deque@{static\_deque}}
+\index{static\_deque@{static\_deque}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{static\_deque()}{static\_deque()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_ab73be5c0ba7f8c8c1cea6aaa2152bb2e} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+\mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::static\+\_\+deque (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{ccount}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+初始化时就指定最大容量. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ccount} & 最多容纳多少个元素 \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classutils_1_1static__deque_aad15faad3f232d59cf0943c97d341a59}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!back@{back}}
+\index{back@{back}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{back()}{back()}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_aad15faad3f232d59cf0943c97d341a59} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+T \& \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::back (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+获取队尾元素的引用，可通过此引用修改队尾元素. 
+
+如果容器为空，抛出异常 \doxylink{classutils_1_1utils__exception}{utils\+::utils\+\_\+exception} , 异常信息为 "{}static\+\_\+deque is empty but back() called!"{} \Hypertarget{classutils_1_1static__deque_a7158d4ae61ae8ce2b450bbd0c32029e3}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!capacity@{capacity}}
+\index{capacity@{capacity}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{capacity()}{capacity()}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_a7158d4ae61ae8ce2b450bbd0c32029e3} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+size\+\_\+t \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::capacity (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+容器最多能容纳多少个元素. 
+
+\begin{DoxyReturn}{Returns}
+容器最大容量. 
+\end{DoxyReturn}
+\Hypertarget{classutils_1_1static__deque_a8824baffdb503a744b7ec2cd5cbaeb75}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!empty@{empty}}
+\index{empty@{empty}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{empty()}{empty()}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_a8824baffdb503a744b7ec2cd5cbaeb75} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+bool \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::empty (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+容器是否为空. 
+
+\begin{DoxyReturn}{Returns}
+容器为空\+: true; 容器非空\+: false. 
+\end{DoxyReturn}
+\Hypertarget{classutils_1_1static__deque_ac8c869d23d98092ebc087847ccdded3c}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!front@{front}}
+\index{front@{front}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{front()}{front()}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_ac8c869d23d98092ebc087847ccdded3c} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+T \& \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::front (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+获取队首元素的引用，可通过此引用修改队首元素. 
+
+如果容器为空，抛出异常 \doxylink{classutils_1_1utils__exception}{utils\+::utils\+\_\+exception} , 异常信息为 "{}static\+\_\+deque is empty but front() called!"{} \Hypertarget{classutils_1_1static__deque_ae45edd27d6501c6a21791fce97875460}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!init@{init}}
+\index{init@{init}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_ae45edd27d6501c6a21791fce97875460} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+void \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::init (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{ccount}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+初始化容器，此函数仅当以默认构造函数构造时才应被调用. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ccount} & 最多容纳多少个元素 \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classutils_1_1static__deque_a889f502ce9b2518fe65c5c5d41ae75f4}{static\+\_\+deque\+::static\+\_\+deque()} 
+\end{DoxySeeAlso}
+\Hypertarget{classutils_1_1static__deque_aeb293cf9dabcedb8a5b2717c011ccb27}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!push\_back@{push\_back}}
+\index{push\_back@{push\_back}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{push\_back()}{push\_back()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_aeb293cf9dabcedb8a5b2717c011ccb27} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+bool \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::push\+\_\+back (\begin{DoxyParamCaption}\item[{const T \&}]{element}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+尝试在队尾通过拷贝的方式插入元素. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em element} & 要插入的元素（左值）. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+插入成功\+: true; 插入失败\+: false. 
+\end{DoxyReturn}
+\Hypertarget{classutils_1_1static__deque_a4ebab966dd05347eabe692303fcd7214}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!push\_back@{push\_back}}
+\index{push\_back@{push\_back}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{push\_back()}{push\_back()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_a4ebab966dd05347eabe692303fcd7214} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+bool \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::push\+\_\+back (\begin{DoxyParamCaption}\item[{T \&\&}]{element}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+尝试在队尾通过移动的方式插入元素. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em element} & 要插入的元素（左值）. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+插入成功\+: true; 插入失败\+: false. 
+\end{DoxyReturn}
+\Hypertarget{classutils_1_1static__deque_ac0bab9caba8a46070134f6564fd0252d}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!push\_front@{push\_front}}
+\index{push\_front@{push\_front}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{push\_front()}{push\_front()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_ac0bab9caba8a46070134f6564fd0252d} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+bool \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::push\+\_\+front (\begin{DoxyParamCaption}\item[{const T \&}]{element}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+尝试在队首通过拷贝的方式插入元素. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em element} & 要插入的元素（左值）. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+插入成功\+: true; 插入失败\+: false. 
+\end{DoxyReturn}
+\Hypertarget{classutils_1_1static__deque_a27a2e10029351917fda4a2921ccadd2c}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!push\_front@{push\_front}}
+\index{push\_front@{push\_front}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{push\_front()}{push\_front()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_a27a2e10029351917fda4a2921ccadd2c} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+bool \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::push\+\_\+front (\begin{DoxyParamCaption}\item[{T \&\&}]{element}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+尝试在队首通过移动的方式插入元素. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em element} & 要插入的元素（左值）. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+插入成功\+: true; 插入失败\+: false. 
+\end{DoxyReturn}
+\Hypertarget{classutils_1_1static__deque_afcaa5d48f2b7eff6824b544784f51a52}\index{utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}!size@{size}}
+\index{size@{size}!utils::static\_deque$<$ T, Allocator $>$@{utils::static\_deque$<$ T, Allocator $>$}}
+\doxysubsubsection{\texorpdfstring{size()}{size()}}
+{\footnotesize\ttfamily \label{classutils_1_1static__deque_afcaa5d48f2b7eff6824b544784f51a52} 
+template$<$typename T, typename Allocator = std\+::allocator$<$\+T$>$$>$ \\
+size\+\_\+t \mbox{\hyperlink{classutils_1_1static__deque}{utils\+::static\+\_\+deque}}$<$ T, Allocator $>$\+::size (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+容器目前有多少个元素. 
+
+\begin{DoxyReturn}{Returns}
+容器目前容纳的元素数量. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+queue.\+hpp\end{DoxyCompactItemize}

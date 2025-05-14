@@ -1,0 +1,34 @@
+\chapter{mempool.\+hpp}
+\hypertarget{md_mempool}{}\label{md_mempool}\index{mempool.hpp@{mempool.hpp}}
+\label{md_mempool_autotoc_md0}%
+\Hypertarget{md_mempool_autotoc_md0}%
+\hypertarget{md_mempool_autotoc_md1}{}\doxysection{\texorpdfstring{unique\+\_\+pool}{unique\+\_\+pool}}\label{md_mempool_autotoc_md1}
+定义：{\ttfamily template\texorpdfstring{$<$}{<}typename T\texorpdfstring{$>$}{>} class unique\+\_\+pool \{...\};}
+
+这是一个内存池类，它只负责管理某个特定类型的对象的内存.
+
+需要提供类模板参数{\ttfamily T}，表示此内存池管理{\ttfamily T}类型对象的内存.\hypertarget{md_mempool_autotoc_md2}{}\doxysubsection{\texorpdfstring{成员变量}{成员变量}}\label{md_mempool_autotoc_md2}
+
+\begin{DoxyItemize}
+\item {\ttfamily blk\+\_\+piece\+\_\+count}：这个内存池每次向系统申请的内存需要能存储{\ttfamily blk\+\_\+piece\+\_\+count}个{\ttfamily T}类型的对象. 默认为 {\ttfamily 4096}.
+\end{DoxyItemize}\hypertarget{md_mempool_autotoc_md3}{}\doxysubsection{\texorpdfstring{成员函数}{成员函数}}\label{md_mempool_autotoc_md3}
+\hypertarget{md_mempool_autotoc_md4}{}\doxysubsubsection{\texorpdfstring{构造函数}{构造函数}}\label{md_mempool_autotoc_md4}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{(1)\ unique\_pool();}
+\DoxyCodeLine{(2)\ unique\_pool(ulint\ n);}
+
+\end{DoxyCode}
+
+
+(1) 使用默认构造函数时，{\ttfamily blk\+\_\+piece\+\_\+count} 成员变量是 {\ttfamily 4096}.
+
+(2) 构造时将 {\ttfamily blk\+\_\+piece\+\_\+count} 成员变量设为{\ttfamily n}.\hypertarget{md_mempool_autotoc_md5}{}\doxysubsubsection{\texorpdfstring{init}{init}}\label{md_mempool_autotoc_md5}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ init();}
+
+\end{DoxyCode}
+
+
+必须调用{\ttfamily init()}成员函数后内存池才可用，在{\ttfamily init()}函数调用之前从内存池申请内存，会抛出 

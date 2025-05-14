@@ -1,0 +1,74 @@
+\doxysection{utils\+::list\texorpdfstring{$<$}{<} T, Allocator \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classutils_1_1list}{}\label{classutils_1_1list}\index{utils::list$<$ T, Allocator $>$@{utils::list$<$ T, Allocator $>$}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classutils_1_1list_1_1iterator}{iterator}}
+\item 
+struct \mbox{\hyperlink{structutils_1_1list_1_1node}{node}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1list_a86987335428deb0ee7516be51eb21fa9}\label{classutils_1_1list_a86987335428deb0ee7516be51eb21fa9} 
+size\+\_\+t {\bfseries size} () const noexcept
+\item 
+\Hypertarget{classutils_1_1list_a4ffa2ba6c7226ac8d1f6e20b9a9f3a31}\label{classutils_1_1list_a4ffa2ba6c7226ac8d1f6e20b9a9f3a31} 
+size\+\_\+t {\bfseries capacity} () const noexcept
+\item 
+\Hypertarget{classutils_1_1list_a701101eef996ecab003efa3a12e7f28a}\label{classutils_1_1list_a701101eef996ecab003efa3a12e7f28a} 
+bool {\bfseries empty} () const noexcept
+\item 
+\Hypertarget{classutils_1_1list_a6b6b8c8375ec3b8989860ae3cad95aa4}\label{classutils_1_1list_a6b6b8c8375ec3b8989860ae3cad95aa4} 
+void {\bfseries push\+\_\+back} (const T \&e)
+\item 
+\Hypertarget{classutils_1_1list_a722045e2f49b513ce56d95ae2a5bbac4}\label{classutils_1_1list_a722045e2f49b513ce56d95ae2a5bbac4} 
+void {\bfseries push\+\_\+back} (T \&\&e)
+\item 
+\Hypertarget{classutils_1_1list_ac21fafde125d76203ecdc57517ccfcde}\label{classutils_1_1list_ac21fafde125d76203ecdc57517ccfcde} 
+void {\bfseries push\+\_\+front} (const T \&e)
+\item 
+\Hypertarget{classutils_1_1list_a44934b1245ef1547df1a5ec88c717c63}\label{classutils_1_1list_a44934b1245ef1547df1a5ec88c717c63} 
+void {\bfseries push\+\_\+front} (T \&\&e)
+\item 
+\Hypertarget{classutils_1_1list_a9a1d93d8a87d0ae2f4e5cf696cccd12f}\label{classutils_1_1list_a9a1d93d8a87d0ae2f4e5cf696cccd12f} 
+void {\bfseries pop\+\_\+back} ()
+\item 
+\Hypertarget{classutils_1_1list_ae2739cb7f3daa971903ab9b7486adeea}\label{classutils_1_1list_ae2739cb7f3daa971903ab9b7486adeea} 
+void {\bfseries pop\+\_\+front} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1list_a520a5796f48804a15cc2b69a063a0488}\label{classutils_1_1list_a520a5796f48804a15cc2b69a063a0488} 
+Allocator {\bfseries allocator}
+\item 
+\Hypertarget{classutils_1_1list_aa0682929de490c69880d06056036b22a}\label{classutils_1_1list_aa0682929de490c69880d06056036b22a} 
+\mbox{\hyperlink{classutils_1_1list_1_1iterator}{iterator}} {\bfseries begin\+\_\+iter}
+\item 
+\Hypertarget{classutils_1_1list_af2d92d68295136bf30f7c42cc53c887d}\label{classutils_1_1list_af2d92d68295136bf30f7c42cc53c887d} 
+\mbox{\hyperlink{classutils_1_1list_1_1iterator}{iterator}} {\bfseries end\+\_\+iter}
+\item 
+\Hypertarget{classutils_1_1list_a2a1f37fd93adba1c07f15fc9735afbe6}\label{classutils_1_1list_a2a1f37fd93adba1c07f15fc9735afbe6} 
+size\+\_\+t {\bfseries capcount} \{0\}
+\item 
+\Hypertarget{classutils_1_1list_a4084a588516d7e049a2c45d9b5199c0e}\label{classutils_1_1list_a4084a588516d7e049a2c45d9b5199c0e} 
+size\+\_\+t {\bfseries elecount} \{0\}
+\item 
+\Hypertarget{classutils_1_1list_a5169fbf051f2343790aa7dd6f8615564}\label{classutils_1_1list_a5169fbf051f2343790aa7dd6f8615564} 
+\mbox{\hyperlink{structutils_1_1list_1_1node}{node}} {\bfseries front\+\_\+node} \{ nullptr, nullptr, nullptr \}
+\item 
+\Hypertarget{classutils_1_1list_a5dccd3237b265d85a74d83586634fd10}\label{classutils_1_1list_a5dccd3237b265d85a74d83586634fd10} 
+\mbox{\hyperlink{structutils_1_1list_1_1node}{node}} {\bfseries back\+\_\+node} \{ nullptr, nullptr, nullptr \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1list_a67171474c4da6cc8efe0c7fafefd2b2d}\label{classutils_1_1list_a67171474c4da6cc8efe0c7fafefd2b2d} 
+class {\bfseries iterator}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+list.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,93 @@
+\chapter{utils\+\_\+doc}
+\hypertarget{md_utils__doc}{}\label{md_utils__doc}\index{utils\_doc@{utils\_doc}}
+目前已完成的功能：
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 名称   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 功能   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 头文件    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 名称   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 功能   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 头文件    }\\\cline{1-3}
+\endhead
+bitmap   &位图，是 mempool 的依赖类.   &{\ttfamily \doxylink{bitmap_8hpp_source}{utils/bitmap.\+hpp}}    \\\cline{1-3}
+mempool\+\_\+allocator   &内存池分配器，是一个内存池，同时也符合\+C++标准约定的分配器（\+Allocator）接口.   &{\ttfamily \doxylink{mempool_8hpp_source}{utils/mempool.\+hpp}}    \\\cline{1-3}
+static\+\_\+deque   &固定容量上限的双端队列.   &{\ttfamily \doxylink{queue_8hpp_source}{utils/queue.\+hpp}}    \\\cline{1-3}
+vector   &动态数组.   &{\ttfamily \doxylink{vector_8hpp_source}{utils/vector.\+hpp}}    \\\cline{1-3}
+&&\\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_utils__doc_autotoc_md0}{}\doxysection{\texorpdfstring{接口文档}{接口文档}}\label{md_utils__doc_autotoc_md0}
+\hypertarget{md_utils__doc_autotoc_md1}{}\doxysubsection{\texorpdfstring{static\+\_\+deque}{static\+\_\+deque}}\label{md_utils__doc_autotoc_md1}
+\hypertarget{md_utils__doc_autotoc_md2}{}\doxysubsubsubsection{\texorpdfstring{class 声明头}{class 声明头}}\label{md_utils__doc_autotoc_md2}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator\ =\ std::allocator<T>\ >}
+\DoxyCodeLine{\textcolor{keyword}{class\ }static\_deque;}
+
+\end{DoxyCode}
+
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 名字   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 解释    }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 名字   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 解释    }\\\cline{1-2}
+\endhead
+{\ttfamily T}   &容器要容纳的元素类型.    \\\cline{1-2}
+{\ttfamily Allocator}   &容器的内存分配器类型.   \\\cline{1-2}
+\end{longtabu}
+\hypertarget{md_utils__doc_autotoc_md3}{}\doxysubsubsection{\texorpdfstring{成员函数}{成员函数}}\label{md_utils__doc_autotoc_md3}
+\hypertarget{md_utils__doc_autotoc_md4}{}\doxysubsubsubsection{\texorpdfstring{构造函数}{构造函数}}\label{md_utils__doc_autotoc_md4}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 函数原型   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 解释    }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 函数原型   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 解释    }\\\cline{1-2}
+\endhead
+{\ttfamily static\+\_\+deque();}   &默认会初始化一个容量为 5 的容器.    \\\cline{1-2}
+{\ttfamily static\+\_\+deque(size\+\_\+t ccount);}   &指定初始化一个容量为 {\ttfamily ccount} 的容器.   \\\cline{1-2}
+\end{longtabu}
+\hypertarget{md_utils__doc_autotoc_md5}{}\doxysubsubsubsection{\texorpdfstring{查询容器状态}{查询容器状态}}\label{md_utils__doc_autotoc_md5}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 函数名   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 原型   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 解释    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 函数名   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 原型   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 解释    }\\\cline{1-3}
+\endhead
+size   &{\ttfamily inline size\+\_\+t size() const noexcept;}   &返回容器当前容纳的元素个数.    \\\cline{1-3}
+capacity   &{\ttfamily inline size\+\_\+t capacity() const noexcept;}   &返回容器最多能容纳多少个元素.    \\\cline{1-3}
+empty   &{\ttfamily inline bool empty() const noexcept;}   &返回容器是否非空，若容器为空则返回 {\ttfamily true}.   \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_utils__doc_autotoc_md6}{}\doxysubsubsubsection{\texorpdfstring{元素操作}{元素操作}}\label{md_utils__doc_autotoc_md6}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 函数名   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 函数原型   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 解释    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 函数名   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 函数原型   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ 解释    }\\\cline{1-3}
+\endhead
+push\+\_\+back   &(1) {\ttfamily bool push\+\_\+back(const T \&element);}~\newline
+(2) {\ttfamily bool push\+\_\+back(T \&\&element);}   &(1) 如果容器不满，则将元素以拷贝的方式追加到容器末尾并返回 {\ttfamily true}，否则什么也不做，直接返回 {\ttfamily false}.~\newline
+(2) 如果容器不满，则将元素以移动的方式追加到容器末尾并返回 {\ttfamily true}，否则什么也不做，直接返回 {\ttfamily false}.    \\\cline{1-3}
+push\+\_\+front   &(1) {\ttfamily bool push\+\_\+back(const T \&element);}~\newline
+(2) {\ttfamily bool push\+\_\+back(T \&\&element);}   &(1) 如果容器不满，则将元素以拷贝的方式追加到容器末尾并返回 {\ttfamily true}，否则什么也不做，直接返回 {\ttfamily false}.~\newline
+(2) 如果容器不满，则将元素以移动的方式追加到容器末尾并返回 {\ttfamily true}，否则什么也不做，直接返回 {\ttfamily false}.    \\\cline{1-3}
+&&\\\cline{1-3}
+\end{longtabu}

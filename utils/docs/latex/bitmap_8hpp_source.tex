@@ -1,0 +1,68 @@
+\doxysection{bitmap.\+hpp}
+\hypertarget{bitmap_8hpp_source}{}\label{bitmap_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ HASHMAP\_UTILS\_BITMAP\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ HASHMAP\_UTILS\_BITMAP\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\_\_def.hpp"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{____errs_8hpp}{\_\_errs.hpp}}"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{namespace\ }utils\ \{}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Allocator\ =\ std::allocator<\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}>\ >}
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }bitmap\ \{}
+\DoxyCodeLine{00013\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00014\ \ \ \ \ Allocator\ allocator;}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *bits\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ init\_pad\ =\ 0b0000'0000;}
+\DoxyCodeLine{00019\ \ \ \ \ ulint\ bit\_count\ =\ 0;}
+\DoxyCodeLine{00020\ \ \ \ \ ulint\ bit\_byte\ =\ 0;}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00023\ \ \ \ \ bitmap()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00024\ \ \ \ \ bitmap(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ init\_pad)\ :\ init\_pad(init\_pad)\ \{\}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \string~bitmap()\ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ this-\/>allocator.deallocate(this-\/>bits,\ this-\/>bit\_byte);}
+\DoxyCodeLine{00028\ \ \ \ \ \}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{void}\ init(ulint\ bit\_count)\ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ this-\/>bit\_count\ =\ bit\_count;}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ this-\/>bit\_byte\ =\ bit\_count\ \%\ 8\ ?\ bit\_count\ /\ 8\ +\ 1\ :\ bit\_count\ /\ 8;}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ this-\/>bits\ =\ this-\/>allocator.allocate(this-\/>bit\_byte);}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ std::memset(this-\/>bits,\ this-\/>init\_pad,\ this-\/>bit\_byte);}
+\DoxyCodeLine{00035\ \ \ \ \ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{void}\ set(ulint\ location,\ \textcolor{keywordtype}{bool}\ value)\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (location\ >\ this-\/>bit\_count)}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ \mbox{\hyperlink{classutils_1_1utils__exception}{utils\_exception}}(\textcolor{stringliteral}{"{}bitmap::set():\ location\ >\ bit\_count!"{}});}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \ \ ulint\ byte\_offset\ =\ location\ /\ 8;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ ulint\ bit\_offset\ =\ location\ \%\ 8;}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (value)}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ this-\/>bits[byte\_offset]\ |=\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\textcolor{keyword}{>}(0b0000'0001)\ <<\ bit\_offset;}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ this-\/>bits[byte\_offset]\ \&=\ \string~(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\textcolor{keyword}{>}(0b0000'0001)\ <<\ bit\_offset);}
+\DoxyCodeLine{00047\ \ \ \ \ \}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{bool}\ get(ulint\ location)\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ ulint\ byte\_offset\ =\ location\ /\ 8;}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ ulint\ bit\_offset\ =\ location\ \%\ 8;}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{bool}\textcolor{keyword}{>}(}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ this-\/>bits[byte\_offset]\ \&\ (\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\textcolor{keyword}{>}(0b0000'0001)\ <<\ bit\_offset)}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ );}
+\DoxyCodeLine{00056\ \ \ \ \ \}}
+\DoxyCodeLine{00057\ \};}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \}\ \textcolor{comment}{//\ namespace\ utils}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ HASHMAP\_UTILS\_BITMAP\_HPP}}
+
+\end{DoxyCode}

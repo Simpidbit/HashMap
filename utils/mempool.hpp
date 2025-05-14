@@ -8,10 +8,10 @@
 #include "queue.hpp"
 
 #include <thread>
+#include <atomic>
 
 
 namespace utils {
-
 
 template <typename T>
 class _abs_allocator {
@@ -26,23 +26,113 @@ class _abs_allocator {
 /*
 mempool_allocator:
   初始时是一大块内存区域.
-  定义：
+  定义
     内存状态图      memory_state_map
     待分配指针队列  allocating_queue
     待释放指针队列  deallocating_queue
 
+  分配
+    取待分配指针队列前端的指针分配给外部.
+    发送信号给守护线程，信号包括分配操作信号和被分配指针.
+
+    详细过程
+      检查
+
+  释放
+    将待释放指针放入待释放指针队列队尾.
+    发送信号给守护线程，信号包括释放操作信号.
+
+
+  守护线程
+    会根据若干信号工作.
+    信号
+      tran_signal_for_daemon (bool)
+        守护线程的超越信号，用于指示守护线程发出的新信号的出现.
+        静息状态为 false.
+        由守护线程触发为动作状态，主线程收到后重置为静息状态.
+    &
+      tran_signal_for_main (bool)
+        主线程的超越信号，用于指示主线程发出的新信号的出现.
+        静息状态为 false.
+        由主线程触发为动作状态，守护线程收到后重置为静息状态.
+      -----------------
+      type_signal_for_daemon (unsigned char)
+        信号类型信号，用于指示守护线程发出的信号的类型.
+    &
+      type_signal_for_main (unsigned char)
+        信号类型信号，用于指示主线程发出的信号的类型.
+
+        信号类型表
+          0x01 - 
+
+  发送信号的流程
+    (1) 脉冲信号 A --S(X)--> B
+      线程A
+        S <- X;
+        type_signal_for_A <- typeid(S);
+        tran_signal_for_A <- true;
+
+      线程B
+        if tran_signal_for_A:
+          signal_type <- type_signal_for_A;
+          rcp_S <- S;
+
+          tran_signal_for_A <- false;
+          type_signal_for_A <- 0;
+          S <- 0;
+    (2) 状态信号 A --X--> S
 */
 
 template <typename T>
 class mempool_allocator : public _abs_allocator<T> {
   protected:
-    bitmap<> memory_state_map;
-    static_deque<T*> allocating_queue;
-    static_deque<T*> deallocating_queue;
+    bitmap<>          memory_state_map;
+    static_deque<T*>  allocating_queue;
+    static_deque<T*>  deallocating_queue;
+
+    std::atomic<bool> tran_signal_for_daemon {false};
+    std::atomic<bool> tran_signal_for_main {false};
+
+    std::atomic<unsigned char> type_signal_for_daemon {0};
+    std::atomic<unsigned char> type_signal_for_main {0};
+
+    std::atomic<bool> 
+
+    std::atomic<unsigned char> operation_signal;
+    std::atomic<T *> ptr_signal;
+
+  protected:
+    // 守护线程
+    static void daemon() {
+      
+    }
 
   public:
-    mempool_allocator
+    mempool_allocator() {
+      std::thread(mempool_allocator::daemon).detach();
+    }
+
+    T* allocate(size_t n) override {
+      if (this->allocating_queue.empty()) {
+        // 等待守护线程寻找空闲内存
+        for (;;) if (this->tran_signal_for_daemon) break;
+        switch (this->type_signal_for_daemon)
+      } else {
+        return this->allocating_queue.top();
+        // 给守护线程发信号
+      }
+    }
+
+    void deallocate(T *p, size_t n) {
+      // 给守护线程发信号
+    }
 };
+
+
+
+
+/*
+
 
 template <typename T>
 class unique_pool {
@@ -149,9 +239,8 @@ class unique_pool {
       }
     }
 };
-
+*/
 
 } // namespace utils
-
 
 #endif  // HASHMAP_UTILS_MEMPOOL_HPP

@@ -1,0 +1,75 @@
+\doxysection{utils\+::vector\texorpdfstring{$<$}{<} T, Allocator \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classutils_1_1vector}{}\label{classutils_1_1vector}\index{utils::vector$<$ T, Allocator $>$@{utils::vector$<$ T, Allocator $>$}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1vector_a1486595f2a9faab67000e78aa7cacfeb}\label{classutils_1_1vector_a1486595f2a9faab67000e78aa7cacfeb} 
+{\bfseries vector} (std\+::initializer\+\_\+list$<$ T $>$ \mbox{\hyperlink{classutils_1_1list}{list}})
+\item 
+\Hypertarget{classutils_1_1vector_a6ad5ad1e1da495a77c0f193ece285e8a}\label{classutils_1_1vector_a6ad5ad1e1da495a77c0f193ece285e8a} 
+void {\bfseries push\+\_\+back} (const T \&value)
+\item 
+\Hypertarget{classutils_1_1vector_ad02e144f59991ad0a4a69f0547b5aab3}\label{classutils_1_1vector_ad02e144f59991ad0a4a69f0547b5aab3} 
+void {\bfseries push\+\_\+back} (T \&\&value)
+\item 
+\Hypertarget{classutils_1_1vector_a5c2cb02658be2db60463d6f7f6f07043}\label{classutils_1_1vector_a5c2cb02658be2db60463d6f7f6f07043} 
+\mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}} {\bfseries begin} () const
+\item 
+\Hypertarget{classutils_1_1vector_a12bf11fbbac3446054c0d559a84adcc9}\label{classutils_1_1vector_a12bf11fbbac3446054c0d559a84adcc9} 
+\mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}} {\bfseries end} () const
+\item 
+\Hypertarget{classutils_1_1vector_adeede52afda486e77861ef15e30d4092}\label{classutils_1_1vector_adeede52afda486e77861ef15e30d4092} 
+T \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (size\+\_\+t index)
+\item 
+\Hypertarget{classutils_1_1vector_a5813f68027d2b8afcefa2bf94cdf0c1f}\label{classutils_1_1vector_a5813f68027d2b8afcefa2bf94cdf0c1f} 
+const T \& {\bfseries operator\mbox{[}$\,$\mbox{]}} (size\+\_\+t index) const
+\item 
+\Hypertarget{classutils_1_1vector_a4ba8a56b46e3247bf1b30183b299479d}\label{classutils_1_1vector_a4ba8a56b46e3247bf1b30183b299479d} 
+size\+\_\+t {\bfseries size} () const noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1vector_a6c9935b71e87d33e26a7b4ace5ef4868}\label{classutils_1_1vector_a6c9935b71e87d33e26a7b4ace5ef4868} 
+void {\bfseries new\+\_\+data\+\_\+block} (size\+\_\+t ncap, size\+\_\+t ocap)
+\item 
+\Hypertarget{classutils_1_1vector_ac96da043b6ae3604b15815dc3990122c}\label{classutils_1_1vector_ac96da043b6ae3604b15815dc3990122c} 
+void {\bfseries check\+\_\+capacity} (size\+\_\+t init\+\_\+capacity=2)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classutils_1_1vector_a29eeb2c2bfe1b5dbd8b7df66a52cbc6e}\label{classutils_1_1vector_a29eeb2c2bfe1b5dbd8b7df66a52cbc6e} 
+Allocator {\bfseries allocator}
+\item 
+\Hypertarget{classutils_1_1vector_a2395a658a29afe4c6d02e2d16a25b66d}\label{classutils_1_1vector_a2395a658a29afe4c6d02e2d16a25b66d} 
+\mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}} {\bfseries begin\+\_\+iter}
+\item 
+\Hypertarget{classutils_1_1vector_a4693e7c34c8c3b6c22c5ff74dea5b15e}\label{classutils_1_1vector_a4693e7c34c8c3b6c22c5ff74dea5b15e} 
+\mbox{\hyperlink{classutils_1_1vector_1_1iterator}{iterator}} {\bfseries end\+\_\+iter}
+\item 
+\Hypertarget{classutils_1_1vector_ad997cf2944244d29e4a4d55d1afc5291}\label{classutils_1_1vector_ad997cf2944244d29e4a4d55d1afc5291} 
+T \texorpdfstring{$\ast$}{*} {\bfseries data} \{nullptr\}
+\item 
+\Hypertarget{classutils_1_1vector_a3368d2035def19e98e57b2ac5fa23301}\label{classutils_1_1vector_a3368d2035def19e98e57b2ac5fa23301} 
+size\+\_\+t {\bfseries capcount} \{0\}
+\item 
+\Hypertarget{classutils_1_1vector_ab11cd932806742f9dfd5e9799feab639}\label{classutils_1_1vector_ab11cd932806742f9dfd5e9799feab639} 
+size\+\_\+t {\bfseries elecount} \{0\}
+\item 
+\Hypertarget{classutils_1_1vector_aafb6dd911be7d65e05174188fa7fa5e2}\label{classutils_1_1vector_aafb6dd911be7d65e05174188fa7fa5e2} 
+std\+::atomic$<$ bool $>$ {\bfseries new\+\_\+ok} \{true\}
+\item 
+\Hypertarget{classutils_1_1vector_ae0732418858f89c513d485222f7ae708}\label{classutils_1_1vector_ae0732418858f89c513d485222f7ae708} 
+std\+::atomic$<$ bool $>$ {\bfseries signal} \{false\}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+vector.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,4 @@
+[.] 完善 Doxygen 文档
+[ ] 实现 mempool_allocator
+[ ] 验证 static_deque 的可靠性，规范化 static_deque 的接口
+[ ] 基于 static_deque 实现 list

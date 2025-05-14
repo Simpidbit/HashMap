@@ -1,0 +1,189 @@
+\doxysection{queue.\+hpp}
+\hypertarget{queue_8hpp_source}{}\label{queue_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ HASHMAP\_UTILS\_QUEUE\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ HASHMAP\_UTILS\_QUEUE\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\_\_def.hpp"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\_\_iterator.hpp"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{____errs_8hpp}{\_\_errs.hpp}}"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{namespace\ }\_utils\_constants\ \{}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ STATIC\_DEQUE\_DEFAULT\_CCOUNT\ =\ 5;}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{namespace\ }utils\ \{}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator\ =\ std::allocator<T>\ >}
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1static__deque_a889f502ce9b2518fe65c5c5d41ae75f4}{static\_deque}}\ \{}
+\DoxyCodeLine{00026\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}};}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classutils_1_1__iterator}{utils::\_iterator}}<T*,\ iterator>\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque_a889f502ce9b2518fe65c5c5d41ae75f4}{static\_deque}}\ *self\ \{\textcolor{keyword}{nullptr}\};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }\mbox{\hyperlink{classutils_1_1__iterator}{utils::\_iterator}}<T*,\ \mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}}>\mbox{\hyperlink{classutils_1_1__iterator}{::\_iterator}};}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ setself(\mbox{\hyperlink{classutils_1_1static__deque_a889f502ce9b2518fe65c5c5d41ae75f4}{static\_deque}}\ *self)\ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ this-\/>self\ =\ self;}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ goback()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ self-\/>circle\_backstep(this-\/>ptr);}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ goback(\textcolor{keywordtype}{size\_t}\ n)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ !=\ n;\ i++)}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>goback();}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ gofront()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ self-\/>circle\_frontstep(this-\/>ptr);}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ gofront(\textcolor{keywordtype}{size\_t}\ n)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ !=\ n;\ i++)}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>gofront();}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00052\ \ \ \ \ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00055\ \ \ \ \ T\ *membegin\ =\ \textcolor{keyword}{nullptr};\ \ \textcolor{comment}{//\ 内存块首地址}}
+\DoxyCodeLine{00056\ \ \ \ \ T\ *memback\ =\ \textcolor{keyword}{nullptr};\ \ \ \textcolor{comment}{//\ 内存块末地址后一位置}}
+\DoxyCodeLine{00057\ \ \ \ \ T\ *head\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ \ \textcolor{comment}{//\ 逻辑首元素前一逻辑位置}}
+\DoxyCodeLine{00058\ \ \ \ \ T\ *tail\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ \ \textcolor{comment}{//\ 逻辑末元素后一逻辑位置}}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ ccount\ =\ 0;\ \ \ \textcolor{comment}{//\ capacity}}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ ecount\ =\ 0;\ \ \ \textcolor{comment}{//\ element}}
+\DoxyCodeLine{00061\ \ \ \ \ Allocator\ allocator;}
+\DoxyCodeLine{00062\ \ \ }
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{void}\ insert\_at(T\ *ptr,\ \textcolor{keyword}{const}\ T\ \&element)\ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ *ptr\ =\ element;}
+\DoxyCodeLine{00067\ \ \ \ \ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{void}\ insert\_at(T\ *ptr,\ T\ \&\&element)\ \{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ *ptr\ =\ std::move(element);}
+\DoxyCodeLine{00071\ \ \ \ \ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ circle\_backstep(T*\ \&ptr)\ \{}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ptr\ ==\ this-\/>memback)\ ptr\ =\ this-\/>membegin;}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ ptr++;}
+\DoxyCodeLine{00076\ \ \ \ \ \}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keywordtype}{void}\ circle\_frontstep(T*\ \&ptr)\ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ptr\ ==\ this-\/>membegin)\ ptr\ =\ this-\/>memback;}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ ptr-\/-\/;}
+\DoxyCodeLine{00081\ \ \ \ \ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classutils_1_1static__deque_ae45edd27d6501c6a21791fce97875460}{init}}(\textcolor{keywordtype}{size\_t}\ ccount)\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ this-\/>ccount\ =\ ccount;}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ this-\/>membegin\ =\ this-\/>allocator.allocate(ccount);}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ this-\/>memback\ =\ this-\/>membegin\ +\ ccount;}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ this-\/>head\ =\ this-\/>membegin;}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ this-\/>tail\ =\ this-\/>membegin\ +\ 1;}
+\DoxyCodeLine{00096\ \ \ \ \ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00102\ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque_a889f502ce9b2518fe65c5c5d41ae75f4}{static\_deque}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00108\ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque_ab73be5c0ba7f8c8c1cea6aaa2152bb2e}{static\_deque}}(\textcolor{keywordtype}{size\_t}\ ccount)\ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ this-\/>\mbox{\hyperlink{classutils_1_1static__deque_ae45edd27d6501c6a21791fce97875460}{init}}(ccount);}
+\DoxyCodeLine{00110\ \ \ \ \ \}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classutils_1_1static__deque_afcaa5d48f2b7eff6824b544784f51a52}{size}}()\ const\ noexcept\ \{\ \textcolor{keywordflow}{return}\ this-\/>ecount;\ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classutils_1_1static__deque_a7158d4ae61ae8ce2b450bbd0c32029e3}{capacity}}()\ const\ noexcept\ \{\ \textcolor{keywordflow}{return}\ this-\/>ccount;\ \}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classutils_1_1static__deque_a8824baffdb503a744b7ec2cd5cbaeb75}{empty}}()\ const\ noexcept\ \{\ \textcolor{keywordflow}{return}\ !this-\/>ecount;\ \}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classutils_1_1static__deque_aeb293cf9dabcedb8a5b2717c011ccb27}{push\_back}}(\textcolor{keyword}{const}\ T\ \&element)\ \{}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ T\ tmp\ =\ element;}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>\mbox{\hyperlink{classutils_1_1static__deque_aeb293cf9dabcedb8a5b2717c011ccb27}{push\_back}}(std::move(tmp));}
+\DoxyCodeLine{00139\ \ \ \ \ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classutils_1_1static__deque_a4ebab966dd05347eabe692303fcd7214}{push\_back}}(T\ \&\&element)\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>ecount\ <\ this-\/>ccount)\ \{}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ this-\/>insert\_at(this-\/>tail,\ std::forward<T>(element));}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ this-\/>ecount++;}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ this-\/>circle\_backstep(this-\/>tail);}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00155\ \ \ \ \ \}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classutils_1_1static__deque_ac0bab9caba8a46070134f6564fd0252d}{push\_front}}(\textcolor{keyword}{const}\ T\ \&element)\ \{}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ T\ tmp\ =\ element;}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>\mbox{\hyperlink{classutils_1_1static__deque_ac0bab9caba8a46070134f6564fd0252d}{push\_front}}(std::move(tmp));}
+\DoxyCodeLine{00165\ \ \ \ \ \}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classutils_1_1static__deque_a27a2e10029351917fda4a2921ccadd2c}{push\_front}}(T\ \&\&element)\ \{}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>ecount\ <\ this-\/>ccount)\ \{}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ this-\/>insert\_at(this-\/>head,\ std::forward<T>(element));}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ this-\/>ecount++;}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ this-\/>circle\_frontstep(this-\/>head);}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00181\ \ \ \ \ \}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classutils_1_1static__deque_aebda8db383bfb76726d65188e3bf3219}{pop\_back}}()\ \{}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>ecount)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ this-\/>circle\_frontstep(this-\/>tail);}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ this-\/>ecount-\/-\/;}
+\DoxyCodeLine{00190\ \ \ \ \ \}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classutils_1_1static__deque_af5399cca780f74ede6742b940be47272}{pop\_front}}()\ \{}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>ecount)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ this-\/>circle\_backstep(this-\/>head);}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ this-\/>ecount-\/-\/;}
+\DoxyCodeLine{00199\ \ \ \ \ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00205\ \ \ \ \ T\ \&\ \mbox{\hyperlink{classutils_1_1static__deque_ac8c869d23d98092ebc087847ccdded3c}{front}}()\ \{}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>ecount)}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ \mbox{\hyperlink{classutils_1_1utils__exception}{utils::utils\_exception}}(\textcolor{stringliteral}{"{}static\_deque\ is\ empty\ but\ front()\ called!"{}});}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \ \ \ \ \ \ T\ *headtmp\ =\ this-\/>head;}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ this-\/>circle\_backstep(headtmp);}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *headtmp;}
+\DoxyCodeLine{00212\ \ \ \ \ \}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00218\ \ \ \ \ T\ \&\ \mbox{\hyperlink{classutils_1_1static__deque_aad15faad3f232d59cf0943c97d341a59}{back}}()\ \{}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>ecount)}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ \mbox{\hyperlink{classutils_1_1utils__exception}{utils::utils\_exception}}(\textcolor{stringliteral}{"{}static\_deque\ is\ empty\ but\ back()\ called!"{}});}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \ \ \ \ \ \ T\ *tailtmp\ =\ this-\/>tail;}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ this-\/>circle\_frontstep(tailtmp);}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *tailtmp;}
+\DoxyCodeLine{00225\ \ \ \ \ \}}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00230\ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}}\ \mbox{\hyperlink{classutils_1_1static__deque_a90ff23287e4932510b3dc6be230233e0}{begin}}()\ \{}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}}\ iter;}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ iter.setself(\textcolor{keyword}{this});}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ T\ *headtmp\ =\ this-\/>head;}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ this-\/>circle\_backstep(headtmp);}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ iter.point\_to(headtmp);}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ iter;}
+\DoxyCodeLine{00237\ \ \ \ \ \}}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00242\ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}}\ \mbox{\hyperlink{classutils_1_1static__deque_aa09f262e1c6f52fb1925c9648c533b81}{end}}()\ \{}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \mbox{\hyperlink{classutils_1_1static__deque_1_1iterator}{iterator}}\ iter;}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ iter.setself(\textcolor{keyword}{this});}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ T\ *tailtmp\ =\ this-\/>tail;}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ iter.point\_to(tailtmp);}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ iter;}
+\DoxyCodeLine{00248\ \ \ \ \ \}}
+\DoxyCodeLine{00249\ \};}
+\DoxyCodeLine{00250\ }
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \}\ \textcolor{comment}{//\ namespace\ utils}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

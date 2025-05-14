@@ -1,53 +1,39 @@
 #include <iostream>
 #include <vector>
 
+#include "queue.hpp"
+
 using std::cout;
 using std::cin;
 using std::endl;
 
-struct A {
-  int ma{20};
-  int mb{30};
-};
-
-template <typename T>
-class Test {
-  ~Test() = delete;
-};
-
-template <typename T>
-class Test <T*> {
-  public:
-    T* ptr;
-
-  public:
-    Test() {
-      cout << "Test Pointer" << endl;
-    }
-
-    T& operator*() {
-      return *(this->ptr);
-    }
-    
-    T* operator->() {
-      return this->ptr;
-    }
-};
-
 int main()
 {
+  utils::static_deque<int> *sdq = new utils::static_deque<int>;
+
   /*
-  Test<A*> t1;
-  A aaa{10, 20};
-  t1.ptr = &aaa;
-  t1->mb = 30;
-  cout << t1->mb << endl;
+  int c, tmp;
+  for (;;) {
+    cin >> c >> tmp;
+    if (c == 0) {
+      bool ret = sdq.push_back(tmp);
+      cout << ret << endl;
+    } else if (c == 1) {
+      bool ret = sdq.push_front(tmp);
+      cout << ret << endl;
+    } else if (c == 2) {
+      if (tmp == 0)
+        sdq.pop_front();
+      else
+        sdq.pop_back();
+    }
+
+    for (auto e : sdq)
+      cout << e << ", ";
+    cout << endl;
+  }
+
+
   */
-  int a = 10;
-
-  cout << (a += 3) << endl;
-
-  cout << sizeof(size_t) << endl;
-
   return 0;
 }
