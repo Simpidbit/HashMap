@@ -1,0 +1,3 @@
+[submodule "utils/bintree"]
+	path = utils/bintree
+	url = https://github.com/Simpidbit/bintree.git
