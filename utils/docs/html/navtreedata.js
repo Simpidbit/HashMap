@@ -25,18 +25,6 @@
 var NAVTREE =
 [
   [ "HashMap/utils", "index.html", [
-    [ "utils_doc", "md_utils__doc.html", [
-      [ "接口文档", "md_utils__doc.html#autotoc_md0", [
-        [ "static_deque", "md_utils__doc.html#autotoc_md1", [
-          [ "成员函数", "md_utils__doc.html#autotoc_md3", [
-            [ "class 声明头", "md_utils__doc.html#autotoc_md2", null ],
-            [ "构造函数", "md_utils__doc.html#autotoc_md4", null ],
-            [ "查询容器状态", "md_utils__doc.html#autotoc_md5", null ],
-            [ "元素操作", "md_utils__doc.html#autotoc_md6", null ]
-          ] ]
-        ] ]
-      ] ]
-    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],

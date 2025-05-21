@@ -1,0 +1,90 @@
+\doxysection{treenode\+\_\+t\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classtreenode__t}{}\label{classtreenode__t}\index{treenode\_t$<$ T $>$@{treenode\_t$<$ T $>$}}
+
+
+树节点  
+
+
+
+
+{\ttfamily \#include $<$tree.\+hpp$>$}
+
+Inheritance diagram for treenode\+\_\+t\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classtreenode__t}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtreenode__t_a90157689ed4f20f79ea6a6a961a5381f}\label{classtreenode__t_a90157689ed4f20f79ea6a6a961a5381f} 
+constexpr \mbox{\hyperlink{classtreenode__t}{treenode\+\_\+t}}$<$ T $>$ \texorpdfstring{$\ast$}{*}\& {\bfseries left} () noexcept
+\item 
+\Hypertarget{classtreenode__t_ae2b0bfb2d439d717da3034c2e1c1a7b8}\label{classtreenode__t_ae2b0bfb2d439d717da3034c2e1c1a7b8} 
+constexpr \mbox{\hyperlink{classtreenode__t}{treenode\+\_\+t}}$<$ T $>$ \texorpdfstring{$\ast$}{*}\& {\bfseries right} () noexcept
+\item 
+\Hypertarget{classtreenode__t_a2f29a94880852973f5d5c431e3a38e3b}\label{classtreenode__t_a2f29a94880852973f5d5c431e3a38e3b} 
+constexpr \mbox{\hyperlink{classtreenode__t}{treenode\+\_\+t}}$<$ T $>$ \texorpdfstring{$\ast$}{*}\& {\bfseries parent} () noexcept
+\item 
+\Hypertarget{classtreenode__t_a04fd90c472890780f11fcf9a28df409e}\label{classtreenode__t_a04fd90c472890780f11fcf9a28df409e} 
+{\bfseries treenode\+\_\+t} (T value)
+\item 
+\Hypertarget{classtreenode__t_aec6ac8496febb36eac7df1eeaf88ca77}\label{classtreenode__t_aec6ac8496febb36eac7df1eeaf88ca77} 
+{\bfseries treenode\+\_\+t} (\mbox{\hyperlink{classtreenode__t}{treenode\+\_\+t}} \&\&node)
+\item 
+\Hypertarget{classtreenode__t_aa5dfb1dbece3952552488ca1f6fc2eee}\label{classtreenode__t_aa5dfb1dbece3952552488ca1f6fc2eee} 
+void {\bfseries hookleft} (\mbox{\hyperlink{classtreenode__t}{treenode\+\_\+t}} \texorpdfstring{$\ast$}{*}newparent)
+\item 
+\Hypertarget{classtreenode__t_a25ec37ad60379613074ca46e78bca9bd}\label{classtreenode__t_a25ec37ad60379613074ca46e78bca9bd} 
+void {\bfseries hookright} (\mbox{\hyperlink{classtreenode__t}{treenode\+\_\+t}} \texorpdfstring{$\ast$}{*}newparent)
+\item 
+\Hypertarget{classtreenode__t_a39d860dfbf0dc7cf8bb2d4098c1c04db}\label{classtreenode__t_a39d860dfbf0dc7cf8bb2d4098c1c04db} 
+void {\bfseries addleft} (\mbox{\hyperlink{classtreenode__t}{treenode\+\_\+t}} \texorpdfstring{$\ast$}{*}child)
+\item 
+\Hypertarget{classtreenode__t_a3c318f38e5cade2bbb466ca43f49e081}\label{classtreenode__t_a3c318f38e5cade2bbb466ca43f49e081} 
+void {\bfseries addleft} (T val)
+\item 
+\Hypertarget{classtreenode__t_ad3733ef1c489f23b427c23829bf7e1e7}\label{classtreenode__t_ad3733ef1c489f23b427c23829bf7e1e7} 
+void {\bfseries addright} (\mbox{\hyperlink{classtreenode__t}{treenode\+\_\+t}} \texorpdfstring{$\ast$}{*}child)
+\item 
+\Hypertarget{classtreenode__t_a9d5ed1a8ae0807edd245246e8c42cf6c}\label{classtreenode__t_a9d5ed1a8ae0807edd245246e8c42cf6c} 
+void {\bfseries addright} (T val)
+\item 
+\Hypertarget{classtreenode__t_a77826f761ec999a196a631b54129c405}\label{classtreenode__t_a77826f761ec999a196a631b54129c405} 
+uint\+\_\+t {\bfseries get\+\_\+height} ()
+\item 
+\Hypertarget{classtreenode__t_a557489e30f2a25aa39ce47a17033644e}\label{classtreenode__t_a557489e30f2a25aa39ce47a17033644e} 
+uint\+\_\+t {\bfseries get\+\_\+degree} ()
+\item 
+\Hypertarget{classtreenode__t_a3c9abb82e0027c0da6eb1837dfe06d27}\label{classtreenode__t_a3c9abb82e0027c0da6eb1837dfe06d27} 
+int\+\_\+t {\bfseries get\+\_\+balance\+\_\+factor} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtreenode__t_a934a7ae3c1729e28dcb08a30b00cd98d}\label{classtreenode__t_a934a7ae3c1729e28dcb08a30b00cd98d} 
+T {\bfseries value}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtreenode__t_a0dc1fe265ac1cc6c6b359ddb8cd04273}\label{classtreenode__t_a0dc1fe265ac1cc6c6b359ddb8cd04273} 
+void \texorpdfstring{$\ast$}{*} {\bfseries \+\_\+left} = nullptr
+\item 
+\Hypertarget{classtreenode__t_ad8c62c430cd156400455b0fc3d04b9a4}\label{classtreenode__t_ad8c62c430cd156400455b0fc3d04b9a4} 
+void \texorpdfstring{$\ast$}{*} {\bfseries \+\_\+right} = nullptr
+\item 
+\Hypertarget{classtreenode__t_aca601d99038a3501c65a62ed237bd4de}\label{classtreenode__t_aca601d99038a3501c65a62ed237bd4de} 
+void \texorpdfstring{$\ast$}{*} {\bfseries \+\_\+parent} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class treenode\+\_\+t$<$ T $>$}
+树节点 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+bintree/tree.\+hpp\end{DoxyCompactItemize}

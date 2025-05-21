@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['init_0',['init',['../classutils_1_1static__deque.html#ae45edd27d6501c6a21791fce97875460',1,'utils::static_deque']]]
+  ['get_5fsibling_0',['get_sibling',['../classbintree__t.html#ae775317226ee86db9ed58a39ec33f804',1,'bintree_t']]]
 ];

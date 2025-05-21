@@ -1,0 +1,93 @@
+\doxysection{bintree\+\_\+t\texorpdfstring{$<$}{<} T, node\+\_\+T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classbintree__t}{}\label{classbintree__t}\index{bintree\_t$<$ T, node\_T $>$@{bintree\_t$<$ T, node\_T $>$}}
+
+
+最普通的二叉树，是其它二叉树的祖先类.  
+
+
+
+
+{\ttfamily \#include $<$tree.\+hpp$>$}
+
+Inheritance diagram for bintree\+\_\+t\texorpdfstring{$<$}{<} T, node\+\_\+T \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classbintree__t}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classbintree__t_a41bff9c8ad2534b3b7057e004b0363a1}\label{classbintree__t_a41bff9c8ad2534b3b7057e004b0363a1} 
+using {\bfseries trav\+\_\+action\+\_\+t} = std\+::function$<$void (node\+\_\+T \texorpdfstring{$\ast$}{*}, uint\+\_\+t, left\+\_\+or\+\_\+right\+\_\+e)$>$
+\item 
+\Hypertarget{classbintree__t_a0c6ac2db7582b80538f78a137fd023b9}\label{classbintree__t_a0c6ac2db7582b80538f78a137fd023b9} 
+using {\bfseries node\+\_\+type} = node\+\_\+T
+\item 
+\Hypertarget{classbintree__t_a865e1da376f85cd4ff76ba87f1c610c3}\label{classbintree__t_a865e1da376f85cd4ff76ba87f1c610c3} 
+using {\bfseries value\+\_\+type} = T
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+node\+\_\+T \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classbintree__t_ae775317226ee86db9ed58a39ec33f804}{get\+\_\+sibling}} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\begin{DoxyCompactList}\small\item\em 获取某个节点的兄弟节点. \end{DoxyCompactList}\item 
+\Hypertarget{classbintree__t_a59429ddde89593aa7a7bea05ef0f97ef}\label{classbintree__t_a59429ddde89593aa7a7bea05ef0f97ef} 
+void {\bfseries trav\+\_\+bfs} (trav\+\_\+action\+\_\+t action)
+\begin{DoxyCompactList}\small\item\em 层序遍历二叉树. \end{DoxyCompactList}\item 
+\Hypertarget{classbintree__t_a2a240a1b1d49ced3f5753792eaf8e384}\label{classbintree__t_a2a240a1b1d49ced3f5753792eaf8e384} 
+void {\bfseries trav\+\_\+pre} (trav\+\_\+action\+\_\+t action)
+\begin{DoxyCompactList}\small\item\em 前序遍历二叉树. \end{DoxyCompactList}\item 
+\Hypertarget{classbintree__t_af2075f2401f3386fd76a8ffc593ad73d}\label{classbintree__t_af2075f2401f3386fd76a8ffc593ad73d} 
+void {\bfseries trav\+\_\+in} (trav\+\_\+action\+\_\+t action)
+\begin{DoxyCompactList}\small\item\em 中序遍历二叉树 \end{DoxyCompactList}\item 
+\Hypertarget{classbintree__t_a66995b46c21dee611e91bdf29e91b7ad}\label{classbintree__t_a66995b46c21dee611e91bdf29e91b7ad} 
+void {\bfseries trav\+\_\+post} (trav\+\_\+action\+\_\+t action)
+\begin{DoxyCompactList}\small\item\em 后序遍历二叉树 \end{DoxyCompactList}\item 
+\Hypertarget{classbintree__t_ad22407e88f4a95c28ece77ec8beda16c}\label{classbintree__t_ad22407e88f4a95c28ece77ec8beda16c} 
+void {\bfseries print\+\_\+tree} ()
+\item 
+\Hypertarget{classbintree__t_ae60d0f0784de2b305aee891ed52d25bd}\label{classbintree__t_ae60d0f0784de2b305aee891ed52d25bd} 
+void {\bfseries rotate\+\_\+right} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\item 
+\Hypertarget{classbintree__t_a2e09a3e47ffef0b9f25200f536661cd9}\label{classbintree__t_a2e09a3e47ffef0b9f25200f536661cd9} 
+void {\bfseries rotate\+\_\+left} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classbintree__t_a550bc05b251229a99d19399379b8905e}\label{classbintree__t_a550bc05b251229a99d19399379b8905e} 
+node\+\_\+T \texorpdfstring{$\ast$}{*} {\bfseries root} = nullptr
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename node\+\_\+T = treenode\+\_\+t$<$\+T$>$$>$\newline
+class bintree\+\_\+t$<$ T, node\+\_\+\+T $>$}
+最普通的二叉树，是其它二叉树的祖先类. 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classbintree__t_ae775317226ee86db9ed58a39ec33f804}\index{bintree\_t$<$ T, node\_T $>$@{bintree\_t$<$ T, node\_T $>$}!get\_sibling@{get\_sibling}}
+\index{get\_sibling@{get\_sibling}!bintree\_t$<$ T, node\_T $>$@{bintree\_t$<$ T, node\_T $>$}}
+\doxysubsubsection{\texorpdfstring{get\_sibling()}{get\_sibling()}}
+{\footnotesize\ttfamily \label{classbintree__t_ae775317226ee86db9ed58a39ec33f804} 
+template$<$typename T, typename node\+\_\+T = treenode\+\_\+t$<$\+T$>$$>$ \\
+node\+\_\+T \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classbintree__t}{bintree\+\_\+t}}$<$ T, node\+\_\+T $>$\+::get\+\_\+sibling (\begin{DoxyParamCaption}\item[{node\+\_\+T \texorpdfstring{$\ast$}{*}}]{node}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+获取某个节点的兄弟节点. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & 目标节点指针. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+目标节点 node 的兄弟节点指针. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+bintree/tree.\+hpp\end{DoxyCompactItemize}

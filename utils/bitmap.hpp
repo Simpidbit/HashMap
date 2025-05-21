@@ -8,6 +8,10 @@
 
 namespace utils {
 
+/**
+ * @brief 位图类.
+ * @details 逻辑上，它是一个固定长度的数组，其中数组的元素取值只能为 true 或 false. 实际上，它是一块固定长度的内存，内存中每个字节的每一位都是数组的一个元素.
+ */
 template <typename Allocator = std::allocator<unsigned char> >
 class bitmap {
   protected:

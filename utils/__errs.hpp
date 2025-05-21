@@ -18,10 +18,23 @@ class utils_exception : public std::exception {
     std::string detail_str;
 
   public:
-    utils_exception() = delete;
+    /**
+     * @brief 默认信息为 "utils::utils_exception.".
+     */
+    utils_exception() { this->detail_str = "utils::utils_exception."; }
+
+    /**
+     * @brief 给定信息的异常(右值版本).
+     * @param str 异常信息.
+     */
     utils_exception(std::string &&str) {
       this->detail_str = std::move(str);
     }
+
+    /**
+     * @brief 给定信息的异常(左值版本).
+     * @param str 异常信息.
+     */
     utils_exception(const std::string &str) {
       this->detail_str = str;
     }

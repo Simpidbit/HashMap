@@ -1,0 +1,1162 @@
+\doxysection{tree.\+hpp}
+\hypertarget{tree_8hpp_source}{}\label{tree_8hpp_source}\index{bintree/tree.hpp@{bintree/tree.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ BINTREE\_TREE\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ BINTREE\_TREE\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <deque>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00014\ \textcolor{comment}{}}
+\DoxyCodeLine{00015\ \textcolor{comment}{using\ uint\_t\ =\ uint32\_t;}}
+\DoxyCodeLine{00016\ \textcolor{comment}{using\ int\_t\ \ =\ int32\_t;}}
+\DoxyCodeLine{00017\ \textcolor{comment}{}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ **************************************}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ *************\ treenode\_t\ *************}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ **************************************}}
+\DoxyCodeLine{00021\ \textcolor{comment}{template\ <typename\ T>}}
+\DoxyCodeLine{00022\ \textcolor{comment}{class\ treenode\_t\ \{}}
+\DoxyCodeLine{00023\ \textcolor{comment}{protected:}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ \ void\ *\_left\ \ \ =\ nullptr;}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ \ void\ *\_right\ \ =\ nullptr;}}
+\DoxyCodeLine{00026\ \textcolor{comment}{\ \ void\ *\_parent\ =\ nullptr;}}
+\DoxyCodeLine{00027\ \textcolor{comment}{}}
+\DoxyCodeLine{00028\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00029\ \textcolor{comment}{\ \ T\ value;}}
+\DoxyCodeLine{00030\ \textcolor{comment}{}}
+\DoxyCodeLine{00031\ \textcolor{comment}{\ \ constexpr\ inline\ treenode\_t<T>*\&\ left()\ \ \ noexcept;}}
+\DoxyCodeLine{00032\ \textcolor{comment}{\ \ constexpr\ inline\ treenode\_t<T>*\&\ right()\ \ noexcept;}}
+\DoxyCodeLine{00033\ \textcolor{comment}{\ \ constexpr\ inline\ treenode\_t<T>*\&\ parent()\ noexcept;}}
+\DoxyCodeLine{00034\ \textcolor{comment}{}}
+\DoxyCodeLine{00035\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00036\ \textcolor{comment}{\ \ treenode\_t(T\ value);}}
+\DoxyCodeLine{00037\ \textcolor{comment}{\ \ treenode\_t(treenode\_t\ \&\&node);}}
+\DoxyCodeLine{00038\ \textcolor{comment}{}}
+\DoxyCodeLine{00039\ \textcolor{comment}{\ \ void\ hookleft(treenode\_t\ *newparent);}}
+\DoxyCodeLine{00040\ \textcolor{comment}{\ \ void\ hookright(treenode\_t\ *newparent);}}
+\DoxyCodeLine{00041\ \textcolor{comment}{}}
+\DoxyCodeLine{00042\ \textcolor{comment}{\ \ void\ addleft(treenode\_t\ *child);}}
+\DoxyCodeLine{00043\ \textcolor{comment}{\ \ void\ addleft(T\ val);}}
+\DoxyCodeLine{00044\ \textcolor{comment}{\ \ void\ addright(treenode\_t\ *child);}}
+\DoxyCodeLine{00045\ \textcolor{comment}{\ \ void\ addright(T\ val);}}
+\DoxyCodeLine{00046\ \textcolor{comment}{}}
+\DoxyCodeLine{00047\ \textcolor{comment}{\ \ uint\_t\ get\_height();}}
+\DoxyCodeLine{00048\ \textcolor{comment}{\ \ uint\_t\ get\_degree();}}
+\DoxyCodeLine{00049\ \textcolor{comment}{\ \ int\ get\_balance\_factor();}}
+\DoxyCodeLine{00050\ \textcolor{comment}{\};}}
+\DoxyCodeLine{00051\ \textcolor{comment}{}}
+\DoxyCodeLine{00052\ \textcolor{comment}{typedef\ enum\ \{}}
+\DoxyCodeLine{00053\ \textcolor{comment}{\ \ NODE\_ROOT\ =\ 0,}}
+\DoxyCodeLine{00054\ \textcolor{comment}{\ \ NODE\_LEFT,}}
+\DoxyCodeLine{00055\ \textcolor{comment}{\ \ NODE\_RIGHT}}
+\DoxyCodeLine{00056\ \textcolor{comment}{\}\ left\_or\_right\_e;}}
+\DoxyCodeLine{00057\ \textcolor{comment}{}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ *************************************}}
+\DoxyCodeLine{00059\ \textcolor{comment}{//\ *************\ bintree\_T\ *************}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ *************************************}}
+\DoxyCodeLine{00061\ \textcolor{comment}{template\ <typename\ T,\ typename\ node\_T\ =\ treenode\_t<T>\ >}}
+\DoxyCodeLine{00062\ \textcolor{comment}{class\ bintree\_t\ \{}}
+\DoxyCodeLine{00063\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00064\ \textcolor{comment}{\ \ using\ trav\_action\_t\ =\ std::function<void\ (node\_T\ *,\ uint\_t,\ left\_or\_right\_e)>;}}
+\DoxyCodeLine{00065\ \textcolor{comment}{\ \ using\ node\_type\ =\ node\_T;}}
+\DoxyCodeLine{00066\ \textcolor{comment}{\ \ using\ value\_type\ =\ T;}}
+\DoxyCodeLine{00067\ \textcolor{comment}{}}
+\DoxyCodeLine{00068\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00069\ \textcolor{comment}{\ \ node\_T\ *root\ =\ nullptr;}}
+\DoxyCodeLine{00070\ \textcolor{comment}{}}
+\DoxyCodeLine{00071\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00072\ \textcolor{comment}{\ \ bintree\_t()\ =\ default;}}
+\DoxyCodeLine{00073\ \textcolor{comment}{\ \ \string~bintree\_t();}}
+\DoxyCodeLine{00074\ \textcolor{comment}{}}
+\DoxyCodeLine{00075\ \textcolor{comment}{\ \ node\_T\ *get\_sibling(node\_T\ *node);}}
+\DoxyCodeLine{00076\ \textcolor{comment}{}}
+\DoxyCodeLine{00077\ \textcolor{comment}{\ \ void\ trav\_bfs(trav\_action\_t\ action);}}
+\DoxyCodeLine{00078\ \textcolor{comment}{\ \ void\ trav\_pre(trav\_action\_t\ action);}}
+\DoxyCodeLine{00079\ \textcolor{comment}{\ \ void\ trav\_in(trav\_action\_t\ action);}}
+\DoxyCodeLine{00080\ \textcolor{comment}{\ \ void\ trav\_post(trav\_action\_t\ action);}}
+\DoxyCodeLine{00081\ \textcolor{comment}{}}
+\DoxyCodeLine{00082\ \textcolor{comment}{\ \ void\ print\_tree();}}
+\DoxyCodeLine{00083\ \textcolor{comment}{}}
+\DoxyCodeLine{00084\ \textcolor{comment}{\ \ void\ rotate\_right(node\_T\ *node);}}
+\DoxyCodeLine{00085\ \textcolor{comment}{\ \ void\ rotate\_left(node\_T\ *node);}}
+\DoxyCodeLine{00086\ \textcolor{comment}{}}
+\DoxyCodeLine{00087\ \textcolor{comment}{\#ifdef\ DEBUG}}
+\DoxyCodeLine{00088\ \textcolor{comment}{\ \ node\_T\ *\ operator[](T\ val);}}
+\DoxyCodeLine{00089\ \textcolor{comment}{\#endif}}
+\DoxyCodeLine{00090\ \textcolor{comment}{\};}}
+\DoxyCodeLine{00091\ \textcolor{comment}{}}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ *****************************************}}
+\DoxyCodeLine{00093\ \textcolor{comment}{//\ *************\ search\_tree\_t\ *************}}
+\DoxyCodeLine{00094\ \textcolor{comment}{//\ *****************************************}}
+\DoxyCodeLine{00095\ \textcolor{comment}{template\ <typename\ T,\ typename\ node\_T\ =\ treenode\_t<T>\ >}}
+\DoxyCodeLine{00096\ \textcolor{comment}{class\ search\_tree\_t\ :\ public\ bintree\_t<T,\ node\_T>\ \{}}
+\DoxyCodeLine{00097\ \textcolor{comment}{private:}}
+\DoxyCodeLine{00098\ \textcolor{comment}{\ \ using\ base\_type\ =\ bintree\_t<T,\ node\_T>;}}
+\DoxyCodeLine{00099\ \textcolor{comment}{}}
+\DoxyCodeLine{00100\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00101\ \textcolor{comment}{\ \ enum\ \{\ EQ\_REPLACE\ =\ 0,\ EQ\_KEEP\ \}\ replace\_policy\ =\ EQ\_REPLACE;}}
+\DoxyCodeLine{00102\ \textcolor{comment}{\ \ using\ comparer\_type\ =\ std::function<bool\ (const\ T\ \&a,\ const\ T\ \&b)>;}}
+\DoxyCodeLine{00103\ \textcolor{comment}{\ \ using\ equaler\_type\ \ =\ std::function<bool\ (const\ T\ \&a,\ const\ T\ \&b)>;}}
+\DoxyCodeLine{00104\ \textcolor{comment}{}}
+\DoxyCodeLine{00105\ \textcolor{comment}{protected:}}
+\DoxyCodeLine{00106\ \textcolor{comment}{\ \ comparer\_type\ comparer\ \ =\ []\ (const\ T\ \&a,\ const\ T\ \&b)\ -\/>\ bool\ \{\ return\ a\ <\ b;\ \};}}
+\DoxyCodeLine{00107\ \textcolor{comment}{\ \ equaler\_type\ equaler\ \ \ \ =\ []\ (const\ T\ \&a,\ const\ T\ \&b)\ -\/>\ bool\ \{\ return\ a\ ==\ b;\ \};}}
+\DoxyCodeLine{00108\ \textcolor{comment}{}}
+\DoxyCodeLine{00109\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00110\ \textcolor{comment}{\ \ search\_tree\_t()\ =\ default;}}
+\DoxyCodeLine{00111\ \textcolor{comment}{\ \ search\_tree\_t(decltype(comparer)\ cmp);}}
+\DoxyCodeLine{00112\ \textcolor{comment}{\ \ search\_tree\_t(decltype(comparer)\ cmp,\ decltype(equaler)\ eql);}}
+\DoxyCodeLine{00113\ \textcolor{comment}{}}
+\DoxyCodeLine{00114\ \textcolor{comment}{\ \ inline\ void\ set\_replace\_policy(decltype(replace\_policy)\ rp);}}
+\DoxyCodeLine{00115\ \textcolor{comment}{}}
+\DoxyCodeLine{00116\ \textcolor{comment}{\ \ node\_T\ *search\_value(T\ val);}}
+\DoxyCodeLine{00117\ \textcolor{comment}{\ \ node\_T\ *push(T\ val);}}
+\DoxyCodeLine{00118\ \textcolor{comment}{\ \ void\ remove(T\ val);}}
+\DoxyCodeLine{00119\ \textcolor{comment}{}}
+\DoxyCodeLine{00120\ \textcolor{comment}{\ \ //\ 返回删除操作后被删除节点原位置的新节点}}
+\DoxyCodeLine{00121\ \textcolor{comment}{\ \ node\_T\ *erase(node\_T\ *node);}}
+\DoxyCodeLine{00122\ \textcolor{comment}{\};}}
+\DoxyCodeLine{00123\ \textcolor{comment}{}}
+\DoxyCodeLine{00124\ \textcolor{comment}{//\ **************************************}}
+\DoxyCodeLine{00125\ \textcolor{comment}{//\ *************\ AVL\_tree\_t\ *************}}
+\DoxyCodeLine{00126\ \textcolor{comment}{//\ **************************************}}
+\DoxyCodeLine{00127\ \textcolor{comment}{template\ <typename\ T,\ typename\ node\_T\ =\ treenode\_t<T>\ >}}
+\DoxyCodeLine{00128\ \textcolor{comment}{class\ AVL\_tree\_t\ :\ public\ search\_tree\_t<T,\ node\_T>\ \{}}
+\DoxyCodeLine{00129\ \textcolor{comment}{private:}}
+\DoxyCodeLine{00130\ \textcolor{comment}{\ \ using\ base\_type\ =\ search\_tree\_t<T,\ node\_T>;}}
+\DoxyCodeLine{00131\ \textcolor{comment}{}}
+\DoxyCodeLine{00132\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00133\ \textcolor{comment}{\ \ AVL\_tree\_t()\ =\ default;}}
+\DoxyCodeLine{00134\ \textcolor{comment}{}}
+\DoxyCodeLine{00135\ \textcolor{comment}{\ \ AVL\_tree\_t(typename\ base\_type::comparer\_type\ cmp);}}
+\DoxyCodeLine{00136\ \textcolor{comment}{}}
+\DoxyCodeLine{00137\ \textcolor{comment}{\ \ AVL\_tree\_t(typename\ base\_type::comparer\_type\ cmp,}}
+\DoxyCodeLine{00138\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ typename\ base\_type::equaler\_type\ \ eql);}}
+\DoxyCodeLine{00139\ \textcolor{comment}{}}
+\DoxyCodeLine{00140\ \textcolor{comment}{\ \ node\_T\ *rotate(node\_T\ *node);}}
+\DoxyCodeLine{00141\ \textcolor{comment}{\ \ node\_T\ *push(T\ val);}}
+\DoxyCodeLine{00142\ \textcolor{comment}{\ \ void\ erase(node\_T\ *node);}}
+\DoxyCodeLine{00143\ \textcolor{comment}{\ \ void\ remove(T\ val);}}
+\DoxyCodeLine{00144\ \textcolor{comment}{\};}}
+\DoxyCodeLine{00145\ \textcolor{comment}{}}
+\DoxyCodeLine{00146\ \textcolor{comment}{//\ *************************************}}
+\DoxyCodeLine{00147\ \textcolor{comment}{//\ *************\ RB\_tree\_t\ *************}}
+\DoxyCodeLine{00148\ \textcolor{comment}{//\ *************************************}}
+\DoxyCodeLine{00149\ \textcolor{comment}{}}
+\DoxyCodeLine{00150\ \textcolor{comment}{template\ <typename\ T>}}
+\DoxyCodeLine{00151\ \textcolor{comment}{class\ RB\_treenode\_t\ :\ public\ treenode\_t<T>\ \{}}
+\DoxyCodeLine{00152\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00153\ \textcolor{comment}{\ \ RB\_treenode\_t(T\ val);}}
+\DoxyCodeLine{00154\ \textcolor{comment}{}}
+\DoxyCodeLine{00155\ \textcolor{comment}{\ \ constexpr\ inline\ RB\_treenode\_t<T>*\&\ left()\ \ \ \ noexcept;}}
+\DoxyCodeLine{00156\ \textcolor{comment}{\ \ constexpr\ inline\ RB\_treenode\_t<T>*\&\ right()\ \ \ noexcept;}}
+\DoxyCodeLine{00157\ \textcolor{comment}{\ \ constexpr\ inline\ RB\_treenode\_t<T>*\&\ parent()\ \ noexcept;}}
+\DoxyCodeLine{00158\ \textcolor{comment}{}}
+\DoxyCodeLine{00159\ \textcolor{comment}{\ \ enum\ \{\ COLOR\_BLACK\ =\ 0,\ COLOR\_RED\ \}\ color;}}
+\DoxyCodeLine{00160\ \textcolor{comment}{\};}}
+\DoxyCodeLine{00161\ \textcolor{comment}{}}
+\DoxyCodeLine{00162\ \textcolor{comment}{template\ <typename\ T,\ typename\ node\_T\ =\ RB\_treenode\_t<T>\ >}}
+\DoxyCodeLine{00163\ \textcolor{comment}{class\ RB\_tree\_t\ :\ public\ search\_tree\_t<T,\ node\_T>\ \{}}
+\DoxyCodeLine{00164\ \textcolor{comment}{private:}}
+\DoxyCodeLine{00165\ \textcolor{comment}{\ \ using\ base\_type\ =\ search\_tree\_t<T,\ node\_T>;}}
+\DoxyCodeLine{00166\ \textcolor{comment}{}}
+\DoxyCodeLine{00167\ \textcolor{comment}{\ \ void\ maintain(node\_T\ *node);}}
+\DoxyCodeLine{00168\ \textcolor{comment}{}}
+\DoxyCodeLine{00169\ \textcolor{comment}{public:}}
+\DoxyCodeLine{00170\ \textcolor{comment}{\ \ RB\_tree\_t()\ =\ default;}}
+\DoxyCodeLine{00171\ \textcolor{comment}{\ \ RB\_tree\_t(typename\ base\_type::comparer\_type\ cmp);}}
+\DoxyCodeLine{00172\ \textcolor{comment}{\ \ RB\_tree\_t(typename\ base\_type::comparer\_type\ cmp,}}
+\DoxyCodeLine{00173\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ typename\ base\_type::equaler\_type\ \ eql);}}
+\DoxyCodeLine{00174\ \textcolor{comment}{}}
+\DoxyCodeLine{00175\ \textcolor{comment}{\ \ node\_T\ *rotate(node\_T\ *node);}}
+\DoxyCodeLine{00176\ \textcolor{comment}{\ \ node\_T\ *push(T\ val);}}
+\DoxyCodeLine{00177\ \textcolor{comment}{\ \ void\ erase(node\_T\ *node);}}
+\DoxyCodeLine{00178\ \textcolor{comment}{\ \ void\ remove(T\ val);}}
+\DoxyCodeLine{00179\ \textcolor{comment}{\ \ void\ print\_tree();}}
+\DoxyCodeLine{00180\ \textcolor{comment}{\};}}
+\DoxyCodeLine{00181\ \textcolor{comment}{}}
+\DoxyCodeLine{00182\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \textcolor{keyword}{using\ }uint\_t\ =\ uint32\_t;}
+\DoxyCodeLine{00185\ \textcolor{keyword}{using\ }int\_t\ \ =\ int32\_t;}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \textcolor{comment}{//\ **************************************}}
+\DoxyCodeLine{00189\ \textcolor{comment}{//\ *************\ treenode\_t\ *************}}
+\DoxyCodeLine{00190\ \textcolor{comment}{//\ **************************************}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00195\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00196\ \textcolor{keyword}{class\ }treenode\_t\ \{}
+\DoxyCodeLine{00197\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00198\ \ \ \textcolor{keywordtype}{void}\ *\_left\ \ \ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00199\ \ \ \textcolor{keywordtype}{void}\ *\_right\ \ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00200\ \ \ \textcolor{keywordtype}{void}\ *\_parent\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00203\ \ \ T\ value;}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{inline}\ treenode\_t<T>*\&\ left()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{static\_cast<}treenode\_t<T>\ **\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\ *\textcolor{keyword}{>}(\&this-\/>\_left));}
+\DoxyCodeLine{00207\ \ \ \}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{inline}\ treenode\_t<T>*\&\ right()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00210\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{static\_cast<}treenode\_t<T>\ **\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\ *\textcolor{keyword}{>}(\&this-\/>\_right));}
+\DoxyCodeLine{00211\ \ \ \}}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{inline}\ treenode\_t<T>*\&\ parent()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{static\_cast<}treenode\_t<T>\ **\textcolor{keyword}{>}(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\ *\textcolor{keyword}{>}(\&this-\/>\_parent));}
+\DoxyCodeLine{00215\ \ \ \}}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00218\ \ \ treenode\_t(T\ value)\ :\ value(value)\ \{\}}
+\DoxyCodeLine{00219\ \ \ treenode\_t(treenode\_t\ \&\&node)\ \{}
+\DoxyCodeLine{00220\ \ \ \ \ this-\/>\_left\ =\ node.\_left;}
+\DoxyCodeLine{00221\ \ \ \ \ this-\/>\_right\ =\ node.\_right;}
+\DoxyCodeLine{00222\ \ \ \ \ this-\/>\_parent\ =\ node.\_parent;}
+\DoxyCodeLine{00223\ \ \ \ \ this-\/>value\ =\ node.value;}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ node.\_left\ \ \ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00226\ \ \ \ \ node.\_right\ \ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00227\ \ \ \ \ node.\_parent\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00228\ \ \ \}}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \textcolor{keywordtype}{void}\ hookleft(treenode\_t\ *newparent)\ \{}
+\DoxyCodeLine{00231\ \ \ \ \ newparent-\/>left()\ =\ \textcolor{keyword}{this};}
+\DoxyCodeLine{00232\ \ \ \ \ this-\/>parent()\ =\ newparent;}
+\DoxyCodeLine{00233\ \ \ \}}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \ \ \textcolor{keywordtype}{void}\ hookright(treenode\_t\ *newparent)\ \{}
+\DoxyCodeLine{00236\ \ \ \ \ newparent-\/>right()\ =\ \textcolor{keyword}{this};}
+\DoxyCodeLine{00237\ \ \ \ \ this-\/>parent()\ =\ newparent;}
+\DoxyCodeLine{00238\ \ \ \}}
+\DoxyCodeLine{00239\ \ \ }
+\DoxyCodeLine{00240\ \ \ \textcolor{keywordtype}{void}\ addleft(treenode\_t\ *child)\ \{}
+\DoxyCodeLine{00241\ \ \ \ \ this-\/>left()\ =\ child;}
+\DoxyCodeLine{00242\ \ \ \ \ child-\/>parent()\ =\ \textcolor{keyword}{this};}
+\DoxyCodeLine{00243\ \ \ \}}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00245\ \ \ \textcolor{keywordtype}{void}\ addleft(T\ val)\ \{}
+\DoxyCodeLine{00246\ \ \ \ \ this-\/>addleft(\textcolor{keyword}{new}\ treenode\_t(val));}
+\DoxyCodeLine{00247\ \ \ \}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \ \ \textcolor{keywordtype}{void}\ addright(treenode\_t\ *child)\ \{}
+\DoxyCodeLine{00250\ \ \ \ \ this-\/>right()\ =\ child;}
+\DoxyCodeLine{00251\ \ \ \ \ child-\/>parent()\ =\ \textcolor{keyword}{this};}
+\DoxyCodeLine{00252\ \ \ \}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \ \ \textcolor{keywordtype}{void}\ addright(T\ val)\ \{}
+\DoxyCodeLine{00255\ \ \ \ \ this-\/>addright(\textcolor{keyword}{new}\ treenode\_t(val));}
+\DoxyCodeLine{00256\ \ \ \}}
+\DoxyCodeLine{00257\ }
+\DoxyCodeLine{00258\ \ \ uint\_t\ get\_height()\ \{}
+\DoxyCodeLine{00259\ \ \ \ \ uint\_t\ height\ =\ 0;}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00261\ \ \ \ \ std::function<void\ (treenode\_t*,\ uint\_t)>\ traversal\ =}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ [\&]\ (treenode\_t\ *node,\ uint\_t\ level)\ -\/>\ \textcolor{keywordtype}{void}\ \{}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (level\ >\ height)\ height\ =\ level;}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>left())}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \ \ traversal(node-\/>left(),\ level\ +\ 1);}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>right())}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \ \ traversal(node-\/>right(),\ level\ +\ 1);}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00269\ \ \ \ \ traversal(\textcolor{keyword}{this},\ 0);}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{keywordflow}{return}\ height;}
+\DoxyCodeLine{00272\ \ \ \}}
+\DoxyCodeLine{00273\ }
+\DoxyCodeLine{00274\ \ \ uint\_t\ get\_degree()\ \{}
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>left()\ \&\&\ this-\/>right())}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 2;}
+\DoxyCodeLine{00277\ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (this-\/>left()\ ||\ this-\/>right())}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 1;}
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00280\ \ \ \}}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \ \ int\_t\ get\_balance\_factor()\ \{}
+\DoxyCodeLine{00283\ \ \ \ \ int\_t\ left\_bfactor\ =\ 0;}
+\DoxyCodeLine{00284\ \ \ \ \ int\_t\ right\_bfactor\ =\ 0;}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>left())}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ left\_bfactor\ =\ this-\/>left()-\/>get\_height()\ +\ 1;}
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>right())}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ right\_bfactor\ =\ this-\/>right()-\/>get\_height()\ +\ 1;}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \ \ \textcolor{keywordflow}{return}\ left\_bfactor\ -\/\ right\_bfactor;}
+\DoxyCodeLine{00292\ \ \ \}}
+\DoxyCodeLine{00293\ \};}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00298\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{00299\ \ \ NODE\_ROOT\ =\ 0,}
+\DoxyCodeLine{00300\ \ \ NODE\_LEFT,}
+\DoxyCodeLine{00301\ \ \ NODE\_RIGHT}
+\DoxyCodeLine{00302\ \}\ left\_or\_right\_e;}
+\DoxyCodeLine{00303\ }
+\DoxyCodeLine{00304\ \textcolor{comment}{//\ *************************************}}
+\DoxyCodeLine{00305\ \textcolor{comment}{//\ *************\ bintree\_T\ *************}}
+\DoxyCodeLine{00306\ \textcolor{comment}{//\ *************************************}}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00311\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ node\_T\ =\ treenode\_t<T>\ >}
+\DoxyCodeLine{00312\ \textcolor{keyword}{class\ }bintree\_t\ \{}
+\DoxyCodeLine{00313\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00314\ \ \ \textcolor{keyword}{using\ }trav\_action\_t\ =\ std::function<void\ (node\_T\ *,\ uint\_t,\ left\_or\_right\_e)>;}
+\DoxyCodeLine{00315\ \ \ \textcolor{keyword}{using\ }node\_type\ =\ node\_T;}
+\DoxyCodeLine{00316\ \ \ \textcolor{keyword}{using\ }value\_type\ =\ T;}
+\DoxyCodeLine{00317\ }
+\DoxyCodeLine{00318\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00319\ \ \ node\_T\ *root\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00321\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00322\ \ \ bintree\_t()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00323\ \ \ \string~bintree\_t()\ \{}
+\DoxyCodeLine{00324\ \ \ \ \ std::list<node\_T\ *>\ todel;}
+\DoxyCodeLine{00325\ \ \ \ \ this-\/>\mbox{\hyperlink{classbintree__t_a59429ddde89593aa7a7bea05ef0f97ef}{trav\_bfs}}([\&](node\_T\ *node,\ uint\_t,\ left\_or\_right\_e)\ \{}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ todel.push\_back(node);}
+\DoxyCodeLine{00327\ \ \ \ \ \});}
+\DoxyCodeLine{00328\ \ \ }
+\DoxyCodeLine{00329\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&each\ :\ todel)}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ each;}
+\DoxyCodeLine{00331\ \ \ \}}
+\DoxyCodeLine{00332\ }
+\DoxyCodeLine{00338\ \ \ node\_T\ *\mbox{\hyperlink{classbintree__t_ae775317226ee86db9ed58a39ec33f804}{get\_sibling}}(node\_T\ *node)\ \{}
+\DoxyCodeLine{00339\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent())\ \{}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ node-\/>parent()-\/>right();}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ node-\/>parent()-\/>left();}
+\DoxyCodeLine{00344\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00345\ \ \ \}}
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00350\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classbintree__t_a59429ddde89593aa7a7bea05ef0f97ef}{trav\_bfs}}(trav\_action\_t\ action)\ \{}
+\DoxyCodeLine{00351\ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>root)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00352\ \ \ \ \ \textcolor{keyword}{using\ }std::deque;}
+\DoxyCodeLine{00353\ \ \ \ \ deque<node\_T\ *>\ dq;}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \ \ \ \ dq.push\_back(this-\/>root);}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{keywordflow}{while}\ (!dq.empty())\ \{}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ node\_T\ *node\ =\ dq.front();}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ dq.pop\_front();}
+\DoxyCodeLine{00359\ }
+\DoxyCodeLine{00360\ \ \ \ \ \ \ action(node,\ 0,\ NODE\_ROOT);}
+\DoxyCodeLine{00361\ }
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>left())}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ dq.push\_back(node-\/>left());}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>right())}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ dq.push\_back(node-\/>right());}
+\DoxyCodeLine{00366\ \ \ \ \ \}}
+\DoxyCodeLine{00367\ \ \ \}}
+\DoxyCodeLine{00368\ }
+\DoxyCodeLine{00372\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classbintree__t_a2a240a1b1d49ced3f5753792eaf8e384}{trav\_pre}}(trav\_action\_t\ action)\ \{}
+\DoxyCodeLine{00373\ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>root)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00374\ \ \ \ \ std::function<void\ (node\_T\ *,\ trav\_action\_t,\ uint\_t,\ left\_or\_right\_e)>\ recur\_trav\ =\ }
+\DoxyCodeLine{00375\ \ \ \ \ \ \ [\&]\ (node\_T\ *node,\ trav\_action\_t\ action,\ uint\_t\ level,\ left\_or\_right\_e\ lorr)\ -\/>\ \textcolor{keywordtype}{void}\ \{}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ action(node,\ level,\ lorr);}
+\DoxyCodeLine{00377\ }
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>left())}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ recur\_trav(node-\/>left(),\ action,\ level\ +\ 1,\ NODE\_LEFT);}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>right())}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \ \ recur\_trav(node-\/>right(),\ action,\ level\ +\ 1,\ NODE\_RIGHT);}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00383\ \ \ \ \ recur\_trav(this-\/>root,\ action,\ 0,\ NODE\_ROOT);}
+\DoxyCodeLine{00384\ \ \ \}}
+\DoxyCodeLine{00385\ }
+\DoxyCodeLine{00389\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classbintree__t_af2075f2401f3386fd76a8ffc593ad73d}{trav\_in}}(trav\_action\_t\ action)\ \{}
+\DoxyCodeLine{00390\ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>root)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00391\ \ \ \ \ std::function<void\ (node\_T\ *,\ trav\_action\_t,\ uint\_t,\ left\_or\_right\_e)>\ recur\_trav\ =\ }
+\DoxyCodeLine{00392\ \ \ \ \ \ \ [\&]\ (node\_T\ *node,\ trav\_action\_t\ action,\ uint\_t\ level,\ left\_or\_right\_e\ lorr)\ -\/>\ \textcolor{keywordtype}{void}\ \{}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>left())}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ \ \ recur\_trav(node-\/>left(),\ action,\ level\ +\ 1,\ NODE\_LEFT);}
+\DoxyCodeLine{00395\ }
+\DoxyCodeLine{00396\ \ \ \ \ \ \ \ \ action(node,\ level,\ lorr);}
+\DoxyCodeLine{00397\ }
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>right())}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \ \ recur\_trav(node-\/>right(),\ action,\ level\ +\ 1,\ NODE\_RIGHT);}
+\DoxyCodeLine{00400\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00401\ \ \ \ \ recur\_trav(this-\/>root,\ action,\ 0,\ NODE\_ROOT);}
+\DoxyCodeLine{00402\ \ \ \}}
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00407\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classbintree__t_a66995b46c21dee611e91bdf29e91b7ad}{trav\_post}}(trav\_action\_t\ action)\ \{}
+\DoxyCodeLine{00408\ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>root)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00409\ \ \ \ \ std::function<void\ (node\_T\ *,\ trav\_action\_t,\ uint\_t,\ left\_or\_right\_e)>\ recur\_trav\ =\ }
+\DoxyCodeLine{00410\ \ \ \ \ \ \ [\&]\ (node\_T\ *node,\ trav\_action\_t\ action,\ uint\_t\ level,\ left\_or\_right\_e\ lorr)\ -\/>\ \textcolor{keywordtype}{void}\ \{}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>left())}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \ \ recur\_trav(node-\/>left(),\ action,\ level\ +\ 1,\ NODE\_LEFT);}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>right())}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ \ \ recur\_trav(node-\/>right(),\ action,\ level\ +\ 1,\ NODE\_RIGHT);}
+\DoxyCodeLine{00415\ }
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ action(node,\ level,\ lorr);}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00418\ \ \ \ \ recur\_trav(this-\/>root,\ action,\ 0,\ NODE\_ROOT);}
+\DoxyCodeLine{00419\ \ \ \}}
+\DoxyCodeLine{00420\ }
+\DoxyCodeLine{00421\ \ \ \textcolor{comment}{/*\ 打印树\ */}}
+\DoxyCodeLine{00422\ \ \ \textcolor{keywordtype}{void}\ print\_tree()\ \{}
+\DoxyCodeLine{00423\ \ \ \ \ this-\/>\mbox{\hyperlink{classbintree__t_a2a240a1b1d49ced3f5753792eaf8e384}{trav\_pre}}(}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ []\ (node\_T\ *node,\ uint\_t\ level,\ left\_or\_right\_e\ lorr)\ \{}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_t\ i\ =\ 0;\ i\ <\ level;\ i++)}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}======|"{}};}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)b"{}};}
+\DoxyCodeLine{00428\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (lorr)\ \{}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ NODE\_ROOT:}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}===========\ print\_tree\ ==========\(\backslash\)nRT\ "{}};}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ NODE\_LEFT:}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[L]\ "{}};}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ NODE\_RIGHT:}
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[R]\ "{}};}
+\DoxyCodeLine{00437\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:;}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ std::cout\ <<\ node-\/>value;}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent())}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\ |P\ "{}}\ <<\ node-\/>parent()-\/>value\ <<\ std::endl;}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\ |P\ NUL"{}}\ <<\ std::endl;}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00446\ \ \ \ \ );}
+\DoxyCodeLine{00447\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Print\ OK."{}}\ <<\ std::endl;}
+\DoxyCodeLine{00448\ \ \ \}}
+\DoxyCodeLine{00449\ }
+\DoxyCodeLine{00450\ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00451\ \textcolor{comment}{\ \ node:}}
+\DoxyCodeLine{00452\ \textcolor{comment}{\ \ \ \ 左节点\ ==\ null}}
+\DoxyCodeLine{00453\ \textcolor{comment}{\ \ \ \ \ \ (不可右旋)}}
+\DoxyCodeLine{00454\ \textcolor{comment}{\ \ \ \ \ \ 返回}}
+\DoxyCodeLine{00455\ \textcolor{comment}{\ \ \ \ 左节点\ !=\ null}}
+\DoxyCodeLine{00456\ \textcolor{comment}{\ \ \ \ \ \ (可以右旋)}}
+\DoxyCodeLine{00457\ \textcolor{comment}{\ \ \ \ \ \ 父节点\ ==\ null}}
+\DoxyCodeLine{00458\ \textcolor{comment}{\ \ \ \ \ \ \ \ (node是根节点)}}
+\DoxyCodeLine{00459\ \textcolor{comment}{\ \ \ \ \ \ \ \ 根节点\ =\ 左子}}
+\DoxyCodeLine{00460\ \textcolor{comment}{}}
+\DoxyCodeLine{00461\ \textcolor{comment}{\ \ \ \ \ \ \ \ tmp\ =\ 左子-\/>右子}}
+\DoxyCodeLine{00462\ \textcolor{comment}{\ \ \ \ \ \ \ \ 左子-\/>右子\ =\ node}}
+\DoxyCodeLine{00463\ \textcolor{comment}{\ \ \ \ \ \ \ \ node-\/>左子\ =\ tmp}}
+\DoxyCodeLine{00464\ \textcolor{comment}{}}
+\DoxyCodeLine{00465\ \textcolor{comment}{\ \ \ \ \ \ 父节点\ !=\ null}}
+\DoxyCodeLine{00466\ \textcolor{comment}{\ \ \ \ \ \ \ \ (node不是根节点)}}
+\DoxyCodeLine{00467\ \textcolor{comment}{\ \ \ \ \ \ \ \ 父-\/>(左/右)子\ =\ 左子}}
+\DoxyCodeLine{00468\ \textcolor{comment}{}}
+\DoxyCodeLine{00469\ \textcolor{comment}{\ \ \ \ \ \ \ \ tmp\ =\ 左子-\/>右子}}
+\DoxyCodeLine{00470\ \textcolor{comment}{\ \ \ \ \ \ \ \ 左子-\/>右子\ =\ node}}
+\DoxyCodeLine{00471\ \textcolor{comment}{\ \ \ \ \ \ \ \ node-\/>左子\ =\ tmp}}
+\DoxyCodeLine{00472\ \textcolor{comment}{}}
+\DoxyCodeLine{00473\ \textcolor{comment}{\ \ |\ node\ |\ L\ |\ L-\/>L\ |\ L-\/>R\ |\ R\ |\ R-\/>L\ |\ R-\/>R\ |\ P\ |\ YESorNO}}
+\DoxyCodeLine{00474\ \textcolor{comment}{\ \ \ \ 0\ \ *\ \ *\ \ \ \ *\ \ \ *\ \ *\ \ \ \ *\ \ \ *\ \ \ \ 0}}
+\DoxyCodeLine{00475\ \textcolor{comment}{\ \ \ \ 1\ \ 0\ \ *\ \ \ \ *\ \ \ *\ \ *\ \ \ \ *\ \ \ *\ \ \ \ 0}}
+\DoxyCodeLine{00476\ \textcolor{comment}{\ \ \ \ 1\ \ 1}}
+\DoxyCodeLine{00477\ \textcolor{comment}{\ \ */}}
+\DoxyCodeLine{00478\ \ \ \textcolor{keywordtype}{void}\ rotate\_right(node\_T\ *node)\ \{}
+\DoxyCodeLine{00479\ \ \ \ \ \textcolor{keywordflow}{if}\ (!node)\ \{}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}不可对nullptr右旋!"{}}\ <<\ std::endl;}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00482\ \ \ \ \ \}}
+\DoxyCodeLine{00483\ }
+\DoxyCodeLine{00484\ \ \ \ \ \textcolor{keywordflow}{if}\ (!node-\/>left())\ \{}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \textcolor{comment}{//\ 不可右旋}}
+\DoxyCodeLine{00486\ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}不可右旋!!!"{}}\ <<\ std::endl;}
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00488\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00489\ \ \ \ \ \ \ \textcolor{comment}{//\ 可以右旋}}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!node-\/>parent())\ \{}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ node\ 是根节点}}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ this-\/>root\ =\ node-\/>left();}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ node-\/>left()-\/>parent()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00494\ }
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ node\_T\ *tmp\ =\ node-\/>left()-\/>right();}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ node-\/>left()-\/>right()\ =\ node;}
+\DoxyCodeLine{00497\ \ \ \ \ \ \ \ \ node-\/>parent()\ =\ node-\/>left();}
+\DoxyCodeLine{00498\ \ \ \ \ \ \ \ \ node-\/>left()\ =\ tmp;}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tmp)}
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ \ \ tmp-\/>parent()\ =\ node;}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ node\ 不是根节点}}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)\ \{}
+\DoxyCodeLine{00504\ \ \ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ node-\/>left();}
+\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ \ \ node-\/>left()-\/>parent()\ =\ node-\/>parent();}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ node-\/>left();}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ \ \ node-\/>left()-\/>parent()\ =\ node-\/>parent();}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00510\ }
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ node\_T\ *tmp\ =\ node-\/>left()-\/>right();}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \ \ node-\/>left()-\/>right()\ =\ node;}
+\DoxyCodeLine{00513\ \ \ \ \ \ \ \ \ node-\/>parent()\ =\ node-\/>left();}
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ node-\/>left()\ =\ tmp;}
+\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tmp)}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ \ \ tmp-\/>parent()\ =\ node;}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00518\ \ \ \ \ \}}
+\DoxyCodeLine{00519\ \ \ \}}
+\DoxyCodeLine{00520\ }
+\DoxyCodeLine{00521\ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00522\ \textcolor{comment}{\ \ node:}}
+\DoxyCodeLine{00523\ \textcolor{comment}{\ \ \ \ 右节点\ ==\ null}}
+\DoxyCodeLine{00524\ \textcolor{comment}{\ \ \ \ \ \ (不可左旋)}}
+\DoxyCodeLine{00525\ \textcolor{comment}{\ \ \ \ 右节点\ !=\ null}}
+\DoxyCodeLine{00526\ \textcolor{comment}{\ \ \ \ \ \ (可以左旋)}}
+\DoxyCodeLine{00527\ \textcolor{comment}{\ \ \ \ \ \ 父节点\ ==\ null}}
+\DoxyCodeLine{00528\ \textcolor{comment}{\ \ \ \ \ \ \ \ (node是根节点)}}
+\DoxyCodeLine{00529\ \textcolor{comment}{\ \ \ \ \ \ \ \ 根节点\ =\ 右子}}
+\DoxyCodeLine{00530\ \textcolor{comment}{}}
+\DoxyCodeLine{00531\ \textcolor{comment}{\ \ \ \ \ \ \ \ tmp\ =\ 右子-\/>左子}}
+\DoxyCodeLine{00532\ \textcolor{comment}{\ \ \ \ \ \ \ \ 右子-\/>左子\ =\ node}}
+\DoxyCodeLine{00533\ \textcolor{comment}{\ \ \ \ \ \ \ \ 右子\ =\ tmp}}
+\DoxyCodeLine{00534\ \textcolor{comment}{\ \ \ \ \ \ 父节点\ !=\ null}}
+\DoxyCodeLine{00535\ \textcolor{comment}{\ \ \ \ \ \ \ \ (node不是根节点)}}
+\DoxyCodeLine{00536\ \textcolor{comment}{\ \ \ \ \ \ \ \ 父-\/>(左/右)子\ =\ 右子}}
+\DoxyCodeLine{00537\ \textcolor{comment}{}}
+\DoxyCodeLine{00538\ \textcolor{comment}{\ \ \ \ \ \ \ \ tmp\ =\ 右子-\/>左子}}
+\DoxyCodeLine{00539\ \textcolor{comment}{\ \ \ \ \ \ \ \ 右子-\/>左子\ =\ node}}
+\DoxyCodeLine{00540\ \textcolor{comment}{\ \ \ \ \ \ \ \ 右子\ =\ tmp}}
+\DoxyCodeLine{00541\ \textcolor{comment}{}}
+\DoxyCodeLine{00542\ \textcolor{comment}{\ \ |\ node\ |\ L\ |\ L-\/>L\ |\ L-\/>R\ |\ R\ |\ R-\/>L\ |\ R-\/>R\ |\ P\ |\ YESorNO}}
+\DoxyCodeLine{00543\ \textcolor{comment}{\ \ \ \ 0\ \ *\ \ *\ \ \ \ *\ \ \ *\ \ *\ \ \ \ *\ \ \ *\ \ \ \ 0}}
+\DoxyCodeLine{00544\ \textcolor{comment}{\ \ \ \ 1\ \ *\ \ *\ \ \ \ *\ \ \ 0\ \ *\ \ \ \ *\ \ \ *\ \ \ \ 0}}
+\DoxyCodeLine{00545\ \textcolor{comment}{\ \ */}}
+\DoxyCodeLine{00546\ \ \ \textcolor{keywordtype}{void}\ rotate\_left(node\_T\ *node)\ \{}
+\DoxyCodeLine{00547\ \ \ \ \ \textcolor{keywordflow}{if}\ (!node)\ \{}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}不可对nullptr左旋!"{}}\ <<\ std::endl;}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00550\ \ \ \ \ \}}
+\DoxyCodeLine{00551\ }
+\DoxyCodeLine{00552\ \ \ \ \ \textcolor{keywordflow}{if}\ (!node-\/>right())\ \{}
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \textcolor{comment}{//\ 不可左旋}}
+\DoxyCodeLine{00554\ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}不可左旋!!!"{}}\ <<\ std::endl;}
+\DoxyCodeLine{00555\ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00556\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00557\ \ \ \ \ \ \ \textcolor{comment}{//\ 可以左旋}}
+\DoxyCodeLine{00558\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!node-\/>parent())\ \{}
+\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ node是根节点}}
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ this-\/>root\ =\ node-\/>right();}
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \ \ node-\/>right()-\/>parent()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00562\ }
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ node\_T\ *tmp\ =\ node-\/>right()-\/>left();}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ node-\/>right()-\/>left()\ =\ node;}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ node-\/>parent()\ =\ node-\/>right();}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ node-\/>right()\ =\ tmp;}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tmp)}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ \ \ tmp-\/>parent()\ =\ node;}
+\DoxyCodeLine{00569\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00570\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ node不是根节点}}
+\DoxyCodeLine{00571\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)\ \{}
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ node-\/>right();}
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ \ \ node-\/>right()-\/>parent()\ =\ node-\/>parent();}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ node-\/>right();}
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ \ \ node-\/>right()-\/>parent()\ =\ node-\/>parent();}
+\DoxyCodeLine{00577\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00578\ }
+\DoxyCodeLine{00579\ \ \ \ \ \ \ \ \ node\_T\ *tmp\ =\ node-\/>right()-\/>left();}
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ node-\/>right()-\/>left()\ =\ node;}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ node-\/>parent()\ =\ node-\/>right();}
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ node-\/>right()\ =\ tmp;}
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (tmp)}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ \ \ tmp-\/>parent()\ =\ node;}
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00586\ \ \ \ \ \}}
+\DoxyCodeLine{00587\ \ \ \}}
+\DoxyCodeLine{00588\ }
+\DoxyCodeLine{00589\ \textcolor{preprocessor}{\#ifdef\ DEBUG}}
+\DoxyCodeLine{00590\ \ \ node\_T\ *\ operator[](T\ val)\ \{}
+\DoxyCodeLine{00591\ \ \ \ \ node\_T\ *target\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00592\ \ \ \ \ this-\/>\mbox{\hyperlink{classbintree__t_a59429ddde89593aa7a7bea05ef0f97ef}{trav\_bfs}}([\&](node\_T\ *node,\ uint\_t,\ left\_or\_right\_e)\ -\/>\ \textcolor{keywordtype}{void}\ \{}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>value\ ==\ val)\ \{}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ target\ =\ node;}
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00597\ \ \ \ \ \});}
+\DoxyCodeLine{00598\ \ \ \ \ \textcolor{keywordflow}{return}\ target;}
+\DoxyCodeLine{00599\ \ \ \}}
+\DoxyCodeLine{00600\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00601\ \};}
+\DoxyCodeLine{00602\ }
+\DoxyCodeLine{00603\ \textcolor{comment}{//\ *****************************************}}
+\DoxyCodeLine{00604\ \textcolor{comment}{//\ *************\ search\_tree\_t\ *************}}
+\DoxyCodeLine{00605\ \textcolor{comment}{//\ *****************************************}}
+\DoxyCodeLine{00606\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ node\_T\ =\ treenode\_t<T>\ >}
+\DoxyCodeLine{00607\ \textcolor{keyword}{class\ }search\_tree\_t\ :\ \textcolor{keyword}{public}\ bintree\_t<T,\ node\_T>\ \{}
+\DoxyCodeLine{00608\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00609\ \ \ \textcolor{keyword}{using\ }base\_type\ =\ bintree\_t<T,\ node\_T>;}
+\DoxyCodeLine{00610\ }
+\DoxyCodeLine{00611\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00612\ \ \ \textcolor{keyword}{enum}\ \{\ EQ\_REPLACE\ =\ 0,\ EQ\_KEEP\ \}\ replace\_policy\ =\ EQ\_REPLACE;}
+\DoxyCodeLine{00613\ \ \ \textcolor{keyword}{using\ }comparer\_type\ =\ std::function<bool\ (\textcolor{keyword}{const}\ T\ \&a,\ \textcolor{keyword}{const}\ T\ \&b)>;}
+\DoxyCodeLine{00614\ \ \ \textcolor{keyword}{using\ }equaler\_type\ \ =\ std::function<bool\ (\textcolor{keyword}{const}\ T\ \&a,\ \textcolor{keyword}{const}\ T\ \&b)>;}
+\DoxyCodeLine{00615\ }
+\DoxyCodeLine{00616\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00617\ \ \ comparer\_type\ comparer\ \ =\ []\ (\textcolor{keyword}{const}\ T\ \&a,\ \textcolor{keyword}{const}\ T\ \&b)\ -\/>\ \textcolor{keywordtype}{bool}\ \{\ \textcolor{keywordflow}{return}\ a\ <\ b;\ \};}
+\DoxyCodeLine{00618\ \ \ equaler\_type\ equaler\ \ \ \ =\ []\ (\textcolor{keyword}{const}\ T\ \&a,\ \textcolor{keyword}{const}\ T\ \&b)\ -\/>\ \textcolor{keywordtype}{bool}\ \{\ \textcolor{keywordflow}{return}\ a\ ==\ b;\ \};}
+\DoxyCodeLine{00619\ }
+\DoxyCodeLine{00620\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00621\ \ \ search\_tree\_t()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00622\ }
+\DoxyCodeLine{00623\ \ \ search\_tree\_t(\textcolor{keyword}{decltype}(comparer)\ cmp)\ :\ comparer(cmp)\ \{\}}
+\DoxyCodeLine{00624\ \ \ search\_tree\_t(\textcolor{keyword}{decltype}(comparer)\ cmp,\ \textcolor{keyword}{decltype}(equaler)\ eql)}
+\DoxyCodeLine{00625\ \ \ \ \ :\ comparer(cmp),\ equaler(eql)\ \{\}}
+\DoxyCodeLine{00626\ }
+\DoxyCodeLine{00627\ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ set\_replace\_policy(\textcolor{keyword}{decltype}(replace\_policy)\ rp)\ \{}
+\DoxyCodeLine{00628\ \ \ \ \ this-\/>replace\_policy\ =\ rp;}
+\DoxyCodeLine{00629\ \ \ \}}
+\DoxyCodeLine{00630\ }
+\DoxyCodeLine{00631\ \ \ node\_T\ *search\_value(T\ val)\ \{}
+\DoxyCodeLine{00632\ \ \ \ \ node\_T\ *cur\ =\ this-\/>root;}
+\DoxyCodeLine{00633\ }
+\DoxyCodeLine{00634\ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{00635\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (cur\ ==\ \textcolor{keyword}{nullptr})}
+\DoxyCodeLine{00636\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cur;}
+\DoxyCodeLine{00637\ }
+\DoxyCodeLine{00638\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>equaler(cur-\/>value,\ val))\ }
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cur;}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>comparer(cur-\/>value,\ val))}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ \ \ cur\ =\ cur-\/>right();}
+\DoxyCodeLine{00643\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ }
+\DoxyCodeLine{00644\ \ \ \ \ \ \ \ \ \ \ cur\ =\ cur-\/>left();}
+\DoxyCodeLine{00645\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00646\ \ \ \ \ \}}
+\DoxyCodeLine{00647\ \ \ \}}
+\DoxyCodeLine{00648\ }
+\DoxyCodeLine{00649\ \ \ node\_T*\ push(T\ val)\ \{}
+\DoxyCodeLine{00650\ \ \ \ \ \textcolor{keywordflow}{if}\ (!this-\/>root)\ \{}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ this-\/>root\ =\ \textcolor{keyword}{new}\ node\_T(val);}
+\DoxyCodeLine{00652\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>root;}
+\DoxyCodeLine{00653\ \ \ \ \ \}}
+\DoxyCodeLine{00654\ }
+\DoxyCodeLine{00655\ \ \ \ \ node\_T\ *cur\ =\ this-\/>root;}
+\DoxyCodeLine{00656\ }
+\DoxyCodeLine{00657\ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>equaler(cur-\/>value,\ val))\ \{}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (this-\/>replace\_policy)\ \{}
+\DoxyCodeLine{00660\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ EQ\_KEEP:\ }
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ EQ\_REPLACE:}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ \ \ \ \ cur-\/>value\ =\ std::forward<T>(val);}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cur;}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};\ \ \textcolor{comment}{//\ Shouldn't\ be\ here}}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00668\ }
+\DoxyCodeLine{00669\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>comparer(cur-\/>value,\ val))\ \{}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!cur-\/>right())\ \{}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \ \ \ \ cur-\/>addright(val);}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cur-\/>right();}
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ cur\ =\ cur-\/>right();}
+\DoxyCodeLine{00675\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00676\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!cur-\/>left())\ \{}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ \ \ cur-\/>addleft(val);}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ cur-\/>left();}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \ \ cur\ =\ cur-\/>left();}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00682\ \ \ \ \ \}}
+\DoxyCodeLine{00683\ \ \ \}}
+\DoxyCodeLine{00684\ }
+\DoxyCodeLine{00685\ \ \ \textcolor{keywordtype}{void}\ remove(T\ val)\ \{}
+\DoxyCodeLine{00686\ \ \ \ \ node\_T\ *node\ =\ this-\/>search\_value(val);}
+\DoxyCodeLine{00687\ \ \ \ \ \textcolor{keywordflow}{if}\ (!node)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00688\ \ \ \ \ \textcolor{keywordflow}{if}\ (node)}
+\DoxyCodeLine{00689\ \ \ \ \ \ \ this-\/>erase(node);}
+\DoxyCodeLine{00690\ \ \ \}}
+\DoxyCodeLine{00691\ }
+\DoxyCodeLine{00692\ \ \ node\_T\ *erase(node\_T\ *node)\ \{}
+\DoxyCodeLine{00693\ \ \ \ \ \textcolor{comment}{//\ 先确定此节点的度}}
+\DoxyCodeLine{00694\ \ \ \ \ uint\_t\ degree\ =\ node-\/>get\_degree();}
+\DoxyCodeLine{00695\ \ \ \ \ \textcolor{keywordflow}{if}\ (degree\ ==\ 0)\ \{}
+\DoxyCodeLine{00696\ \ \ \ \ \ \ \textcolor{comment}{//\ 直接删}}
+\DoxyCodeLine{00697\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!node-\/>parent())\ \textcolor{comment}{//\ 根节点}}
+\DoxyCodeLine{00698\ \ \ \ \ \ \ \ \ this-\/>root\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00699\ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)}
+\DoxyCodeLine{00700\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00701\ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ }
+\DoxyCodeLine{00702\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00703\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{00704\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00705\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (degree\ ==\ 1)\ \{}
+\DoxyCodeLine{00706\ \ \ \ \ \ \ \textcolor{comment}{//\ 让子节点上来}}
+\DoxyCodeLine{00707\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>left())\ \{}
+\DoxyCodeLine{00708\ \ \ \ \ \ \ \ \ node-\/>value\ =\ std::move(node-\/>left()-\/>value);}
+\DoxyCodeLine{00709\ }
+\DoxyCodeLine{00710\ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node-\/>left();}
+\DoxyCodeLine{00711\ \ \ \ \ \ \ \ \ node-\/>left()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ node;}
+\DoxyCodeLine{00713\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00714\ \ \ \ \ \ \ \ \ node-\/>value\ =\ std::move(node-\/>right()-\/>value);}
+\DoxyCodeLine{00715\ }
+\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node-\/>right();}
+\DoxyCodeLine{00717\ \ \ \ \ \ \ \ \ node-\/>right()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ node;}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00720\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00722\ \textcolor{comment}{\ \ \ \ \ \ \ \ 以左子树的最大节点(left\_max)替换此被删除的节点}}
+\DoxyCodeLine{00723\ \textcolor{comment}{\ \ \ \ \ \ \ \ ml存在:}}
+\DoxyCodeLine{00724\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ mp继承ml}}
+\DoxyCodeLine{00725\ \textcolor{comment}{\ \ \ \ \ \ \ \ mr存在:}}
+\DoxyCodeLine{00726\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ 不可能，因为m不会存在r}}
+\DoxyCodeLine{00727\ \textcolor{comment}{\ \ \ \ \ \ */}}
+\DoxyCodeLine{00728\ \ \ \ \ \ \ node\_T\ *left\_max\ =\ node-\/>left();}
+\DoxyCodeLine{00729\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{00730\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (left\_max-\/>right())}
+\DoxyCodeLine{00731\ \ \ \ \ \ \ \ \ \ \ left\_max\ =\ left\_max-\/>right();}
+\DoxyCodeLine{00732\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00733\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (left\_max-\/>parent()-\/>left()\ ==\ left\_max)\ \{}
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 出现这种情况，只可能是left\_max是node-\/>left()}}
+\DoxyCodeLine{00736\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ left\_max没有right}}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ node-\/>left()\ =\ left\_max-\/>left();}
+\DoxyCodeLine{00738\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (left\_max-\/>left())}
+\DoxyCodeLine{00739\ \ \ \ \ \ \ \ \ \ \ left\_max-\/>left()-\/>parent()\ =\ node;}
+\DoxyCodeLine{00740\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \ \{}
+\DoxyCodeLine{00741\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 是父节点右子}}
+\DoxyCodeLine{00742\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ left\_max没有right}}
+\DoxyCodeLine{00743\ \ \ \ \ \ \ \ \ left\_max-\/>parent()-\/>right()\ =\ left\_max-\/>left();}
+\DoxyCodeLine{00744\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (left\_max-\/>left())}
+\DoxyCodeLine{00745\ \ \ \ \ \ \ \ \ \ \ left\_max-\/>left()-\/>parent()\ =\ left\_max-\/>parent();}
+\DoxyCodeLine{00746\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ node-\/>value\ =\ std::move(left\_max-\/>value);}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ left\_max;}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ node;}
+\DoxyCodeLine{00750\ \ \ \ \ \}}
+\DoxyCodeLine{00751\ \ \ \}}
+\DoxyCodeLine{00752\ \};}
+\DoxyCodeLine{00753\ }
+\DoxyCodeLine{00754\ }
+\DoxyCodeLine{00755\ \textcolor{comment}{//\ **************************************}}
+\DoxyCodeLine{00756\ \textcolor{comment}{//\ *************\ AVL\_tree\_t\ *************}}
+\DoxyCodeLine{00757\ \textcolor{comment}{//\ **************************************}}
+\DoxyCodeLine{00758\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ node\_T\ =\ treenode\_t<T>\ >}
+\DoxyCodeLine{00759\ \textcolor{keyword}{class\ }AVL\_tree\_t\ :\ \textcolor{keyword}{public}\ search\_tree\_t<T,\ node\_T>\ \{}
+\DoxyCodeLine{00760\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00761\ \ \ \textcolor{keyword}{using\ }base\_type\ =\ search\_tree\_t<T,\ node\_T>;}
+\DoxyCodeLine{00762\ }
+\DoxyCodeLine{00763\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00764\ \ \ AVL\_tree\_t()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00765\ }
+\DoxyCodeLine{00766\ \ \ AVL\_tree\_t(\textcolor{keyword}{typename}\ base\_type::comparer\_type\ cmp)}
+\DoxyCodeLine{00767\ \ \ \ \ :\ base\_type(cmp)\ \{\}}
+\DoxyCodeLine{00768\ }
+\DoxyCodeLine{00769\ \ \ AVL\_tree\_t(\textcolor{keyword}{typename}\ base\_type::comparer\_type\ cmp,}
+\DoxyCodeLine{00770\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ base\_type::equaler\_type\ \ eql)}
+\DoxyCodeLine{00771\ \ \ \ \ :\ base\_type(cmp,\ eql)\ \{\}}
+\DoxyCodeLine{00772\ }
+\DoxyCodeLine{00773\ \ \ node\_T\ *rotate(node\_T\ *node)\ \{}
+\DoxyCodeLine{00774\ \ \ \ \ int\_t\ balance\_factor\ =\ node-\/>get\_balance\_factor();}
+\DoxyCodeLine{00775\ \ \ \ \ int\_t\ child\_balance\_factor;}
+\DoxyCodeLine{00776\ \ \ \ \ \textcolor{keywordflow}{if}\ (balance\_factor\ >\ 1)\ \{}
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \textcolor{comment}{//\ 左偏树}}
+\DoxyCodeLine{00778\ \ \ \ \ \ \ child\_balance\_factor\ =\ node-\/>left()-\/>get\_balance\_factor();}
+\DoxyCodeLine{00779\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (child\_balance\_factor\ <\ 0)\ \{}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 先左旋，后右旋}}
+\DoxyCodeLine{00781\ \ \ \ \ \ \ \ \ this-\/>rotate\_left(node-\/>left());}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ this-\/>rotate\_right(node);}
+\DoxyCodeLine{00783\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 直接右旋}}
+\DoxyCodeLine{00785\ \ \ \ \ \ \ \ \ this-\/>rotate\_right(node);}
+\DoxyCodeLine{00786\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00787\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ node-\/>parent();}
+\DoxyCodeLine{00788\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (balance\_factor\ <\ -\/1)\ \{}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \textcolor{comment}{//\ 右偏树}}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ child\_balance\_factor\ =\ node-\/>right()-\/>get\_balance\_factor();}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (child\_balance\_factor\ >\ 0)\ \{}
+\DoxyCodeLine{00792\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 先右旋，后左旋}}
+\DoxyCodeLine{00793\ \ \ \ \ \ \ \ \ this-\/>rotate\_right(node-\/>right());}
+\DoxyCodeLine{00794\ \ \ \ \ \ \ \ \ this-\/>rotate\_left(node);}
+\DoxyCodeLine{00795\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00796\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 直接左旋}}
+\DoxyCodeLine{00797\ \ \ \ \ \ \ \ \ this-\/>rotate\_left(node);}
+\DoxyCodeLine{00798\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00799\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ node-\/>parent();}
+\DoxyCodeLine{00800\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00801\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ node;}
+\DoxyCodeLine{00802\ \ \ \ \ \}}
+\DoxyCodeLine{00803\ \ \ \}}
+\DoxyCodeLine{00804\ }
+\DoxyCodeLine{00805\ \ \ node\_T\ *push(T\ val)\ \{}
+\DoxyCodeLine{00806\ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>root\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00807\ \ \ \ \ \ \ this-\/>root\ =\ \textcolor{keyword}{new}\ node\_T(val);}
+\DoxyCodeLine{00808\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>root;}
+\DoxyCodeLine{00809\ \ \ \ \ \}}
+\DoxyCodeLine{00810\ }
+\DoxyCodeLine{00811\ \ \ \ \ node\_T\ *newnode\ =\ \textcolor{keyword}{dynamic\_cast<}base\_type\ *\textcolor{keyword}{>}(\textcolor{keyword}{this})-\/>push(val);}
+\DoxyCodeLine{00812\ \ \ \ \ \textcolor{keywordflow}{if}\ (!newnode)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00813\ }
+\DoxyCodeLine{00814\ \ \ \ \ \textcolor{comment}{//\ 自底向上旋转}}
+\DoxyCodeLine{00815\ \ \ \ \ node\_T\ *cur\ =\ newnode;}
+\DoxyCodeLine{00816\ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (cur\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00818\ \ \ \ \ \ \ this-\/>rotate(cur);}
+\DoxyCodeLine{00819\ \ \ \ \ \ \ cur\ =\ cur-\/>parent();}
+\DoxyCodeLine{00820\ \ \ \ \ \}}
+\DoxyCodeLine{00821\ \ \ \ \ \textcolor{keywordflow}{return}\ newnode;}
+\DoxyCodeLine{00822\ \ \ \}}
+\DoxyCodeLine{00823\ }
+\DoxyCodeLine{00824\ \ \ \textcolor{keywordtype}{void}\ erase(node\_T\ *node)\ \{}
+\DoxyCodeLine{00825\ \ \ \ \ \textcolor{keywordflow}{if}\ (!node)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00826\ \ \ \ \ node\_T\ *delnode\ =\ \textcolor{keyword}{dynamic\_cast<}base\_type\ *\textcolor{keyword}{>}(\textcolor{keyword}{this})-\/>erase(node);}
+\DoxyCodeLine{00827\ \ \ \ \ node\_T\ *cur\ =\ delnode;}
+\DoxyCodeLine{00828\ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{00829\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (cur\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00830\ \ \ \ \ \ \ this-\/>rotate(cur);}
+\DoxyCodeLine{00831\ \ \ \ \ \ \ cur\ =\ cur-\/>parent();}
+\DoxyCodeLine{00832\ \ \ \ \ \}}
+\DoxyCodeLine{00833\ \ \ \}}
+\DoxyCodeLine{00834\ }
+\DoxyCodeLine{00835\ \ \ \textcolor{keywordtype}{void}\ remove(T\ val)\ \{}
+\DoxyCodeLine{00836\ \ \ \ \ this-\/>erase(this-\/>search\_value(val));}
+\DoxyCodeLine{00837\ \ \ \}}
+\DoxyCodeLine{00838\ \};}
+\DoxyCodeLine{00839\ }
+\DoxyCodeLine{00840\ \textcolor{comment}{//\ *************************************}}
+\DoxyCodeLine{00841\ \textcolor{comment}{//\ *************\ RB\_tree\_t\ *************}}
+\DoxyCodeLine{00842\ \textcolor{comment}{//\ *************************************}}
+\DoxyCodeLine{00843\ }
+\DoxyCodeLine{00844\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00845\ \textcolor{keyword}{class\ }RB\_treenode\_t\ :\ \textcolor{keyword}{public}\ treenode\_t<T>\ \{}
+\DoxyCodeLine{00846\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00847\ \ \ RB\_treenode\_t(T\ val)\ :\ treenode\_t<T>(val)\ \{\}}
+\DoxyCodeLine{00848\ }
+\DoxyCodeLine{00849\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{inline}\ RB\_treenode\_t<T>*\&\ left()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00850\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{static\_cast<}RB\_treenode\_t<T>\ **\textcolor{keyword}{>}\ (\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\ *\textcolor{keyword}{>}(\&this-\/>\_left));}
+\DoxyCodeLine{00851\ \ \ \}}
+\DoxyCodeLine{00852\ }
+\DoxyCodeLine{00853\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{inline}\ RB\_treenode\_t<T>*\&\ right()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00854\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{static\_cast<}RB\_treenode\_t<T>\ **\textcolor{keyword}{>}\ (\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\ *\textcolor{keyword}{>}(\&this-\/>\_right));}
+\DoxyCodeLine{00855\ \ \ \}}
+\DoxyCodeLine{00856\ }
+\DoxyCodeLine{00857\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{inline}\ RB\_treenode\_t<T>*\&\ parent()\ \textcolor{keyword}{noexcept}\ \{}
+\DoxyCodeLine{00858\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{static\_cast<}RB\_treenode\_t<T>\ **\textcolor{keyword}{>}\ (\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\ *\textcolor{keyword}{>}(\&this-\/>\_parent));}
+\DoxyCodeLine{00859\ \ \ \}}
+\DoxyCodeLine{00860\ }
+\DoxyCodeLine{00861\ \ \ \textcolor{keyword}{enum}\ \{\ COLOR\_BLACK\ =\ 0,\ COLOR\_RED\ \}\ color;}
+\DoxyCodeLine{00862\ \};}
+\DoxyCodeLine{00863\ }
+\DoxyCodeLine{00864\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ node\_T\ =\ RB\_treenode\_t<T>\ >}
+\DoxyCodeLine{00865\ \textcolor{keyword}{class\ }RB\_tree\_t\ :\ \textcolor{keyword}{public}\ search\_tree\_t<T,\ node\_T>\ \{}
+\DoxyCodeLine{00866\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00867\ \ \ \textcolor{keyword}{using\ }base\_type\ =\ search\_tree\_t<T,\ node\_T>;}
+\DoxyCodeLine{00868\ }
+\DoxyCodeLine{00869\ \ \ \textcolor{keywordtype}{void}\ maintain(node\_T\ *node)\ \{}
+\DoxyCodeLine{00870\ \ \ \ \ \textcolor{keywordflow}{if}\ (node\ ==\ this-\/>root)\ \{}
+\DoxyCodeLine{00871\ \ \ \ \ \ \ node-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{00872\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>color\ ==\ node\_T::COLOR\_BLACK)\ \{}
+\DoxyCodeLine{00873\ \ \ \ \ \ \ node-\/>color\ =\ node\_T::COLOR\_RED;}
+\DoxyCodeLine{00874\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{\textcolor{comment}{//\ 父节点是红色，一定有黑色祖父节点}}
+\DoxyCodeLine{00875\ \ \ \ \ \ \ node\_T\ *uncle\ =\ this-\/>\mbox{\hyperlink{classbintree__t_ae775317226ee86db9ed58a39ec33f804}{get\_sibling}}(node-\/>parent());}
+\DoxyCodeLine{00876\ \ \ \ \ \ \ node\_T\ *grandparent\ =\ node-\/>parent()-\/>parent();}
+\DoxyCodeLine{00877\ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_uncle\_black\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00878\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!uncle)}
+\DoxyCodeLine{00879\ \ \ \ \ \ \ \ \ is\_uncle\_black\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00880\ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (uncle-\/>color\ ==\ node\_T::COLOR\_BLACK)\ }
+\DoxyCodeLine{00881\ \ \ \ \ \ \ \ \ is\_uncle\_black\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00882\ }
+\DoxyCodeLine{00883\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_uncle\_black)\ \{}
+\DoxyCodeLine{00884\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 叔节点是黑色\ NIL}}
+\DoxyCodeLine{00885\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 我红，父黑，祖红，旋转祖}}
+\DoxyCodeLine{00886\ \ \ \ \ \ \ \ \ node-\/>color\ =\ node\_T::COLOR\_RED;}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{00888\ \ \ \ \ \ \ \ \ grandparent-\/>color\ =\ node\_T::COLOR\_RED;}
+\DoxyCodeLine{00889\ }
+\DoxyCodeLine{00890\ \ \ \ \ \ \ \ \ grandparent-\/>get\_height();}
+\DoxyCodeLine{00891\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00892\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node\ ==\ node-\/>parent()-\/>left()}
+\DoxyCodeLine{00893\ \ \ \ \ \ \ \ \ \ \&\&\ node-\/>parent()\ ==\ grandparent-\/>left())\ \{}
+\DoxyCodeLine{00894\ \ \ \ \ \ \ \ \ \ \ this-\/>rotate\_right(grandparent);}
+\DoxyCodeLine{00895\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (node\ ==\ node-\/>parent()-\/>right()}
+\DoxyCodeLine{00896\ \ \ \ \ \ \ \ \ \ \ \ \ \&\&\ node-\/>parent()\ ==\ grandparent-\/>left())\ \{}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ \ \ \ \ this-\/>rotate\_left(node-\/>parent());}
+\DoxyCodeLine{00898\ \ \ \ \ \ \ \ \ \ \ this-\/>rotate\_right(grandparent);}
+\DoxyCodeLine{00899\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (node\ ==\ node-\/>parent()-\/>left()}
+\DoxyCodeLine{00900\ \ \ \ \ \ \ \ \ \ \ \ \ \&\&\ node-\/>parent()\ ==\ grandparent-\/>right())\ \{}
+\DoxyCodeLine{00901\ \ \ \ \ \ \ \ \ \ \ this-\/>rotate\_right(node-\/>parent());}
+\DoxyCodeLine{00902\ \ \ \ \ \ \ \ \ \ \ this-\/>rotate\_left(grandparent);}
+\DoxyCodeLine{00903\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ \}\ else\ if\ (node\ ==\ node-\/>parent()-\/>right()\ }}
+\DoxyCodeLine{00904\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \&\&\ node-\/>parent()\ ==\ grandparent-\/>right())\ \{\ */}}
+\DoxyCodeLine{00905\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00906\ \ \ \ \ \ \ \ \ \ \ this-\/>rotate\_left(grandparent);}
+\DoxyCodeLine{00907\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00908\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00909\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 叔节点是红色}}
+\DoxyCodeLine{00910\ \ \ \ \ \ \ \ \ node-\/>color\ =\ node\_T::COLOR\_RED;}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ \ \ uncle-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{00913\ \ \ \ \ \ \ \ \ this-\/>maintain(grandparent);}
+\DoxyCodeLine{00914\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00915\ \ \ \ \ \}}
+\DoxyCodeLine{00916\ \ \ \}}
+\DoxyCodeLine{00917\ }
+\DoxyCodeLine{00918\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00919\ \ \ RB\_tree\_t()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00920\ \ \ RB\_tree\_t(\textcolor{keyword}{typename}\ base\_type::comparer\_type\ cmp)}
+\DoxyCodeLine{00921\ \ \ \ \ :\ base\_type(cmp)\ \{\}}
+\DoxyCodeLine{00922\ \ \ RB\_tree\_t(\textcolor{keyword}{typename}\ base\_type::comparer\_type\ cmp,}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ base\_type::equaler\_type\ \ eql)}
+\DoxyCodeLine{00924\ \ \ \ \ :\ base\_type(cmp,\ eql)\ \{\}}
+\DoxyCodeLine{00925\ }
+\DoxyCodeLine{00926\ \ \ node\_T\ *push(T\ val)\ \{}
+\DoxyCodeLine{00927\ \ \ \ \ node\_T\ *newnode\ =\ \textcolor{keyword}{dynamic\_cast<}base\_type\ *\textcolor{keyword}{>}(\textcolor{keyword}{this})-\/>push(val);}
+\DoxyCodeLine{00928\ \ \ \ \ this-\/>maintain(newnode);}
+\DoxyCodeLine{00929\ }
+\DoxyCodeLine{00930\ \ \ \ \ \textcolor{keywordflow}{return}\ newnode;}
+\DoxyCodeLine{00931\ \ \ \}}
+\DoxyCodeLine{00932\ }
+\DoxyCodeLine{00933\ \ \ node\_T\ *erase(node\_T\ *node)\ \{}
+\DoxyCodeLine{00934\ \ \ \ \ \textcolor{keywordflow}{if}\ (node\ ==\ this-\/>root\ \&\&\ node-\/>get\_degree()\ ==\ 0)\ \{}
+\DoxyCodeLine{00935\ \ \ \ \ \ \ this-\/>root\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00936\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{00937\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00938\ \ \ \ \ \}}
+\DoxyCodeLine{00939\ }
+\DoxyCodeLine{00940\ \ \ \ \ node\_T\ *sibling\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00941\ }
+\DoxyCodeLine{00942\ \ \ \ \ \textcolor{comment}{//\ 1.\ node\ 红，无子}}
+\DoxyCodeLine{00943\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>color\ ==\ node\_T::COLOR\_RED}
+\DoxyCodeLine{00944\ \ \ \ \ \ \ \ \ \&\&\ node-\/>get\_degree()\ ==\ 0)\ \{}
+\DoxyCodeLine{00945\ \ \ \ \ \ \ \textcolor{comment}{//\ 直接摘除}}
+\DoxyCodeLine{00946\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)}
+\DoxyCodeLine{00947\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00948\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00949\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00950\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{00951\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00952\ \ \ \ \ \}}
+\DoxyCodeLine{00953\ }
+\DoxyCodeLine{00954\ \ \ \ \ \textcolor{comment}{//\ 2.\ node黑，兄弟无子}}
+\DoxyCodeLine{00955\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>get\_degree()\ ==\ 0}
+\DoxyCodeLine{00956\ \ \ \ \ \ \ \ \ \&\&\ node-\/>color\ ==\ node\_T::COLOR\_BLACK}
+\DoxyCodeLine{00957\ \ \ \ \ \ \ \ \ \&\&\ (sibling\ =\ this-\/>get\_sibling(node))-\/>get\_degree()\ ==\ 0)\ \{}
+\DoxyCodeLine{00958\ \ \ \ \ \ \ \textcolor{comment}{//\ 此时兄弟必黑，父必红}}
+\DoxyCodeLine{00959\ \ \ \ \ \ \ sibling-\/>color\ =\ node\_T::COLOR\_RED;}
+\DoxyCodeLine{00960\ \ \ \ \ \ \ node-\/>parent()-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{00961\ }
+\DoxyCodeLine{00962\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)}
+\DoxyCodeLine{00963\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00964\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00965\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00966\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{00967\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00968\ \ \ \ \ \}}
+\DoxyCodeLine{00969\ }
+\DoxyCodeLine{00970\ \ \ \ \ \textcolor{comment}{//\ 3.\ node黑，兄弟度1，兄弟与侄子同侧}}
+\DoxyCodeLine{00971\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>get\_degree()\ ==\ 0}
+\DoxyCodeLine{00972\ \ \ \ \ \ \ \ \ \&\&\ node-\/>color\ ==\ node\_T::COLOR\_BLACK}
+\DoxyCodeLine{00973\ \ \ \ \ \ \ \ \ \&\&\ (sibling\ =\ this-\/>get\_sibling(node))-\/>get\_degree()\ ==\ 1}
+\DoxyCodeLine{00974\ \ \ \ \ \ \ \ \ \&\&\ (}
+\DoxyCodeLine{00975\ \ \ \ \ \ \ \ \ \ \ \ \ (sibling\ ==\ node-\/>parent()-\/>left()\ \&\&\ sibling-\/>left())}
+\DoxyCodeLine{00976\ \ \ \ \ \ \ \ \ \ \ \ \ ||}
+\DoxyCodeLine{00977\ \ \ \ \ \ \ \ \ \ \ \ \ (sibling\ ==\ node-\/>parent()-\/>right()\ \&\&\ sibling-\/>right())}
+\DoxyCodeLine{00978\ \ \ \ \ \ \ \ \ \ \ ))\ \{}
+\DoxyCodeLine{00979\ \ \ \ \ \ \ node\_T\ *nephew\ =\ sibling-\/>left()\ ?\ sibling-\/>left()\ :\ sibling-\/>right();}
+\DoxyCodeLine{00980\ \ \ \ \ \ \ sibling-\/>color\ =\ node-\/>parent()-\/>color;}
+\DoxyCodeLine{00981\ \ \ \ \ \ \ node-\/>parent()-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ nephew-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{00983\ }
+\DoxyCodeLine{00984\ \ \ \ \ \ \ \textcolor{comment}{//\ 删除node}}
+\DoxyCodeLine{00985\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)}
+\DoxyCodeLine{00986\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00987\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00988\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{00990\ \ \ \ \ \ \ node\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00991\ }
+\DoxyCodeLine{00992\ \ \ \ \ \ \ node\_T\ *oriparent\ =\ sibling-\/>parent();}
+\DoxyCodeLine{00993\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (nephew\ ==\ sibling-\/>left())}
+\DoxyCodeLine{00994\ \ \ \ \ \ \ \ \ this-\/>rotate\_right(sibling-\/>parent());}
+\DoxyCodeLine{00995\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00996\ \ \ \ \ \ \ \ \ this-\/>rotate\_left(sibling-\/>parent());}
+\DoxyCodeLine{00997\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oriparent;}
+\DoxyCodeLine{00998\ \ \ \ \ \}}
+\DoxyCodeLine{00999\ }
+\DoxyCodeLine{01000\ \ \ \ \ \textcolor{comment}{//\ 4.\ node黑，兄弟度1，兄弟与侄子不同侧}}
+\DoxyCodeLine{01001\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>get\_degree()\ ==\ 0}
+\DoxyCodeLine{01002\ \ \ \ \ \ \ \ \ \&\&\ node-\/>color\ ==\ node\_T::COLOR\_BLACK}
+\DoxyCodeLine{01003\ \ \ \ \ \ \ \ \ \&\&\ (sibling\ =\ this-\/>get\_sibling(node))-\/>get\_degree()\ ==\ 1}
+\DoxyCodeLine{01004\ \ \ \ \ \ \ \ \ \&\&\ (}
+\DoxyCodeLine{01005\ \ \ \ \ \ \ \ \ \ \ \ \ (sibling\ ==\ node-\/>parent()-\/>left()\ \&\&\ sibling-\/>right())}
+\DoxyCodeLine{01006\ \ \ \ \ \ \ \ \ \ \ \ \ ||}
+\DoxyCodeLine{01007\ \ \ \ \ \ \ \ \ \ \ \ \ (sibling\ ==\ node-\/>parent()-\/>right()\ \&\&\ sibling-\/>left())}
+\DoxyCodeLine{01008\ \ \ \ \ \ \ \ \ \ \ ))\ \{}
+\DoxyCodeLine{01009\ \ \ \ \ \ \ \textcolor{comment}{//\ 此时侄子必为红色}}
+\DoxyCodeLine{01010\ \ \ \ \ \ \ node\_T\ *nephew\ =\ sibling-\/>left()\ ?\ sibling-\/>left()\ :\ sibling-\/>right();}
+\DoxyCodeLine{01011\ \ \ \ \ \ \ }
+\DoxyCodeLine{01012\ \ \ \ \ \ \ \textcolor{comment}{//\ 删除node}}
+\DoxyCodeLine{01013\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)}
+\DoxyCodeLine{01014\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01015\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01016\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01017\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{01018\ }
+\DoxyCodeLine{01019\ \ \ \ \ \ \ \textcolor{comment}{//\ 交换兄弟和侄子的颜色}}
+\DoxyCodeLine{01020\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ \_color\_tmp\ =\ sibling-\/>color;}
+\DoxyCodeLine{01021\ \ \ \ \ \ \ sibling-\/>color\ =\ nephew-\/>color;}
+\DoxyCodeLine{01022\ \ \ \ \ \ \ nephew-\/>color\ =\ \_color\_tmp;}
+\DoxyCodeLine{01023\ }
+\DoxyCodeLine{01024\ \ \ \ \ \ \ \textcolor{comment}{//\ 旋转}}
+\DoxyCodeLine{01025\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sibling\ ==\ sibling-\/>parent()-\/>left())}
+\DoxyCodeLine{01026\ \ \ \ \ \ \ \ \ this-\/>rotate\_left(sibling);}
+\DoxyCodeLine{01027\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01028\ \ \ \ \ \ \ \ \ this-\/>rotate\_right(sibling);}
+\DoxyCodeLine{01029\ }
+\DoxyCodeLine{01030\ \ \ \ \ \ \ \textcolor{comment}{//\ 现在兄弟节点和侄子节点互换了}}
+\DoxyCodeLine{01031\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ \_node\_tmp\ =\ sibling;}
+\DoxyCodeLine{01032\ \ \ \ \ \ \ sibling\ =\ nephew;}
+\DoxyCodeLine{01033\ \ \ \ \ \ \ nephew\ =\ \_node\_tmp;}
+\DoxyCodeLine{01034\ }
+\DoxyCodeLine{01035\ \ \ \ \ \ \ sibling-\/>color\ =\ sibling-\/>parent()-\/>color;}
+\DoxyCodeLine{01036\ \ \ \ \ \ \ sibling-\/>parent()-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{01037\ \ \ \ \ \ \ nephew-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{01038\ }
+\DoxyCodeLine{01039\ \ \ \ \ \ \ \textcolor{comment}{//\ 再次旋转}}
+\DoxyCodeLine{01040\ \ \ \ \ \ \ node\_T\ *oriparent\ =\ sibling-\/>parent();}
+\DoxyCodeLine{01041\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sibling\ ==\ sibling-\/>parent()-\/>left())}
+\DoxyCodeLine{01042\ \ \ \ \ \ \ \ \ this-\/>rotate\_right(sibling);}
+\DoxyCodeLine{01043\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01044\ \ \ \ \ \ \ \ \ this-\/>rotate\_left(sibling);}
+\DoxyCodeLine{01045\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oriparent;}
+\DoxyCodeLine{01046\ \ \ \ \ \}}
+\DoxyCodeLine{01047\ }
+\DoxyCodeLine{01048\ \ \ \ \ \textcolor{comment}{//\ 5.\ node，兄弟及其子节点全黑}}
+\DoxyCodeLine{01049\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>get\_degree()\ ==\ 0}
+\DoxyCodeLine{01050\ \ \ \ \ \ \ \ \ \&\&\ (sibling\ =\ this-\/>get\_sibling(node))-\/>color\ ==\ node\_T::COLOR\_BLACK}
+\DoxyCodeLine{01051\ \ \ \ \ \ \ \ \ \&\&\ (}
+\DoxyCodeLine{01052\ \ \ \ \ \ \ \ \ \ \ \ \ (sibling-\/>left()\ ==\ \textcolor{keyword}{nullptr}\ ?\ \textcolor{keyword}{true}\ :\ sibling-\/>left()-\/>color\ ==\ node\_T::COLOR\_BLACK)\ }
+\DoxyCodeLine{01053\ \ \ \ \ \ \ \ \ \ \ \ \ \&\&}
+\DoxyCodeLine{01054\ \ \ \ \ \ \ \ \ \ \ \ \ (sibling-\/>right()\ ==\ \textcolor{keyword}{nullptr}\ ?\ \textcolor{keyword}{true}\ :\ sibling-\/>right()-\/>color\ ==\ node\_T::COLOR\_BLACK)}
+\DoxyCodeLine{01055\ \ \ \ \ \ \ \ \ \ \ ))\ \{}
+\DoxyCodeLine{01056\ \ \ \ \ \ \ \textcolor{comment}{//\ 互换颜色}}
+\DoxyCodeLine{01057\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ \_color\_tmp\ =\ sibling-\/>color;}
+\DoxyCodeLine{01058\ \ \ \ \ \ \ sibling-\/>color\ =\ sibling-\/>parent()-\/>color;}
+\DoxyCodeLine{01059\ \ \ \ \ \ \ sibling-\/>parent()-\/>color\ =\ \_color\_tmp;}
+\DoxyCodeLine{01060\ }
+\DoxyCodeLine{01061\ \ \ \ \ \ \ \textcolor{comment}{//\ 删除node}}
+\DoxyCodeLine{01062\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)}
+\DoxyCodeLine{01063\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01064\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01065\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01066\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{01067\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01068\ \ \ \ \ \}}
+\DoxyCodeLine{01069\ }
+\DoxyCodeLine{01070\ \ \ \ \ \textcolor{comment}{//\ 6.\ node黑，兄弟红，兄弟有两个子}}
+\DoxyCodeLine{01071\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>get\_degree()\ ==\ 0}
+\DoxyCodeLine{01072\ \ \ \ \ \ \ \ \ \&\&\ (sibling\ =\ this-\/>get\_sibling(node))-\/>color\ ==\ node\_T::COLOR\_RED}
+\DoxyCodeLine{01073\ \ \ \ \ \ \ \ \ \&\&\ sibling-\/>left()}
+\DoxyCodeLine{01074\ \ \ \ \ \ \ \ \ \&\&\ sibling-\/>right())\ \{}
+\DoxyCodeLine{01075\ \ \ \ \ \ \ \textcolor{comment}{//\ 交换父和兄的颜色}}
+\DoxyCodeLine{01076\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ \_color\_tmp\ =\ sibling-\/>color;}
+\DoxyCodeLine{01077\ \ \ \ \ \ \ sibling-\/>color\ =\ sibling-\/>parent()-\/>color;}
+\DoxyCodeLine{01078\ \ \ \ \ \ \ sibling-\/>parent()-\/>color\ =\ \_color\_tmp;}
+\DoxyCodeLine{01079\ }
+\DoxyCodeLine{01080\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node\ ==\ node-\/>parent()-\/>left())}
+\DoxyCodeLine{01081\ \ \ \ \ \ \ \ \ this-\/>rotate\_left(node-\/>parent());}
+\DoxyCodeLine{01082\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01083\ \ \ \ \ \ \ \ \ this-\/>rotate\_right(node-\/>parent());}
+\DoxyCodeLine{01084\ }
+\DoxyCodeLine{01085\ \ \ \ \ \ \ sibling\ =\ this-\/>\mbox{\hyperlink{classbintree__t_ae775317226ee86db9ed58a39ec33f804}{get\_sibling}}(node);}
+\DoxyCodeLine{01086\ \ \ \ \ \ \ \_color\_tmp\ =\ node-\/>parent()-\/>color;}
+\DoxyCodeLine{01087\ \ \ \ \ \ \ node-\/>parent()-\/>color\ =\ sibling-\/>color;}
+\DoxyCodeLine{01088\ \ \ \ \ \ \ sibling-\/>color\ =\ \_color\_tmp;}
+\DoxyCodeLine{01089\ }
+\DoxyCodeLine{01090\ \ \ \ \ \ \ \textcolor{comment}{//\ 删除node}}
+\DoxyCodeLine{01091\ \ \ \ \ \ \ node\_T\ *oriparent\ =\ node-\/>parent();}
+\DoxyCodeLine{01092\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node\ ==\ node-\/>parent()-\/>left())}
+\DoxyCodeLine{01093\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01094\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01095\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01096\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{01097\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ oriparent;}
+\DoxyCodeLine{01098\ \ \ \ \ \}}
+\DoxyCodeLine{01099\ }
+\DoxyCodeLine{01100\ \ \ \ \ \textcolor{comment}{//\ node度1，黑色}}
+\DoxyCodeLine{01101\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>get\_degree()\ ==\ 1}
+\DoxyCodeLine{01102\ \ \ \ \ \ \ \ \ \&\&\ node-\/>color\ ==\ node\_T::COLOR\_BLACK)\ \{}
+\DoxyCodeLine{01103\ \ \ \ \ \ \ node\_T\ *child\ =\ node-\/>left()\ ?\ node-\/>left()\ :\ node-\/>right();}
+\DoxyCodeLine{01104\ \ \ \ \ \ \ child-\/>color\ =\ node\_T::COLOR\_BLACK;}
+\DoxyCodeLine{01105\ }
+\DoxyCodeLine{01106\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent()-\/>left()\ ==\ node)}
+\DoxyCodeLine{01107\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>left()\ =\ child;}
+\DoxyCodeLine{01108\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01109\ \ \ \ \ \ \ \ \ node-\/>parent()-\/>right()\ =\ child;}
+\DoxyCodeLine{01110\ }
+\DoxyCodeLine{01111\ \ \ \ \ \ \ child-\/>parent()\ =\ node-\/>parent();}
+\DoxyCodeLine{01112\ }
+\DoxyCodeLine{01113\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ node;}
+\DoxyCodeLine{01114\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ child;}
+\DoxyCodeLine{01115\ \ \ \ \ \}}
+\DoxyCodeLine{01116\ }
+\DoxyCodeLine{01117\ \ \ \ \ \textcolor{comment}{//\ node度2}}
+\DoxyCodeLine{01118\ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>get\_degree()\ ==\ 2)\ \{}
+\DoxyCodeLine{01119\ \ \ \ \ \ \ \textcolor{comment}{//\ 找到左子树中的最大节点}}
+\DoxyCodeLine{01120\ \ \ \ \ \ \ node\_T\ *leftmax\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01121\ \ \ \ \ \ \ node\_T\ *cur\ =\ node-\/>left();}
+\DoxyCodeLine{01122\ }
+\DoxyCodeLine{01123\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;;)\ \{}
+\DoxyCodeLine{01124\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (cur-\/>right())}
+\DoxyCodeLine{01125\ \ \ \ \ \ \ \ \ \ \ cur\ =\ cur-\/>right();}
+\DoxyCodeLine{01126\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01127\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01128\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01129\ \ \ \ \ \ \ leftmax\ =\ cur;}
+\DoxyCodeLine{01130\ }
+\DoxyCodeLine{01131\ \ \ \ \ \ \ \textcolor{comment}{//\ 交换值}}
+\DoxyCodeLine{01132\ \ \ \ \ \ \ \textcolor{keyword}{auto}\ \_value\_tmp\ =\ std::move(leftmax-\/>value);}
+\DoxyCodeLine{01133\ \ \ \ \ \ \ leftmax-\/>value\ =\ std::move(node-\/>value);}
+\DoxyCodeLine{01134\ \ \ \ \ \ \ node-\/>value\ =\ std::move(\_value\_tmp);}
+\DoxyCodeLine{01135\ }
+\DoxyCodeLine{01136\ \ \ \ \ \ \ \textcolor{comment}{//\ 删leftmax}}
+\DoxyCodeLine{01137\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>erase(leftmax);}
+\DoxyCodeLine{01138\ \ \ \ \ \}}
+\DoxyCodeLine{01139\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{01140\ \ \ \}}
+\DoxyCodeLine{01141\ }
+\DoxyCodeLine{01142\ \ \ \textcolor{keywordtype}{void}\ remove(T\ val)\ \{}
+\DoxyCodeLine{01143\ \ \ \ \ node\_T\ *node\ =\ this-\/>search\_value(val);}
+\DoxyCodeLine{01144\ \ \ \ \ this-\/>erase(node);}
+\DoxyCodeLine{01145\ \ \ \}}
+\DoxyCodeLine{01146\ }
+\DoxyCodeLine{01147\ \ \ \textcolor{keywordtype}{void}\ print\_tree()\ \{}
+\DoxyCodeLine{01148\ \ \ \ \ this-\/>\mbox{\hyperlink{classbintree__t_a2a240a1b1d49ced3f5753792eaf8e384}{trav\_pre}}(}
+\DoxyCodeLine{01149\ \ \ \ \ \ \ []\ (node\_T\ *node,\ uint\_t\ level,\ left\_or\_right\_e\ lorr)\ \{}
+\DoxyCodeLine{01150\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_t\ i\ =\ 0;\ i\ <\ level;\ i++)}
+\DoxyCodeLine{01151\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}======|"{}};}
+\DoxyCodeLine{01152\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)b"{}};}
+\DoxyCodeLine{01153\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (lorr)\ \{}
+\DoxyCodeLine{01154\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ NODE\_ROOT:}
+\DoxyCodeLine{01155\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}===========\ print\_tree\ ==========\(\backslash\)nRT"{}};}
+\DoxyCodeLine{01156\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01157\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ NODE\_LEFT:}
+\DoxyCodeLine{01158\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[L]"{}};}
+\DoxyCodeLine{01159\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01160\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ NODE\_RIGHT:}
+\DoxyCodeLine{01161\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[R]"{}};}
+\DoxyCodeLine{01162\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{01163\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:;}
+\DoxyCodeLine{01164\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01165\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>color\ ==\ node\_T::COLOR\_RED)}
+\DoxyCodeLine{01166\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\ Red\ "{}};}
+\DoxyCodeLine{01167\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01168\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\ Black\ "{}};}
+\DoxyCodeLine{01169\ }
+\DoxyCodeLine{01170\ \ \ \ \ \ \ \ \ std::cout\ <<\ node-\/>value;}
+\DoxyCodeLine{01171\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (node-\/>parent())}
+\DoxyCodeLine{01172\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\ |P\ "{}}\ <<\ node-\/>parent()-\/>value\ <<\ std::endl;}
+\DoxyCodeLine{01173\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{01174\ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\ |P\ NUL"{}}\ <<\ std::endl;}
+\DoxyCodeLine{01175\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01176\ \ \ \ \ );}
+\DoxyCodeLine{01177\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Print\ OK."{}}\ <<\ std::endl;}
+\DoxyCodeLine{01178\ \ \ \}}
+\DoxyCodeLine{01179\ \};}
+\DoxyCodeLine{01180\ }
+\DoxyCodeLine{01181\ }
+\DoxyCodeLine{01182\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ BINTREE\_TREE\_HPP}}
+
+\end{DoxyCode}

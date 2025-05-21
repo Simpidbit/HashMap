@@ -1,0 +1,109 @@
+\doxysection{AVL\+\_\+tree\+\_\+t\texorpdfstring{$<$}{<} T, node\+\_\+T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{class_a_v_l__tree__t}{}\label{class_a_v_l__tree__t}\index{AVL\_tree\_t$<$ T, node\_T $>$@{AVL\_tree\_t$<$ T, node\_T $>$}}
+Inheritance diagram for AVL\+\_\+tree\+\_\+t\texorpdfstring{$<$}{<} T, node\+\_\+T \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_a_v_l__tree__t}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_a_v_l__tree__t_a8443217753c56109c758e2658f5a943a}\label{class_a_v_l__tree__t_a8443217753c56109c758e2658f5a943a} 
+{\bfseries AVL\+\_\+tree\+\_\+t} (typename base\+\_\+type\+::comparer\+\_\+type cmp)
+\item 
+\Hypertarget{class_a_v_l__tree__t_aab8ca14462c71c6390e3c0f98ba8ebba}\label{class_a_v_l__tree__t_aab8ca14462c71c6390e3c0f98ba8ebba} 
+{\bfseries AVL\+\_\+tree\+\_\+t} (typename base\+\_\+type\+::comparer\+\_\+type cmp, typename base\+\_\+type\+::equaler\+\_\+type eql)
+\item 
+\Hypertarget{class_a_v_l__tree__t_a021b8170066b5dcba720b54c8433ab10}\label{class_a_v_l__tree__t_a021b8170066b5dcba720b54c8433ab10} 
+node\+\_\+T \texorpdfstring{$\ast$}{*} {\bfseries rotate} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\item 
+\Hypertarget{class_a_v_l__tree__t_a8a36bad01d02adf13564e67d3d08a50b}\label{class_a_v_l__tree__t_a8a36bad01d02adf13564e67d3d08a50b} 
+node\+\_\+T \texorpdfstring{$\ast$}{*} {\bfseries push} (T val)
+\item 
+\Hypertarget{class_a_v_l__tree__t_a0c8d0c97cdc1a18d27a4de33eafd3b2e}\label{class_a_v_l__tree__t_a0c8d0c97cdc1a18d27a4de33eafd3b2e} 
+void {\bfseries erase} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\item 
+\Hypertarget{class_a_v_l__tree__t_a58d2197360a133387673d8a1add26a05}\label{class_a_v_l__tree__t_a58d2197360a133387673d8a1add26a05} 
+void {\bfseries remove} (T val)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classsearch__tree__t}{search\+\_\+tree\+\_\+t$<$ T, node\+\_\+\+T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries search\+\_\+tree\+\_\+t} (decltype(comparer) cmp)
+\item 
+{\bfseries search\+\_\+tree\+\_\+t} (decltype(comparer) cmp, decltype(equaler) eql)
+\item 
+void {\bfseries set\+\_\+replace\+\_\+policy} (decltype(replace\+\_\+policy) rp)
+\item 
+node\+\_\+T \texorpdfstring{$\ast$}{*} {\bfseries search\+\_\+value} (T val)
+\item 
+node\+\_\+T \texorpdfstring{$\ast$}{*} {\bfseries push} (T val)
+\item 
+void {\bfseries remove} (T val)
+\item 
+node\+\_\+T \texorpdfstring{$\ast$}{*} {\bfseries erase} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classbintree__t}{bintree\+\_\+t$<$ T, node\+\_\+\+T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+node\+\_\+T \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classbintree__t_ae775317226ee86db9ed58a39ec33f804}{get\+\_\+sibling}} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\begin{DoxyCompactList}\small\item\em 获取某个节点的兄弟节点. \end{DoxyCompactList}\item 
+void {\bfseries trav\+\_\+bfs} (trav\+\_\+action\+\_\+t action)
+\begin{DoxyCompactList}\small\item\em 层序遍历二叉树. \end{DoxyCompactList}\item 
+void {\bfseries trav\+\_\+pre} (trav\+\_\+action\+\_\+t action)
+\begin{DoxyCompactList}\small\item\em 前序遍历二叉树. \end{DoxyCompactList}\item 
+void {\bfseries trav\+\_\+in} (trav\+\_\+action\+\_\+t action)
+\begin{DoxyCompactList}\small\item\em 中序遍历二叉树 \end{DoxyCompactList}\item 
+void {\bfseries trav\+\_\+post} (trav\+\_\+action\+\_\+t action)
+\begin{DoxyCompactList}\small\item\em 后序遍历二叉树 \end{DoxyCompactList}\item 
+void {\bfseries print\+\_\+tree} ()
+\item 
+void {\bfseries rotate\+\_\+right} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\item 
+void {\bfseries rotate\+\_\+left} (node\+\_\+T \texorpdfstring{$\ast$}{*}node)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{classsearch__tree__t}{search\+\_\+tree\+\_\+t$<$ T, node\+\_\+\+T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classsearch__tree__t_a5dc8c4465115efce95622d8a6c56968d}\label{classsearch__tree__t_a5dc8c4465115efce95622d8a6c56968d} 
+enum \{ {\bfseries EQ\+\_\+\+REPLACE} = 0
+, {\bfseries EQ\+\_\+\+KEEP}
+ \}
+\item 
+using {\bfseries comparer\+\_\+type} = std\+::function$<$bool (const T \&a, const T \&b)$>$
+\item 
+using {\bfseries equaler\+\_\+type} = std\+::function$<$bool (const T \&a, const T \&b)$>$
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{classbintree__t}{bintree\+\_\+t$<$ T, node\+\_\+\+T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+using {\bfseries trav\+\_\+action\+\_\+t} = std\+::function$<$void (node\+\_\+T \texorpdfstring{$\ast$}{*}, uint\+\_\+t, left\+\_\+or\+\_\+right\+\_\+e)$>$
+\item 
+using {\bfseries node\+\_\+type} = node\+\_\+T
+\item 
+using {\bfseries value\+\_\+type} = T
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{classsearch__tree__t}{search\+\_\+tree\+\_\+t$<$ T, node\+\_\+\+T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+enum search\+\_\+tree\+\_\+t\+:: \{ ... \}  {\bfseries replace\+\_\+policy} = EQ\+\_\+\+REPLACE
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{classbintree__t}{bintree\+\_\+t$<$ T, node\+\_\+\+T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+node\+\_\+T \texorpdfstring{$\ast$}{*} {\bfseries root} = nullptr
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classsearch__tree__t}{search\+\_\+tree\+\_\+t$<$ T, node\+\_\+\+T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+comparer\+\_\+type {\bfseries comparer} = \mbox{[}$\,$\mbox{]} (const T \&a, const T \&b) -\/$>$ bool \{ return a $<$ b; \}
+\item 
+equaler\+\_\+type {\bfseries equaler} = \mbox{[}$\,$\mbox{]} (const T \&a, const T \&b) -\/$>$ bool \{ return a == b; \}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+bintree/tree.\+hpp\end{DoxyCompactItemize}

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['node_0',['node',['../structutils_1_1list_1_1node.html',1,'utils::list']]]
+  ['list_0',['list',['../classutils_1_1list.html',1,'utils']]]
 ];

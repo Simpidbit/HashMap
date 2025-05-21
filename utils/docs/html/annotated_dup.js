@@ -10,5 +10,11 @@ var annotated_dup =
       [ "static_deque", "classutils_1_1static__deque.html", "classutils_1_1static__deque" ],
       [ "utils_exception", "classutils_1_1utils__exception.html", null ],
       [ "vector", "classutils_1_1vector.html", "classutils_1_1vector" ]
-    ] ]
+    ] ],
+    [ "AVL_tree_t", "class_a_v_l__tree__t.html", null ],
+    [ "bintree_t", "classbintree__t.html", "classbintree__t" ],
+    [ "RB_tree_t", "class_r_b__tree__t.html", null ],
+    [ "RB_treenode_t", "class_r_b__treenode__t.html", null ],
+    [ "search_tree_t", "classsearch__tree__t.html", null ],
+    [ "treenode_t", "classtreenode__t.html", null ]
 ];

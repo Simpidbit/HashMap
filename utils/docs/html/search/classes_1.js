@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['bitmap_0',['bitmap',['../classutils_1_1bitmap.html',1,'utils']]]
+  ['avl_5ftree_5ft_0',['AVL_tree_t',['../class_a_v_l__tree__t.html',1,'']]]
 ];
