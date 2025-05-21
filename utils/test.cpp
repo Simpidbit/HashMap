@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "queue.hpp"
+#include "rbtree.hpp"
 
 using std::cout;
 using std::cin;
@@ -9,7 +10,8 @@ using std::endl;
 
 int main()
 {
-  utils::static_deque<int> *sdq = new utils::static_deque<int>;
+    utils::rbtree<int> tree;
+  //utils::static_deque<int> *sdq = new utils::static_deque<int>;
 
   /*
   int c, tmp;
