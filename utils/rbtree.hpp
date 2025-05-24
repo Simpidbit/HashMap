@@ -85,16 +85,25 @@ class rbtree : private _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
       return this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::search_value(val);
     }
 
-    void remove(const T &val) {
-      // TODO: Implement remove functionality
+    bool remove(const T &val) {
+      return this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::remove(val);
     }
 
-    void remove(T &&val) {
-      // TODO: Implement remove functionality  
+    bool remove(T &&val) {
+      return this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::remove(std::move(val));
     }
 
     unsigned long long size() const {
       return this->_size;
+    }
+
+    // Public access to traversal methods
+    void trav_in(typename _rbtree_hpp::RB_tree_t<T, rb_node<T>>::trav_action_t action) const {
+      this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::trav_in(action);
+    }
+
+    void trav_bfs(typename _rbtree_hpp::RB_tree_t<T, rb_node<T>>::trav_action_t action) const {
+      this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::trav_bfs(action);
     }
 
   private:

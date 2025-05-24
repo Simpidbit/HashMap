@@ -146,9 +146,19 @@ private:
      * @brief Find element in bucket considering comparison logic
      */
     typename bucket_type::node_type* find_in_bucket(bucket_type& bucket, const Key& key) {
-        // Create a dummy pair to search for
-        pair_type search_pair(key, mapped_type{});
-        return bucket.search_value(search_pair);
+        // Use in-order traversal to find the node with matching key
+        typename bucket_type::node_type* found_node = nullptr;
+        
+        bucket.trav_in([&found_node, &key](typename bucket_type::node_type* node, unsigned int level, 
+                                           _rbtree_hpp::left_or_right_e pos) {
+            (void)level; // Suppress unused parameter warning
+            (void)pos;   // Suppress unused parameter warning
+            if (node && node->value.first == key) {
+                found_node = node;
+            }
+        });
+        
+        return found_node;
     }
 
     /**
@@ -168,55 +178,50 @@ public:
     class iterator {
     private:
         HashMap* map_;
-        size_type bucket_index_;
-        typename bucket_type::node_type* node_;
+        std::vector<typename bucket_type::node_type*> all_nodes_;
+        size_t current_index_;
         
-        void advance_to_next() {
+        void collect_all_nodes() {
+            all_nodes_.clear();
             if (!map_) return;
             
-            // If we have a current node, try to find next node in current bucket
-            if (node_) {
-                // For now, we'll move to next bucket since rbtree doesn't provide in-order traversal
-                // This is a simplified implementation
-                node_ = nullptr;
-            }
-            
-            // Find next non-empty bucket
-            for (++bucket_index_; bucket_index_ < map_->bucket_capacity_; ++bucket_index_) {
-                if (map_->bucket_bitmap_.get(bucket_index_)) {
-                    // Found non-empty bucket, we need to get first element
-                    // For simplicity, we'll mark the bucket as having elements but not traverse the tree
-                    node_ = reinterpret_cast<typename bucket_type::node_type*>(1); // Non-null marker
-                    return;
+            // Traverse all buckets and collect nodes using in-order traversal
+            for (size_type i = 0; i < map_->bucket_capacity_; ++i) {
+                if (map_->bucket_bitmap_.get(i)) {
+                    auto& bucket = map_->buckets_[i];
+                    // Use in-order traversal to collect nodes from this bucket
+                    bucket.trav_in([this](typename bucket_type::node_type* node, unsigned int level, 
+                                          _rbtree_hpp::left_or_right_e pos) {
+                        if (node) {
+                            all_nodes_.push_back(node);
+                        }
+                    });
                 }
             }
-            
-            // Reached end
-            bucket_index_ = map_->bucket_capacity_;
-            node_ = nullptr;
         }
         
         pair_type* get_current_pair() const {
-            if (!map_ || !node_ || bucket_index_ >= map_->bucket_capacity_) {
+            if (!map_ || current_index_ >= all_nodes_.size()) {
                 return nullptr;
             }
-            
-            // Access the actual node value
-            if (node_ != reinterpret_cast<typename bucket_type::node_type*>(1)) {
-                // Real node pointer - return its value
-                return &(node_->value);
+            return &(all_nodes_[current_index_]->value);
+        }
+
+        // Helper method to create iterator for specific node
+        static iterator make_iterator_for_node(HashMap* map, typename bucket_type::node_type* target_node) {
+            iterator it(map, false);
+            if (!target_node) {
+                return iterator(map, true); // return end iterator
             }
             
-            // Marker node - need to find actual first element in bucket
-            if (map_->bucket_bitmap_.get(bucket_index_)) {
-                // For demonstration, create a temporary pair
-                // In a real implementation, we would traverse the tree to get the first element
-                static thread_local pair_type temp_pair;
-                temp_pair = std::make_pair(Key{}, mapped_type{});
-                return &temp_pair;
+            // Find the position of target_node in all_nodes_
+            for (size_t i = 0; i < it.all_nodes_.size(); ++i) {
+                if (it.all_nodes_[i] == target_node) {
+                    it.current_index_ = i;
+                    return it;
+                }
             }
-            
-            return nullptr;
+            return iterator(map, true); // return end iterator if not found
         }
         
     public:
@@ -228,32 +233,46 @@ public:
         
         friend class HashMap; // Allow HashMap to access private members
         
-        iterator(HashMap* map = nullptr, size_type bucket_idx = 0, typename bucket_type::node_type* node = nullptr)
-            : map_(map), bucket_index_(bucket_idx), node_(node) {
-            // If pointing to a bucket, ensure it's non-empty
-            if (map_ && bucket_idx < map_->bucket_capacity_ && !node_) {
-                if (map_->bucket_bitmap_.get(bucket_idx)) {
-                    node_ = reinterpret_cast<typename bucket_type::node_type*>(1); // Non-null marker
-                } else {
-                    // Find first non-empty bucket
-                    advance_to_next();
+        iterator(HashMap* map = nullptr, bool end_iterator = false) 
+            : map_(map), current_index_(0) {
+            if (map_ && !end_iterator) {
+                collect_all_nodes();
+                // If no nodes found, make this an end iterator
+                if (all_nodes_.empty()) {
+                    current_index_ = 0;
+                    map_ = nullptr; // Mark as end
                 }
+            } else {
+                // End iterator
+                map_ = nullptr;
+                current_index_ = 0;
             }
         }
         
         iterator& operator++() {
-            advance_to_next();
+            if (map_ && current_index_ < all_nodes_.size()) {
+                ++current_index_;
+                if (current_index_ >= all_nodes_.size()) {
+                    // Reached end
+                    map_ = nullptr;
+                }
+            }
             return *this;
         }
         
         iterator operator++(int) {
             iterator tmp = *this;
-            advance_to_next();
+            ++(*this);
             return tmp;
         }
         
         bool operator==(const iterator& other) const {
-            return map_ == other.map_ && bucket_index_ == other.bucket_index_ && node_ == other.node_;
+            // Two end iterators are equal
+            if (!map_ && !other.map_) return true;
+            // One end iterator and one not are not equal
+            if (!map_ || !other.map_) return false;
+            // Both valid iterators - compare map and index
+            return map_ == other.map_ && current_index_ == other.current_index_;
         }
         
         bool operator!=(const iterator& other) const {
@@ -421,7 +440,7 @@ public:
         if (existing) {
             // Update existing value
             update_node_value(existing, value);
-            return std::make_pair(iterator(this, bucket_idx, existing), false);
+            return std::make_pair(iterator::make_iterator_for_node(this, existing), false);
         }
         
         // Insert new element
@@ -429,7 +448,7 @@ public:
         bucket_bitmap_.set(bucket_idx, true);
         ++size_;
         
-        return std::make_pair(iterator(this, bucket_idx, new_node), true);
+        return std::make_pair(iterator::make_iterator_for_node(this, new_node), true);
     }
 
     /**
@@ -446,14 +465,14 @@ public:
         auto* existing = find_in_bucket(bucket, key);
         if (existing) {
             update_node_value(existing, std::move(value));
-            return std::make_pair(iterator(this, bucket_idx, existing), false);
+            return std::make_pair(iterator::make_iterator_for_node(this, existing), false);
         }
         
         auto* new_node = bucket.push(std::make_pair(std::move(key), std::move(value)));
         bucket_bitmap_.set(bucket_idx, true);
         ++size_;
         
-        return std::make_pair(iterator(this, bucket_idx, new_node), true);
+        return std::make_pair(iterator::make_iterator_for_node(this, new_node), true);
     }
 
     /**
@@ -466,7 +485,14 @@ public:
         
         auto* node = find_in_bucket(bucket, key);
         if (node) {
-            return iterator(this, bucket_idx, node);
+            // Create an iterator and find the position of this key
+            iterator it = begin();
+            while (it != end()) {
+                if (it->first == key) {
+                    return it;
+                }
+                ++it;
+            }
         }
         
         // Multi-bucket search: check if element might be in other buckets
@@ -482,7 +508,14 @@ public:
                 bucket_type& alt_bucket = buckets_[alt_bucket_idx];
                 auto* alt_node = find_in_bucket(alt_bucket, key);
                 if (alt_node) {
-                    return iterator(this, alt_bucket_idx, alt_node);
+                    // Create an iterator and find the position of this key
+                    iterator it = begin();
+                    while (it != end()) {
+                        if (it->first == key) {
+                            return it;
+                        }
+                        ++it;
+                    }
                 }
             }
         }
@@ -494,15 +527,36 @@ public:
      * @brief Remove element by key
      */
     bool erase(const Key& key) {
-        auto it = find(key);
-        if (it != end()) {
-            // Remove from bucket
-            size_type bucket_idx = it.bucket_index_;
-            bucket_type& bucket = buckets_[bucket_idx];
+        // Search in primary bucket first
+        size_type bucket_idx = get_bucket_index(key);
+        bucket_type& bucket = buckets_[bucket_idx];
+        
+        // Collect all elements from the bucket except the one to remove
+        bool found = false;
+        std::vector<pair_type> bucket_elements;
+        
+        bucket.trav_in([&bucket_elements, &key, &found](typename bucket_type::node_type* node, unsigned int level, 
+                                          _rbtree_hpp::left_or_right_e pos) {
+            (void)level; // Suppress unused parameter warning
+            (void)pos;   // Suppress unused parameter warning
             
-            // Create search pair and remove it
-            pair_type search_pair(key, mapped_type{});
-            bucket.remove(search_pair);
+            if (node && node->value.first != key) {
+                // Keep this element
+                bucket_elements.push_back(node->value);
+            } else if (node) {
+                // Found the element to remove
+                found = true;
+            }
+        });
+        
+        if (found) {
+            // Create a new empty bucket
+            bucket = bucket_type();
+            
+            // Reinsert all elements except the one we removed
+            for (const auto& pair : bucket_elements) {
+                bucket.push(pair);
+            }
             
             // Update bitmap if bucket becomes empty
             if (bucket.size() == 0) {
@@ -512,6 +566,54 @@ public:
             --size_;
             return true;
         }
+        
+        // Multi-bucket search: check if element might be in other buckets
+        size_type capacity = bucket_capacity_;
+        while (capacity > 16) {  // Search previous capacity levels
+            capacity /= 2;
+            size_type alt_bucket_idx = hasher_.hash_linear(&key, sizeof(Key), 0, capacity - 1);
+            
+            if (alt_bucket_idx != bucket_idx && alt_bucket_idx < bucket_capacity_) {
+                bucket_type& alt_bucket = buckets_[alt_bucket_idx];
+                
+                // Collect all elements from the alternative bucket except the one to remove
+                found = false;
+                std::vector<pair_type> alt_bucket_elements;
+                
+                alt_bucket.trav_in([&alt_bucket_elements, &key, &found](typename bucket_type::node_type* node, unsigned int level, 
+                                                      _rbtree_hpp::left_or_right_e pos) {
+                    (void)level; // Suppress unused parameter warning
+                    (void)pos;   // Suppress unused parameter warning
+                    
+                    if (node && node->value.first != key) {
+                        // Keep this element
+                        alt_bucket_elements.push_back(node->value);
+                    } else if (node) {
+                        // Found the element to remove
+                        found = true;
+                    }
+                });
+                
+                if (found) {
+                    // Create a new empty bucket
+                    alt_bucket = bucket_type();
+                    
+                    // Reinsert all elements except the one we removed
+                    for (const auto& pair : alt_bucket_elements) {
+                        alt_bucket.push(pair);
+                    }
+                    
+                    // Update bitmap if bucket becomes empty
+                    if (alt_bucket.size() == 0) {
+                        bucket_bitmap_.set(alt_bucket_idx, false);
+                    }
+                    
+                    --size_;
+                    return true;
+                }
+            }
+        }
+        
         return false;
     }
 
@@ -528,9 +630,11 @@ public:
         iterator next_it = it;
         ++next_it;
         
-        // Remove the element
+        // Remove the element using the key version of erase
         erase(key);
         
+        // Return the saved next iterator regardless of whether erase succeeded
+        // This maintains STL-like behavior
         return next_it;
     }
 
@@ -549,6 +653,13 @@ public:
      * @brief Access element by key (with insertion if not found)
      */
     mapped_type& operator[](const Key& key) {
+        // First try to find existing key
+        auto it = find(key);
+        if (it != end()) {
+            return it->second;
+        }
+        
+        // Key doesn't exist, insert with default value
         auto result = insert(key, mapped_type{});
         return result.first->second;
     }
@@ -585,21 +696,14 @@ public:
      * @brief Get iterator to beginning
      */
     iterator begin() {
-        // Find first non-empty bucket
-        for (size_type i = 0; i < bucket_capacity_; ++i) {
-            if (bucket_bitmap_.get(i)) {
-                // Return iterator to first element in this bucket
-                return iterator(this, i, nullptr);  // Placeholder
-            }
-        }
-        return end();
+        return iterator(this, false);  // false = not an end iterator
     }
 
     /**
      * @brief Get iterator to end
      */
     iterator end() {
-        return iterator(this, bucket_capacity_, nullptr);
+        return iterator(this, true);   // true = end iterator
     }
 
     /**

@@ -1,0 +1,48 @@
+# 编译生成的文件
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
+
+# 测试相关文件
+test/
+tests/
+*_test.*
+*_tests.*
+*Test.*
+*Tests.*
+test_*
+debug_*
+
+# 临时文件
+*.tmp
+*.temp
+*~
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 编译目录
+build/
+debug/
+release/
+bin/
+obj/
+target/
+cmake-build-*/
+
+# 日志文件
+*.log
+logs/
+
+# 缓存文件
+.cache/
+
+# macOS 调试符号文件
+*.dSYM/
