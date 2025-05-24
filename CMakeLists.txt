@@ -16,7 +16,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # 查找源文件
-file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/basic/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/functional/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/stl_compliance/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/performance/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/test/hash/*.cpp"
+)
 file(GLOB DEBUG_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/debug/*.cpp")
 
 # 主要库文件

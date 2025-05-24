@@ -117,6 +117,8 @@ class rbtree : private _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
         // Use BFS traversal to copy all nodes
         this->root = nullptr;
         other.trav_bfs([this](node_type* node, unsigned int level, _rbtree_hpp::left_or_right_e pos) {
+            (void)level; // 抑制未使用参数警告
+            (void)pos;   // 抑制未使用参数警告
             if (node) {
                 this->push(node->value);
             }
@@ -127,6 +129,9 @@ class rbtree : private _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
     void clear_tree() {
         if (this->root) {
             this->trav_bfs([](node_type* node, unsigned int level, _rbtree_hpp::left_or_right_e pos) {
+                (void)node;  // 抑制未使用参数警告
+                (void)level; // 抑制未使用参数警告  
+                (void)pos;   // 抑制未使用参数警告
                 // The destructor of bintree_t will handle the cleanup
             });
             // Let the base class destructor handle cleanup
