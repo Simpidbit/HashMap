@@ -1,4 +1,3 @@
-
 #ifndef HASHMAP_UTILS_RBTREE_HPP
 #define HASHMAP_UTILS_RBTREE_HPP
 
@@ -154,16 +153,66 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
       dynamic_cast<base_type *>(this)->print_tree();
     }
 
-    void push(const T &val) {
-      node_type *node = this->push(val);
-      if (node) this->_size++; 
+    // Default constructor
+    rbtree() = default;
+    
+    // Copy constructor - performs deep copy
+    rbtree(const rbtree& other) : _size(other._size) {
+        copy_tree_from(other);
+    }
+    
+    // Move constructor  
+    rbtree(rbtree&& other) noexcept : _size(other._size) {
+        this->root = other.root;
+        other.root = nullptr;
+        other._size = 0;
+    }
+    
+    // Copy assignment operator - performs deep copy
+    rbtree& operator=(const rbtree& other) {
+        if (this != &other) {
+            clear_tree();
+            _size = other._size;
+            copy_tree_from(other);
+        }
+        return *this;
+    }
+    
+    // Move assignment operator
+    rbtree& operator=(rbtree&& other) noexcept {
+        if (this != &other) {
+            clear_tree();
+            this->root = other.root;
+            _size = other._size;
+            other.root = nullptr;
+            other._size = 0;
+        }
+        return *this;
+    }
+    
+    // Destructor
+    ~rbtree() {
+        clear_tree();
     }
 
+    node_type* push(const T &val) {
+      node_type *node = this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::push(val);
+      if (node) this->_size++; 
+      return node;
+    }
+
+<<<<<<< HEAD
     void push(T &&val) {
       node_type *node = dynamic_cast<base_type*>(this)->push(val);
+=======
+    node_type* push(T &&val) {
+      node_type *node = this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::push(std::move(val));
+>>>>>>> e2b1521d4a82d340e55bd5eb44a7678bf4c3de87
       if (node) this->_size++; 
+      return node;
     }
 
+<<<<<<< HEAD
     void remove(const T &val) {
       if (dynamic_cast<base_type *>(this)->remove(val)) this->_size--;
     }
@@ -175,12 +224,25 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
     const T* find(const T& target) {
       T* e = &this->search_value(target)->value;
       return e;
+=======
+    node_type* search_value(const T &val) {
+      return this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::search_value(val);
+    }
+
+    bool remove(const T &val) {
+      return this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::remove(val);
+    }
+
+    bool remove(T &&val) {
+      return this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::remove(std::move(val));
+>>>>>>> e2b1521d4a82d340e55bd5eb44a7678bf4c3de87
     }
 
     unsigned long long size() const {
       return this->_size;
     }
 
+<<<<<<< HEAD
     iterator begin() const {
       iterator iter(this->root);
       node_type *node = this->root;
@@ -196,6 +258,49 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
       iter.point_to(&node->value);
       iter.is_end = true;
       return iter;
+=======
+    // Public access to traversal methods
+    void trav_in(typename _rbtree_hpp::RB_tree_t<T, rb_node<T>>::trav_action_t action) const {
+      this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::trav_in(action);
+    }
+
+    void trav_bfs(typename _rbtree_hpp::RB_tree_t<T, rb_node<T>>::trav_action_t action) const {
+      this->_rbtree_hpp::RB_tree_t<T, rb_node<T>>::trav_bfs(action);
+    }
+
+  private:
+    // Helper method to perform deep copy of tree structure
+    void copy_tree_from(const rbtree& other) {
+        if (!other.root) {
+            this->root = nullptr;
+            return;
+        }
+        
+        // Use BFS traversal to copy all nodes
+        this->root = nullptr;
+        other.trav_bfs([this](node_type* node, unsigned int level, _rbtree_hpp::left_or_right_e pos) {
+            (void)level; // 抑制未使用参数警告
+            (void)pos;   // 抑制未使用参数警告
+            if (node) {
+                this->push(node->value);
+            }
+        });
+    }
+    
+    // Helper method to clear the tree
+    void clear_tree() {
+        if (this->root) {
+            this->trav_bfs([](node_type* node, unsigned int level, _rbtree_hpp::left_or_right_e pos) {
+                (void)node;  // 抑制未使用参数警告
+                (void)level; // 抑制未使用参数警告  
+                (void)pos;   // 抑制未使用参数警告
+                // The destructor of bintree_t will handle the cleanup
+            });
+            // Let the base class destructor handle cleanup
+            this->root = nullptr;
+        }
+        this->_size = 0;
+>>>>>>> e2b1521d4a82d340e55bd5eb44a7678bf4c3de87
     }
 };
 

@@ -19,7 +19,7 @@ class bitmap {
 
   public:
     unsigned char *bits = nullptr;
-    unsigned char init_pad = 0b0000'0000;
+    unsigned char init_pad = 0b00000000;
     ulint bit_count = 0;
     ulint bit_byte = 0;
 
@@ -27,8 +27,70 @@ class bitmap {
     bitmap() = default;
     bitmap(unsigned char init_pad) : init_pad(init_pad) {}
 
+    // Copy constructor
+    bitmap(const bitmap& other) : init_pad(other.init_pad), bit_count(other.bit_count), bit_byte(other.bit_byte) {
+      if (other.bits && other.bit_byte > 0) {
+        this->bits = this->allocator.allocate(this->bit_byte);
+        std::memcpy(this->bits, other.bits, this->bit_byte);
+      }
+    }
+
+    // Move constructor
+    bitmap(bitmap&& other) noexcept 
+      : bits(other.bits), init_pad(other.init_pad), bit_count(other.bit_count), bit_byte(other.bit_byte) {
+      other.bits = nullptr;
+      other.bit_count = 0;
+      other.bit_byte = 0;
+    }
+
+    // Copy assignment operator
+    bitmap& operator=(const bitmap& other) {
+      if (this != &other) {
+        // Deallocate current memory
+        if (this->bits) {
+          this->allocator.deallocate(this->bits, this->bit_byte);
+          this->bits = nullptr;
+        }
+        
+        // Copy from other
+        this->init_pad = other.init_pad;
+        this->bit_count = other.bit_count;
+        this->bit_byte = other.bit_byte;
+        
+        if (other.bits && other.bit_byte > 0) {
+          this->bits = this->allocator.allocate(this->bit_byte);
+          std::memcpy(this->bits, other.bits, this->bit_byte);
+        }
+      }
+      return *this;
+    }
+
+    // Move assignment operator
+    bitmap& operator=(bitmap&& other) noexcept {
+      if (this != &other) {
+        // Deallocate current memory
+        if (this->bits) {
+          this->allocator.deallocate(this->bits, this->bit_byte);
+        }
+        
+        // Move from other
+        this->bits = other.bits;
+        this->init_pad = other.init_pad;
+        this->bit_count = other.bit_count;
+        this->bit_byte = other.bit_byte;
+        
+        // Reset other
+        other.bits = nullptr;
+        other.bit_count = 0;
+        other.bit_byte = 0;
+      }
+      return *this;
+    }
+
     ~bitmap() {
-      this->allocator.deallocate(this->bits, this->bit_byte);
+      if (this->bits) {
+        this->allocator.deallocate(this->bits, this->bit_byte);
+      }
     }
 
     void init(ulint bit_count) {
@@ -45,17 +107,17 @@ class bitmap {
       ulint byte_offset = location / 8;
       ulint bit_offset = location % 8;
       if (value)
-        this->bits[byte_offset] |= static_cast<unsigned char>(0b0000'0001) << bit_offset;
+        this->bits[byte_offset] |= static_cast<unsigned char>(0b00000001) << bit_offset;
       else
-        this->bits[byte_offset] &= ~(static_cast<unsigned char>(0b0000'0001) << bit_offset);
+        this->bits[byte_offset] &= ~(static_cast<unsigned char>(0b00000001) << bit_offset);
     }
 
-    bool get(ulint location) {
+    bool get(ulint location) const {
       ulint byte_offset = location / 8;
       ulint bit_offset = location % 8;
 
       return static_cast<bool>(
-          this->bits[byte_offset] & (static_cast<unsigned char>(0b0000'0001) << bit_offset)
+          this->bits[byte_offset] & (static_cast<unsigned char>(0b00000001) << bit_offset)
       );
     }
 };
