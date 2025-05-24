@@ -203,7 +203,6 @@ make format
 如有问题或建议，请通过以下方式联系：
 
 - 创建GitHub Issue
-- 发送邮件到：[your-email@example.com]
 
 ---
 
