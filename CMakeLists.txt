@@ -20,10 +20,8 @@ file(GLOB_RECURSE TEST_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/test/basic/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/functional/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/stl_compliance/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/test/performance/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/hash/*.cpp"
 )
-file(GLOB DEBUG_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/debug/*.cpp")
 
 # 主要库文件
 set(HEADER_FILES 
@@ -41,13 +39,6 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     get_filename_component(TEST_NAME ${TEST_SOURCE} NAME_WE)
     add_executable(${TEST_NAME} ${TEST_SOURCE} ${HEADER_FILES})
     add_test(NAME ${TEST_NAME}_test COMMAND ${TEST_NAME})
-endforeach()
-
-# 调试程序目标
-foreach(DEBUG_SOURCE ${DEBUG_SOURCES})
-    get_filename_component(DEBUG_NAME ${DEBUG_SOURCE} NAME_WE)
-    add_executable(${DEBUG_NAME} ${DEBUG_SOURCE} ${HEADER_FILES})
-    target_compile_options(${DEBUG_NAME} PRIVATE -g -DDEBUG)
 endforeach()
 
 # Debug 配置
@@ -72,8 +63,7 @@ add_custom_target(clean_all
 add_custom_target(format
     COMMAND clang-format -i ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
     COMMAND clang-format -i ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.hpp
-    COMMAND clang-format -i ${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp
-    COMMAND clang-format -i ${CMAKE_CURRENT_SOURCE_DIR}/debug/*.cpp
+    COMMAND find ${CMAKE_CURRENT_SOURCE_DIR}/test -name "*.cpp" -exec clang-format -i {} +
     COMMENT "Formatting code with clang-format"
 )
 

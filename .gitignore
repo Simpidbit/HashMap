@@ -1,7 +1,9 @@
 # 编译生成的文件
 *.o
-*.obj
-*.exe
+*.ob# 编译产物和可执行文件
+test/test_*
+!test/*.cpp
+!test/*/*.cppe
 *.out
 *.a
 *.so

@@ -16,12 +16,12 @@ int main() {
         std::cout << "  Will expand after inserting " << threshold << " elements\n\n";
         
         // Insert elements up to and beyond the threshold
-        for (int i = 0; i < threshold + 5; ++i) {
+        for (size_t i = 0; i < threshold + 5; ++i) {
             std::cout << "Inserting " << i << "...\n";
             
             size_t old_bucket_count = map.bucket_count();
             
-            auto result = map.insert(i, i * 10);
+            auto result = map.insert(static_cast<int>(i), static_cast<int>(i * 10));
             
             std::cout << "  Size: " << map.size() 
                       << ", Load factor: " << map.load_factor()
