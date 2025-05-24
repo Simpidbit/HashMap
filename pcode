@@ -1,0 +1,28 @@
+INSERT(key, value)
+    keyhash = this.hasher(key, 0, this.box_capacity - 1)
+    for box : this.box_list             # box 是数组
+        if box[keyhash] is empty
+            box[keyhash].insert(key, value)
+            break
+        else if key in box[keyhash]
+            box[keyhash][key] = value   # 更新value
+            break
+        else if box == this.box_list.back()
+            box[keyhash][key] = value   # 插入到最新的box里
+    if 达到负载因子阈值(this.box_list.back())
+        this.box_list.push_back(new box)
+
+DELETE(key)
+    keyhash = this.hasher(key, 0, this.box_capacity - 1)
+    for box : this.box_list
+        if key in box[keyhash]
+            box[keyhash].remove(key)
+            break
+
+
+FIND(key)
+    keyhash = this.hasher(key, 0, this.box_capacity - 1)
+    for box : this.box_list
+        if key in box[keyhash]
+            return 找到了, box[keyhash][key]
+    return 没找到

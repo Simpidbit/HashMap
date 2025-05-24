@@ -33,52 +33,66 @@ template <typename Key, typename Value, typename Allocator = std::allocator<std:
 class HashMap {
 public:
     // 类型定义
-    using key_type = Key;                           // 键类型
-    using mapped_type = Value;                      // 值类型
-    using value_type = std::pair<const Key, Value>; // 键值对类型（键为const）
-    using pair_type = std::pair<Key, Value>;        // 内部使用的键值对类型
-    using bucket_type = utils::rbtree<pair_type>;   // 桶类型（红黑树）
-    using size_type = utils::ulint;                 // 大小类型
-    using allocator_type = Allocator;               // 分配器类型
+    using key_type                = Key;                            // 键
+    using value_type              = Value;                          // 值
+    using pair_type               = std::pair<Key, Value>;          // 内部使用的键值对
+    using const_pair_type         = std::pair<const Key, Value>;    // 键值对
+
+    using bucket_type             = utils::rbtree<pair_type>;       // 桶
+    using box_type                = std::vector<bucket_type>;       // 箱
+    using box_map_type            = utils::bitmap<>;                // 箱的位图
+
+    using size_type               = unsigned long long;             // 大小
+    using allocator_type          = Allocator;                      // 分配器
+
+    using hasher_type             = utils::XXHash32;                // 哈希器
 
 private:
-    // 桶数组管理
-    std::vector<bucket_type> buckets_;              // 桶数组
-    utils::bitmap<> bucket_bitmap_;                 // 非空桶位图，用于高效迭代
-    
-    // 哈希函数
-    utils::XXHash32 hasher_;                        // XXHash32哈希器
-    
-    // 大小和容量跟踪
-    size_type size_;                                // 当前元素数量
-    size_type bucket_count_;                        // 非空桶数量
-    size_type bucket_capacity_;                     // 当前桶数组大小
-    
-    // 负载因子阈值
-    static constexpr double LOAD_FACTOR_THRESHOLD = 0.75;
-    
-    // 内存分配器
-    Allocator allocator_;
+    struct box_manager {
+      box_type                    box;                // 箱
+      box_map_type                box_map;            // 箱的位图
+      size_type                   used_bucket_count;  // 非空桶的数量
 
+      box_manager(size_type capacity,
+          _rbtree_hpp::search_tree_t<pair_type>::comparer_type comarer,
+          _rbtree_hpp::search_tree_t<pair_type>::equaler_type equaler) {
+        this->box = box_type(capacity, bucket_type(comparer, equaler));
+        this->box_map.init(capacity);
+        this->used_bucket_count = 0;
+      }
+    };
+
+private:
+    std::list<box_manager>        box_list;           // 箱链表
+    size_type                     box_capacity;       // 每箱容纳多少桶
+    size_type                     size;               // 总的键值对数量
+
+    hasher_type                   hasher;             // 哈希器
+
+                                                      // 负载因子阈值
+    static constexpr double       LOAD_FACTOR_THRESHOLD = 0.75; 
+
+    
+    Allocator allocator;                              // 内存分配器
+
+private:    // 内部函数
     /**
-     * @brief 根据预估数据规模计算初始桶大小
+     * @brief 根据预估数据规模计算箱大小
      * 
-     * @param estimated_size 预估的元素数量
-     * @return 计算得到的初始桶大小（2的幂次）
+     * @param estimated_size 预估的键值对数量
+     * @return 计算得到的箱大小（2的幂次）
      */
-    size_type calculate_initial_bucket_size(size_type estimated_size) const {
-        if (estimated_size == 0) return 16;  // 默认最小大小
+    size_type calculate_initial_box_capacity(size_type estimated_size) const {
+        if (estimated_size <= 16) return 16;  // 默认最小大小
         
-        // 基于负载因子计算: bucket_size = estimated_size / 0.75
-        size_type required_size = static_cast<size_type>(estimated_size / LOAD_FACTOR_THRESHOLD) + 1;
+        // 基于负载因子计算: box_capacity = estimated_size / 0.75
+        size_type required_capacity = static_cast<size_type>(estimated_size / LOAD_FACTOR_THRESHOLD) + 1;
         
         // 向上取整到下一个2的幂，以获得更好的哈希分布
-        size_type bucket_size = 1;
-        while (bucket_size < required_size) {
-            bucket_size <<= 1;
-        }
-        
-        return bucket_size;
+        size_type box_capacity = 1;
+        while (box_capacity < required_capacity) box_capacity <<= 1;
+
+        return box_capacity;
     }
 
     /**
@@ -87,8 +101,8 @@ private:
      * @param key 要计算索引的键
      * @return 对应的桶索引
      */
-    size_type get_bucket_index(const Key& key) const {
-        return hasher_.hash_linear(&key, sizeof(Key), 0, bucket_capacity_ - 1);
+    size_type get_bucket_index(const key_type& key) const {
+        return this->hasher.hash_linear(&key, sizeof(key_type), 0, this->box_capacity - 1);
     }
 
     /**
@@ -97,286 +111,67 @@ private:
      * @return true表示需要扩展，false表示不需要
      */
     bool should_expand() const {
-        return static_cast<double>(size_) / bucket_capacity_ > LOAD_FACTOR_THRESHOLD;
+        return 
+            static_cast<double>(
+                this->box_list.back().used_bucket_count
+            ) / this->bucket_capacity_
+            > LOAD_FACTOR_THRESHOLD;
     }
 
-    /**
-     * @brief 扩展桶数组并重新分布元素
+    /** TODO
+     * @brief 扩展箱
      * 
-     * 将桶容量翻倍，并将所有现有元素重新哈希到新的桶数组中。
-     * 这个操作的时间复杂度为O(n)，其中n是元素总数。
      */
-    void expand_buckets() {
-        size_type old_capacity = bucket_capacity_;
-        size_type new_capacity = bucket_capacity_ * 2;
-        
-        // 保存当前所有元素
-        std::vector<pair_type> all_elements;
-        all_elements.reserve(size_);
-        
-        // 从当前桶中提取所有元素
-        for (size_type i = 0; i < old_capacity; ++i) {
-            if (bucket_bitmap_.get(i)) {
-                bucket_type& bucket = buckets_[i];
-                // 使用中序遍历从该桶中提取所有元素
-                bucket.trav_in([&all_elements](typename bucket_type::node_type* node, unsigned int level, 
-                                              _rbtree_hpp::left_or_right_e pos) {
-                    (void)level; // 消除未使用参数警告
-                    (void)pos;   // 消除未使用参数警告
-                    if (node) {
-                        all_elements.push_back(node->value);
-                    }
-                });
-            }
-        }
-        
-        // 创建新的桶数组
-        std::vector<bucket_type> new_buckets(new_capacity);
-        
-        // 为每个新桶配置仅比较键的比较函数
-        for (auto& bucket : new_buckets) {
-            bucket = bucket_type(
-                [](const pair_type& a, const pair_type& b) -> bool { 
-                    return a.first < b.first; 
-                },
-                [](const pair_type& a, const pair_type& b) -> bool { 
-                    return a.first == b.first; 
-                }
-            );
-        }
-        
-        utils::bitmap<> new_bitmap;
-        new_bitmap.init(new_capacity);
-        
-        // 更新容量和数组
-        bucket_capacity_ = new_capacity;
-        buckets_ = std::move(new_buckets);
-        bucket_bitmap_ = std::move(new_bitmap);
-        
-        // 重新分布元素
-        for (const auto& element : all_elements) {
-            size_type new_bucket_idx = get_bucket_index(element.first);
-            buckets_[new_bucket_idx].push(element);
-            bucket_bitmap_.set(new_bucket_idx, true);
-        }
-        
-        // 大小保持不变，因为我们重新分布了所有元素
-    }
+    void expand_box() {}
 
     /**
      * @brief 在桶中查找元素，考虑比较逻辑
      * 
      * @param bucket 要搜索的桶
      * @param key 要查找的键
-     * @return 找到的节点指针，如果未找到则返回nullptr
+     * @return 找到的键值对指针，如果未找到则返回nullptr
      */
-    typename bucket_type::node_type* find_in_bucket(bucket_type& bucket, const Key& key) {
-        // 使用中序遍历查找具有匹配键的节点
-        typename bucket_type::node_type* found_node = nullptr;
-        
-        bucket.trav_in([&found_node, &key](typename bucket_type::node_type* node, unsigned int level, 
-                                           _rbtree_hpp::left_or_right_e pos) {
-            (void)level; // 消除未使用参数警告
-            (void)pos;   // 消除未使用参数警告
-            if (node && node->value.first == key) {
-                found_node = node;
-            }
-        });
-        
-        return found_node;
+    value_type* find_in_bucket(const bucket_type& bucket, const key_type& key) {
+      unsigned char kv_buffer[sizeof(pair_type)] {0};
+      pair_type* kv = reinterpret_cast<pair_type *>(kv_buffer);
+      kv->first = key;
+
+      pair_type *ret = bucket.find(*kv);
+      return const_cast<const_pair_type *>(ret);
     }
 
     /**
-     * @brief 更新找到节点的值
+     * @brief 更新键值对的值
      * 
-     * @param node 要更新的节点
+     * @param oldpair 旧键值对指针
      * @param value 新的值
      */
-    void update_node_value(typename bucket_type::node_type* node, const mapped_type& value) {
-        if (node) {
-            // 访问节点的值并更新第二个组件
-            node->value.second = value;
-        }
+    void update_node_value(pair_type *oldpair, const value_type& value) {
+        oldpair->second = value;
     }
 
-public:
-    /**
+public:     // 公共函数
+    /** TODO
      * @brief HashMap的STL兼容迭代器类
      * 
-     * 基于vector的迭代器实现，通过收集所有节点指针来实现高效遍历。
      * 支持前向和后向遍历，符合STL双向迭代器标准。
      */
-    class iterator {
-    private:
-        HashMap* map_;                                                  // 关联的HashMap指针
-        std::vector<typename bucket_type::node_type*> all_nodes_;      // 所有节点的指针集合
-        size_t current_index_;                                          // 当前迭代位置
-        
-        /**
-         * @brief 收集所有节点到vector中
-         * 
-         * 遍历所有非空桶，使用中序遍历收集所有节点指针。
-         * 这确保了迭代器能够按确定顺序访问所有元素。
-         */
-        void collect_all_nodes() {
-            all_nodes_.clear();
-            if (!map_) return;
-            
-            // 遍历所有桶并使用中序遍历收集节点
-            for (size_type i = 0; i < map_->bucket_capacity_; ++i) {
-                if (map_->bucket_bitmap_.get(i)) {
-                    auto& bucket = map_->buckets_[i];
-                    // 使用中序遍历从该桶收集节点
-                    bucket.trav_in([this](typename bucket_type::node_type* node, unsigned int level, 
-                                          _rbtree_hpp::left_or_right_e pos) {
-                        (void)level; // 抑制未使用参数警告
-                        (void)pos;   // 抑制未使用参数警告
-                        if (node) {
-                            all_nodes_.push_back(node);
-                        }
-                    });
-                }
-            }
-        }
-        
-        /**
-         * @brief 获取当前位置的键值对指针
-         * 
-         * @return 当前键值对的指针，如果越界则返回nullptr
-         */
-        pair_type* get_current_pair() const {
-            if (!map_ || current_index_ >= all_nodes_.size()) {
-                return nullptr;
-            }
-            return &(all_nodes_[current_index_]->value);
+    class iterator : utils::_iterator<const_pair_type*, iterator> {
+      public:
+        using utils::_iterator<const_pair_type*, iterator>::_iterator;
+
+        void goback() {
         }
 
-        // 为特定节点创建迭代器的辅助方法
-        static iterator make_iterator_for_node(HashMap* map, typename bucket_type::node_type* target_node) {
-            iterator it(map, false);
-            if (!target_node) {
-                return iterator(map, true); // 返回end迭代器
-            }
-            
-            // 在all_nodes_中查找目标节点的位置
-            for (size_t i = 0; i < it.all_nodes_.size(); ++i) {
-                if (it.all_nodes_[i] == target_node) {
-                    it.current_index_ = i;
-                    return it;
-                }
-            }
-            return iterator(map, true); // 如果未找到则返回end迭代器
+        void goback(size_t n) {
         }
-        
-    public:
-        // STL迭代器类型定义
-        using iterator_category = std::forward_iterator_tag;  // 前向迭代器类别
-        using value_type = pair_type;                         // 值类型
-        using difference_type = std::ptrdiff_t;               // 差值类型
-        using pointer = pair_type*;                           // 指针类型
-        using reference = pair_type&;                         // 引用类型
-        
-        friend class HashMap; // 允许HashMap访问私有成员
-        
-        /**
-         * @brief 迭代器构造函数
-         * 
-         * @param map HashMap指针
-         * @param end_iterator 是否为end迭代器
-         */
-        iterator(HashMap* map = nullptr, bool end_iterator = false) 
-            : map_(map), current_index_(0) {
-            if (map_ && !end_iterator) {
-                collect_all_nodes();
-                // 如果没有找到节点，将此设为end迭代器
-                if (all_nodes_.empty()) {
-                    current_index_ = 0;
-                    map_ = nullptr; // 标记为end
-                }
-            } else {
-                // End迭代器
-                map_ = nullptr;
-                current_index_ = 0;
-            }
+
+        void gofront() {
         }
-        
-        /**
-         * @brief 前缀递增操作符
-         * 
-         * @return 递增后的迭代器引用
-         */
-        iterator& operator++() {
-            if (map_ && current_index_ < all_nodes_.size()) {
-                ++current_index_;
-                if (current_index_ >= all_nodes_.size()) {
-                    // 到达末尾
-                    map_ = nullptr;
-                }
-            }
-            return *this;
-        }
-        
-        /**
-         * @brief 后缀递增操作符
-         * 
-         * @return 递增前的迭代器副本
-         */
-        iterator operator++(int) {
-            iterator tmp = *this;
-            ++(*this);
-            return tmp;
-        }
-        
-        /**
-         * @brief 相等比较操作符
-         * 
-         * @param other 要比较的另一个迭代器
-         * @return true如果两个迭代器相等
-         */
-        bool operator==(const iterator& other) const {
-            // 两个end迭代器相等
-            if (!map_ && !other.map_) return true;
-            // 一个end迭代器和一个非end迭代器不相等
-            if (!map_ || !other.map_) return false;
-            // 两个有效迭代器 - 比较map和索引
-            return map_ == other.map_ && current_index_ == other.current_index_;
-        }
-        
-        /**
-         * @brief 不等比较操作符
-         * 
-         * @param other 要比较的另一个迭代器
-         * @return true如果两个迭代器不相等
-         */
-        bool operator!=(const iterator& other) const {
-            return !(*this == other);
-        }
-        
-        /**
-         * @brief 解引用操作符
-         * 
-         * @return 当前键值对的引用
-         */
-        pair_type& operator*() const {
-            auto* pair_ptr = get_current_pair();
-            if (!pair_ptr) {
-                static pair_type dummy;
-                return dummy;
-            }
-            return *pair_ptr;
-        }
-        
-        /**
-         * @brief 箭头操作符
-         * 
-         * @return 当前键值对的指针
-         */
-        pair_type* operator->() const {
-            return get_current_pair();
+
+        void gofront(size_t n) {
         }
     };
-    
-    using const_iterator = iterator; // 简化实现 - 应该是独立的类
 
     /**
      * @brief 带预估大小的构造函数
@@ -386,24 +181,13 @@ public:
      * @param estimated_size 预估的元素数量，默认为0
      */
     explicit HashMap(size_type estimated_size = 0) 
-        : size_(0), bucket_count_(0) {
-        bucket_capacity_ = calculate_initial_bucket_size(estimated_size);
-        buckets_.resize(bucket_capacity_);
-        
-        // 为每个桶配置仅比较键的比较函数
-        for (auto& bucket : buckets_) {
-            // 设置比较函数为仅比较键值对的键部分
-            bucket = bucket_type(
-                [](const pair_type& a, const pair_type& b) -> bool { 
-                    return a.first < b.first; 
-                },
-                [](const pair_type& a, const pair_type& b) -> bool { 
-                    return a.first == b.first; 
-                }
-            );
-        }
-        
-        bucket_bitmap_.init(bucket_capacity_);
+        : size(0) {
+        this->box_capacity = calculate_initial_box_capacity(estimated_size);
+        this->box_list.emplace_back(
+            this->box_capacity,
+            [] (const pair_type &a, const pair_type &b) -> bool { return a.first < b.first; },
+            [] (const pair_type &a, const pair_type &b) -> bool { return a.first == b.first; }
+        );
     }
 
     /**
@@ -431,68 +215,29 @@ public:
      * @param init 初始化列表
      * @param estimated_size 预估元素数量
      */
-    HashMap(std::initializer_list<value_type> init, size_type estimated_size = 0) : HashMap(estimated_size) {
+    HashMap(std::initializer_list<pair_type> init, size_type estimated_size = 0) : HashMap(estimated_size) {
         for (const auto& pair : init) {
             insert(pair.first, pair.second);
         }
     }
 
-    /**
+    /** TODO
      * @brief 拷贝构造函数
      * 
      * 创建另一个HashMap的深度拷贝。
      * 
      * @param other 要拷贝的HashMap
      */
-    HashMap(const HashMap& other) 
-        : bucket_bitmap_(other.bucket_bitmap_), // 使用位图拷贝构造函数
-          size_(0), bucket_count_(0) {
-        // 设置与源相同的容量
-        bucket_capacity_ = other.bucket_capacity_;
-        buckets_.resize(bucket_capacity_);
-        
-        // 为每个桶配置仅比较键的比较函数
-        for (auto& bucket : buckets_) {
-            bucket = bucket_type(
-                [](const pair_type& a, const pair_type& b) -> bool { 
-                    return a.first < b.first; 
-                },
-                [](const pair_type& a, const pair_type& b) -> bool { 
-                    return a.first == b.first; 
-                }
-            );
-        }
-        
-        // 拷贝桶内容
-        for (size_type i = 0; i < other.bucket_capacity_; ++i) {
-            if (other.bucket_bitmap_.get(i)) {
-                // 拷贝桶内容 - 简化实现
-                buckets_[i] = other.buckets_[i];
-                // 不需要再次设置位图，因为我们已经拷贝了它
-            }
-        }
-        size_ = other.size_;
-    }
+    HashMap(const HashMap& other) {}
 
-    /**
+    /** TODO
      * @brief 移动构造函数
      * 
      * 通过移动语义从另一个HashMap构造，避免不必要的拷贝。
      * 
      * @param other 要移动的HashMap
      */
-    HashMap(HashMap&& other) noexcept 
-        : buckets_(std::move(other.buckets_)),
-          bucket_bitmap_(std::move(other.bucket_bitmap_)),
-          hasher_(std::move(other.hasher_)),
-          size_(other.size_),
-          bucket_count_(other.bucket_count_),
-          bucket_capacity_(other.bucket_capacity_),
-          allocator_(std::move(other.allocator_)) {
-        other.size_ = 0;
-        other.bucket_count_ = 0;
-        other.bucket_capacity_ = 0;
-    }
+    HashMap(HashMap&& other) noexcept {}
 
     /**
      * @brief 拷贝赋值操作符
@@ -518,22 +263,7 @@ public:
      * @param other 要移动的HashMap
      * @return 当前对象的引用
      */
-    HashMap& operator=(HashMap&& other) noexcept {
-        if (this != &other) {
-            buckets_ = std::move(other.buckets_);
-            bucket_bitmap_ = std::move(other.bucket_bitmap_);
-            hasher_ = std::move(other.hasher_);
-            size_ = other.size_;
-            bucket_count_ = other.bucket_count_;
-            bucket_capacity_ = other.bucket_capacity_;
-            allocator_ = std::move(other.allocator_);
-            
-            other.size_ = 0;
-            other.bucket_count_ = 0;
-            other.bucket_capacity_ = 0;
-        }
-        return *this;
-    }
+    HashMap& operator=(HashMap&& other) noexcept { }
 
     /**
      * @brief 析构函数
@@ -541,6 +271,8 @@ public:
      * 使用默认析构函数，因为所有成员都有适当的析构函数。
      */
     ~HashMap() = default;
+
+//#######################################################################################
 
     /**
      * @brief 插入或更新键值对

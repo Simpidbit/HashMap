@@ -144,11 +144,11 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
 
   protected:
     unsigned long long _size = 0;
+    using node_type = rb_node<T>;
+    using base_type = _rbtree_hpp::RB_tree_t<T, rb_node<T>>;
 
   public:
     using _rbtree_hpp::RB_tree_t<T, rb_node<T>>::RB_tree_t;
-    using node_type = rb_node<T>;
-    using base_type = _rbtree_hpp::RB_tree_t<T, rb_node<T>>;
 
     void print_tree() {
       dynamic_cast<base_type *>(this)->print_tree();
