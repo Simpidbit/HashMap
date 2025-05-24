@@ -90,6 +90,7 @@ class vector {
     vector() {
       this->check_capacity();
     }
+
     vector(std::initializer_list<T> list) {
       if (list.size()) {
         this->check_capacity(list.size() * 2);
@@ -98,13 +99,11 @@ class vector {
       } else
         this->check_capacity();
     }
+
     ~vector() {
       this->allocator.deallocate(this->data, this->capcount);
     }
 
-    /////////////////////////
-    // INSERT
-    /////////////////////////
     void push_back(const T &value) {
       for (;;) if (this->new_ok.load()) break;
 
@@ -125,9 +124,7 @@ class vector {
       this->check_capacity();
     }
 
-    /////////////////////////
-    // ITERATOR
-    /////////////////////////
+
     iterator begin() const {
       for (;;) if (this->new_ok.load()) break;
 
@@ -140,9 +137,6 @@ class vector {
       return this->end_iter;
     }
 
-    /////////////////////////
-    // OVERLOAD
-    /////////////////////////
     T& operator[](size_t index) {
       for (;;) if (this->new_ok.load()) break;
       return *(this->begin_iter + index);
@@ -153,9 +147,6 @@ class vector {
       return *(this->begin_iter + index);
     }
 
-    /////////////////////////
-    // QUERY
-    /////////////////////////
     inline size_t size() const noexcept {
       return this->elecount;
     }

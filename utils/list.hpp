@@ -1,3 +1,7 @@
+/**
+ * @file list.hpp
+ * @brief 自定义列表类的实现。
+ */
 #ifndef HASHMAP_UTILS_LIST_HPP
 #define HASHMAP_UTILS_LIST_HPP
 
@@ -6,7 +10,13 @@
 
 namespace utils {
 
-template <typename T, Allocator = std::allocator<T>>
+/**
+ * @class list
+ * @brief 自定义列表类，实现了链表的功能。
+ * @tparam T 列表中存储的元素类型。
+ * @tparam Allocator 用于内存分配的分配器类型，默认为 std::allocator<T>。
+ */
+ template <typename T, Allocator = std::allocator<T>>
 class list {
   public:
     friend class iterator;
@@ -72,9 +82,6 @@ class list {
 
     void pop_front() {
     }
-
-    // TODO
-
 };
 
 } // namespace utils

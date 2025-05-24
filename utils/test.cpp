@@ -1,7 +1,4 @@
 #include <iostream>
-#include <vector>
-
-#include "queue.hpp"
 #include "rbtree.hpp"
 
 using std::cout;
@@ -10,32 +7,24 @@ using std::endl;
 
 int main()
 {
-    utils::rbtree<int> tree;
-  //utils::static_deque<int> *sdq = new utils::static_deque<int>;
+  utils::rbtree<int> tree;
+  tree.push(10);
+  tree.push(30);
+  tree.push(1);
+  tree.push(4);
+  tree.push(5);
+  tree.push(9);
+  tree.print_tree();
+  cout << tree.size() << endl;
 
-  /*
-  int c, tmp;
-  for (;;) {
-    cin >> c >> tmp;
-    if (c == 0) {
-      bool ret = sdq.push_back(tmp);
-      cout << ret << endl;
-    } else if (c == 1) {
-      bool ret = sdq.push_front(tmp);
-      cout << ret << endl;
-    } else if (c == 2) {
-      if (tmp == 0)
-        sdq.pop_front();
-      else
-        sdq.pop_back();
-    }
+  for (const auto &e : tree)
+    cout << e << ", ";
+  cout << endl;
 
-    for (auto e : sdq)
-      cout << e << ", ";
-    cout << endl;
+  for (auto iter = --tree.end(); iter != --tree.begin(); iter--) {
+    cout << *iter << ", ";
   }
+  cout << endl;
 
-
-  */
   return 0;
 }

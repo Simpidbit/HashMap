@@ -10,11 +10,6 @@ namespace utils {
 template <typename T, typename PT>
 class _iterator { ~_iterator() = delete; };
 
-/*
-template <typename PT>
-class _iterator<void *, PT> { ~_iterator() = delete; };
-*/
-
 template <typename T, typename PT>
 class _iterator<T*, PT> {
   protected:

@@ -62,13 +62,9 @@ class static_deque {
   
 
   protected:
-    void insert_at(T *ptr, const T &element) {
-      *ptr = element;
-    }
+    void insert_at(T *ptr, const T &element) { *ptr = element; }
 
-    void insert_at(T *ptr, T &&element) {
-      *ptr = std::move(element);
-    }
+    void insert_at(T *ptr, T &&element) { *ptr = std::move(element); }
 
     void circle_backstep(T* &ptr) {
       if (ptr == this->memback) ptr = this->membegin;
@@ -105,9 +101,7 @@ class static_deque {
      * @brief 初始化时就指定最大容量.
      * @param ccount 最多容纳多少个元素
      */
-    static_deque(size_t ccount) {
-      this->init(ccount);
-    }
+    static_deque(size_t ccount) { this->init(ccount); }
 
     /**
      * @brief 容器目前有多少个元素.
