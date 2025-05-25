@@ -22,7 +22,7 @@ int main()
   cout << endl;
 
   for (auto iter = --tree.end(); iter != --tree.begin(); iter--) {
-    cout << *iter << ", ";
+    cout << iter.is_back() << " and " << iter.is_begin() << " :: " << *iter << ", ";
   }
   cout << endl;
 

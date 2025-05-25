@@ -28,20 +28,48 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
       friend class rbtree;
 
       public:
-        bool is_back () {}
-        bool is_begin () {}
+        bool is_back () {
+          rb_node<T> *back = this->get_back();
+          if (this->ptr == &back->value && 
+              !this->is_end && !this->is_begin_front) return true;
+          else return false;
+        }
+
+        bool is_begin () {
+          rb_node<T> *front = this->get_front();
+          if (this->ptr == &front->value &&
+              !this->is_end && !this->is_begin_front) return true;
+          else return false;
+        }
 
       protected:
         bool is_end {false};
         bool is_begin_front {false};
 
-
-        rb_node<T> *root;
-
         rb_node<T> *get_node() {
           return reinterpret_cast<rb_node<T> *>(
               reinterpret_cast<char *>(this->ptr) - reinterpret_cast<char *>(&(static_cast<rb_node<T> *>(0)->value))
           );
+        }
+        
+        rb_node<T>* get_root() {
+          rb_node<T> *node = this->get_node();
+          while (node->parent()) node = node->parent();
+          return node;
+        }
+
+        rb_node<T> *get_back() {
+          rb_node<T> *root = this->get_root();
+          rb_node<T> *node = root;
+          while (node->right()) node = node->right();
+          return node;
+        }
+
+        rb_node<T> *get_front() {
+          rb_node<T> *root = this->get_root();
+          rb_node<T> *node = root;
+          while (node->left()) node = node->left();
+          return node;
         }
 
       public:
@@ -63,11 +91,9 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
           else return !(*this == iter);
         }
 
-        iterator(rb_node<T> *root) : root(root) {}
 
         void point_to(T* nptr) override {
           this->ptr = nptr;
-          /* ... */
         }
 
         void goback() override {
@@ -85,7 +111,7 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
             node = node->right();
             while (node->left()) node = node->left();
           } else {                // 无右子
-            if (node == this->root) {                       // 是无右子的根节点
+            if (node == this->get_root()) {                       // 是无右子的根节点
               this->is_end = true;
             } else if (node == node->parent()->left()) {    // 是父的左子
               node = node->parent();
@@ -93,7 +119,7 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
               // 往上找
               for (;;) {
                 node = node->parent();
-                if (node == this->root) {
+                if (node == this->get_root()) {
                   is_end = true;
                   break;
                 }
@@ -126,7 +152,7 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
             node = node->left();
             while (node->right()) node = node->right();
           } else {                // 无左子
-            if (node == this->root) {
+            if (node == this->get_root()) {
               this->is_begin_front = true;
             } else if (node == node->parent()->right()) {
               node = node->parent();
@@ -134,7 +160,7 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
               // 往上找
               for (;;) {
                 node = node->parent();
-                if (node == this->root) {
+                if (node == this->get_root()) {
                   is_begin_front = true;
                   break;
                 }
@@ -194,17 +220,17 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
     }
 
     iterator begin() const {
-      iterator iter(this->root);
-      node_type *node = this->root;
-      while (node->left()) node = node->left();
+      iterator iter;
+      iter.point_to(&this->root->value);
+      node_type *node = iter.get_front();
       iter.point_to(&node->value);
       return iter;
     }
 
     iterator end() const {
-      iterator iter(this->root);
-      node_type *node = this->root;
-      while (node->right()) node = node->right();
+      iterator iter;
+      iter.point_to(&this->root->value);
+      node_type *node = iter.get_back();
       iter.point_to(&node->value);
       iter.is_end = true;
       return iter;
