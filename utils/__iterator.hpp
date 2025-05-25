@@ -55,7 +55,7 @@ class _iterator<T*, PT> {
     }
 
     // after
-    PT operator++(int) {
+    PT& operator++(int) {
       PT tmp(static_cast<const PT &>(*this));
       this->goback();
       return tmp;
@@ -68,7 +68,7 @@ class _iterator<T*, PT> {
     }
 
     // after
-    PT operator--(int) {
+    PT& operator--(int) {
       PT tmp(static_cast<const PT&>(*this));
       this->gofront();
       return tmp;
