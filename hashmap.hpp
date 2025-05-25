@@ -160,7 +160,14 @@ public:     // 公共函数
       public:
         using utils::_iterator<const_pair_type*, iterator>::_iterator;
 
+        utils::rbtree<pair_type>::iterator reinterpret_to_rbtree_iter() {
+          utils::rbtree<pair_type>::iterator iter;
+          iter.point_to(this->ptr);
+          return iter;
+        }
+
         void goback() {
+          bucket_type::iterator rbiter = this->reinterpret_to_rbtree_iter();
         }
 
         void goback(size_t n) {

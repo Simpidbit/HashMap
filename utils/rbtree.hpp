@@ -26,9 +26,16 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
   public:
     class iterator : public utils::_iterator<T*, iterator> {
       friend class rbtree;
+
+      public:
+        bool is_back () {}
+        bool is_begin () {}
+
       protected:
         bool is_end {false};
         bool is_begin_front {false};
+
+
         rb_node<T> *root;
 
         rb_node<T> *get_node() {
@@ -57,6 +64,11 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
         }
 
         iterator(rb_node<T> *root) : root(root) {}
+
+        void point_to(T* nptr) override {
+          this->ptr = nptr;
+          /* ... */
+        }
 
         void goback() override {
           if (this->is_end) return;

@@ -29,7 +29,7 @@ class _iterator<T*, PT> {
       return reinterpret_cast<size_t>(this->ptr);
     }
 
-    inline void point_to(T* nptr) {
+    virtual void point_to(T* nptr) {
       this->ptr = nptr;
     }
 
