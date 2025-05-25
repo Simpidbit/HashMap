@@ -221,17 +221,17 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
 
     iterator begin() const {
       iterator iter;
-      iter.point_to(&this->root->value);
+      iter.ptr = &this->root->value;
       node_type *node = iter.get_front();
-      iter.point_to(&node->value);
+      iter.ptr = &node->value;
       return iter;
     }
 
     iterator end() const {
       iterator iter;
-      iter.point_to(&this->root->value);
+      iter.ptr = &this->root->value;
       node_type *node = iter.get_back();
-      iter.point_to(&node->value);
+      iter.ptr = &node->value;
       iter.is_end = true;
       return iter;
     }
