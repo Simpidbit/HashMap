@@ -185,8 +185,9 @@ public:     // 公共函数
         this->box_capacity = calculate_initial_box_capacity(estimated_size);
         this->box_list.emplace_back(
             this->box_capacity,
-            [] (const pair_type &a, const pair_type &b) -> bool { return a.first < b.first; },
-            [] (const pair_type &a, const pair_type &b) -> bool { return a.first == b.first; }
+            bucket_type(
+                [] (const pair_type &a, const pair_type &b) -> bool { return a.first < b.first; },
+                [] (const pair_type &a, const pair_type &b) -> bool { return a.first == b.first; })
         );
     }
 
