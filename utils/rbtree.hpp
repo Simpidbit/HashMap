@@ -211,8 +211,9 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
     }
 
     const T* find(const T& target) {
-      T* e = &this->search_value(target)->value;
-      return e;
+      rb_node<T> *node = this->search_value(target);
+      if (node) return &node->value;
+      else return nullptr;
     }
 
     unsigned long long size() const {
