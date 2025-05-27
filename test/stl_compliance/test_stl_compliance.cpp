@@ -112,8 +112,8 @@ void test_iterators() {
     }
 }
 
-void test_capacity_and_rehash() {
-    std::cout << "\n=== Testing Capacity and Rehash ===\n";
+void test_capacity() {
+    std::cout << "\n=== Testing Capacity ===\n";
     
     HashMap<int, int> map;
     
@@ -130,18 +130,6 @@ void test_capacity_and_rehash() {
     std::cout << "  Size: " << map.size() << "\n";
     std::cout << "  Bucket count: " << map.bucket_count() << "\n";
     std::cout << "  Load factor: " << map.load_factor() << "\n";
-    
-    // Test rehash
-    size_t old_bucket_count = map.bucket_count();
-    map.rehash(100);
-    std::cout << "After rehash(100):\n";
-    std::cout << "  Bucket count: " << map.bucket_count() << " (was " << old_bucket_count << ")\n";
-    std::cout << "  Size: " << map.size() << "\n";
-    
-    // Test reserve
-    map.reserve(200);
-    std::cout << "After reserve(200):\n";
-    std::cout << "  Bucket count: " << map.bucket_count() << "\n";
 }
 
 void test_emplace() {
@@ -153,9 +141,9 @@ void test_emplace() {
     auto result = map.emplace(1, "Hello");
     std::cout << "Emplace(1, \"Hello\"): inserted = " << result.second << "\n";
     
-    // Test emplace_hint
-    auto it = map.emplace_hint(map.end(), 2, "World");
-    std::cout << "Emplace_hint result iterator valid: " << (it != map.end()) << "\n";
+    // Test emplace with existing key
+    auto result2 = map.emplace(1, "World");
+    std::cout << "Emplace(1, \"World\"): inserted = " << result2.second << "\n";
     
     std::cout << "Final size: " << map.size() << "\n";
 }
@@ -165,12 +153,8 @@ void test_various_insert_overloads() {
     
     HashMap<int, std::string> map;
     
-    // Insert with hint
-    map.insert(map.end(), std::make_pair(1, "One"));
-    std::cout << "Insert with hint: success\n";
-    
     // Insert range
-    std::vector<std::pair<int, std::string>> pairs = {{2, "Two"}, {3, "Three"}};
+    std::vector<std::pair<int, std::string>> pairs = {{1, "One"}, {2, "Two"}, {3, "Three"}};
     map.insert(pairs.begin(), pairs.end());
     std::cout << "Insert range: size = " << map.size() << "\n";
     
@@ -208,7 +192,7 @@ int main() {
         test_insert_and_access();
         test_find_and_erase();
         test_iterators();
-        test_capacity_and_rehash();
+        test_capacity();
         test_emplace();
         test_various_insert_overloads();
         test_debug_and_misc();

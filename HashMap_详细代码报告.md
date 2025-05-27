@@ -238,33 +238,10 @@ std::pair<iterator, bool> insert(const Key& key, const Value& value)
   4. 如果键已存在，更新值
   5. 如果是最后一个箱子且桶非空，插入并检查是否需要扩展
 
-#### 带提示插入
-```cpp
-iterator insert(const_iterator hint, const value_type& value)
-iterator insert(const_iterator hint, value_type&& value)
-```
-- **功能**：带位置提示的插入（当前实现忽略提示）
-
-#### 范围插入
-```cpp
-template<typename InputIt>
-void insert(InputIt first, InputIt last)
-```
-- **功能**：插入迭代器范围内的所有元素
-
-#### 初始化列表插入
-```cpp
-void insert(std::initializer_list<value_type> ilist)
-```
-- **功能**：从初始化列表插入多个元素
-
 #### 就地构造
 ```cpp
 template<typename... Args>
 std::pair<iterator, bool> emplace(Args&&... args)
-
-template<typename... Args>
-iterator emplace_hint(const_iterator hint, Args&&... args)
 ```
 - **功能**：直接在容器中构造元素，避免临时对象
 

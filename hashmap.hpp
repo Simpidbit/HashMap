@@ -669,29 +669,7 @@ public:     // 公共函数
         return find(key) != end();
     }
 
-    /**
-     * @brief 带提示插入元素（在此实现中忽略迭代器提示）
-     * 
-     * @param hint 插入位置的提示迭代器（在此实现中未使用）
-     * @param value 要插入的值
-     * @return 指向插入元素的迭代器
-     */    iterator insert(const_iterator hint, const value_type& value) {
-        (void)hint; // 在此实现中未使用
-        auto result = insert(value.first, value.second);
-        return result.first;
-    }
 
-    /**
-     * @brief 带移动语义和提示的插入元素
-     * 
-     * @param hint 插入位置的提示迭代器（在此实现中未使用）
-     * @param value 要移动插入的值
-     * @return 指向插入元素的迭代器
-     */    iterator insert(const_iterator hint, value_type&& value) {
-        (void)hint; // 在此实现中未使用
-        auto result = insert(std::move(value.first), std::move(value.second));
-        return result.first;
-    }
 
     /**
      * @brief 插入一个范围内的元素
@@ -733,19 +711,7 @@ public:     // 公共函数
         return insert(std::move(pair.first), std::move(pair.second));
     }
 
-    /**
-     * @brief 带提示就地构造元素
-     * 
-     * @tparam Args 构造参数类型
-     * @param hint 插入位置的提示迭代器（在此实现中未使用）
-     * @param args 用于构造元素的参数
-     * @return 指向构造元素的迭代器
-     */    template<typename... Args>
-    iterator emplace_hint(const_iterator hint, Args&&... args) {
-        (void)hint; // 在此实现中未使用
-        auto result = emplace(std::forward<Args>(args)...);
-        return result.first;
-    }
+
 
     /**
      * @brief 获取指向开始的const迭代器
