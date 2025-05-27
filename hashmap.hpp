@@ -667,45 +667,6 @@ public:     // 公共函数
      * @return true如果键存在，false否则
      */    bool contains(const Key& key) const {
         return find(key) != end();
-    }/**
-     * @brief 重新哈希map使其至少有bucket_count个桶
-     * 
-     * 如果指定的桶数量大于当前桶数量，则重新分配桶数组并重新分布所有元素。
-     * 
-     * @param bucket_count 期望的最小桶数量
-     */    void rehash(size_type bucket_count) {
-        if (bucket_count <= box_capacity) {
-            return; // 无需重新哈希
-        }        // 保存当前元素
-        std::vector<pair_type> all_elements;
-        all_elements.reserve(size());
-
-        // 提取所有元素
-        for (auto it = begin(); it != end(); ++it) {
-            all_elements.push_back(std::make_pair(it->first, it->second));
-        }
-          // 调整为新的桶数量
-        box_capacity = bucket_count;
-        box_list.clear();
-        box_list.emplace_back(box_capacity);
-        size_ = 0;
-        
-        // 重新分布元素
-        for (const auto& element : all_elements) {
-            insert(element.first, element.second);
-        }
-    }/**
-     * @brief 为至少指定数量的元素预留空间
-     * 
-     * 根据预期的元素数量和负载因子计算需要的桶数量，必要时进行重新哈希。
-     * 
-     * @param count 预期的元素数量
-     */
-    void reserve(size_type count) {
-        size_type required_buckets = static_cast<size_type>(count / LOAD_FACTOR_THRESHOLD) + 1;
-        if (required_buckets > box_capacity) {
-            rehash(required_buckets);
-        }
     }
 
     /**
