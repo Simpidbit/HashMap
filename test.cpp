@@ -1,35 +1,17 @@
+#include "hashmap.hpp"
 #include <iostream>
+#include <string>
 
-template <typename T = double>
-class test_t {
-public:
-  using size_type = T;
-  test_t() = default;
+int main()
+{
+    HashMap<std::string, int> map;
 
-  void hello(T t);
+    map.insert("Hello", 100);
+    map.insert("World", 20);
 
-private:
-  void fuck(T t);
-};
+    std::cout << "Hello value:" << map["Hello"] << "OK." << std::endl;
+    std::cout << "World value:" << map["World"] << "OK." << std::endl;
 
-template <typename T>
-void test_t<T>::hello(T t) {
-  size_type i = t;
-  this->fuck(t);
-  std::cout << i << std::endl;
-}
 
-template<typename T>
-void test_t<T>::fuck(T t) {
-  size_type i = t;
-  std::cout << "Fuck" << i << std::endl;
-}
-
-int main() {
-  test_t<int> t;
-  t.hello(10);
-
-  std::cout << sizeof(t) << std::endl;
-
-  return 0;
+    return 0;
 }

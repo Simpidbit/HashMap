@@ -62,9 +62,11 @@ private:
         for (auto& bucket : this->box) {
             bucket = bucket_type(
                 [](const pair_type& a, const pair_type& b) -> bool { 
+                    std::cout << a.first << " <? " << b.first << std::endl;
                     return a.first < b.first; 
                 },
                 [](const pair_type& a, const pair_type& b) -> bool { 
+                    std::cout << a.first << " ==? " << b.first << std::endl;
                     return a.first == b.first; 
                 }
             );
@@ -142,8 +144,10 @@ private:    // 内部函数
         search_pair.first = key;
         // 使用默认值初始化second部分，因为红黑树只根据键进行比较
         search_pair.second = mapped_type{};
-        
+       
+        std::cout << "find 开始" << std::endl;
         const pair_type* found = bucket.find(search_pair);
+        std::cout << "find 结束" << std::endl;
         return const_cast<pair_type*>(found);
     }/**
      * @brief 更新键值对的值
@@ -168,7 +172,8 @@ public:     // 公共函数
     public:
         using utils::_iterator<const_pair_type*, iterator>::_iterator;        iterator() : hashmap_ptr(nullptr), current_bucket_index(0), is_end_iterator(true) {}
 
-        void set_ptr(const_pair_type* p) { this->ptr = p; }        iterator(HashMap* map, bool is_end) : hashmap_ptr(map), is_end_iterator(is_end) {
+        void set_ptr(const_pair_type* p) { this->ptr = p; } 
+        iterator(HashMap* map, bool is_end) : hashmap_ptr(map), is_end_iterator(is_end) {
             if (!is_end && map && !map->box_list.empty()) {
                 current_box = map->box_list.begin();
                 current_bucket_index = 0;
@@ -388,7 +393,9 @@ public:     // 公共函数
      * @return pair<iterator, bool> 其中iterator指向元素，bool表示是否发生了插入
      */    std::pair<iterator, bool> insert(const Key& key, const Value& value) {
         // 根据伪代码: keyhash = this.hasher(key, 0, this.box_capacity - 1)
+         std::cout << "HashMap::insert(): key = " << key << ", value = " << value << std::endl;
         size_type keyhash = get_bucket_index(key);
+
         
         // 根据伪代码: for box : this.box_list
         for (auto& box_mgr : box_list) {
@@ -421,20 +428,28 @@ public:     // 公共函数
                 // 根据伪代码: box[keyhash][key] = value   # 插入到最新的box里
                 pair_type new_pair;                new_pair.first = key;
                 new_pair.second = value;
+                std::cout << "即将PUSH" << std::endl;
                 box_mgr.box[keyhash].push(std::move(new_pair));
+                std::cout << "PUSH OK" << std::endl;
                 size_++;
                 
                 // 创建指向插入元素的迭代器
+
+                std::cout << "测试点1" << std::endl;
                 iterator result;
                 result.hashmap_ptr = this;
+                std::cout << "测试点1.1" << std::endl;
                 result.is_end_iterator = false;
+                std::cout << "测试点1.2" << std::endl;
                 result.set_ptr(reinterpret_cast<const_pair_type*>(find_in_bucket(box_mgr.box[keyhash], key)));
+                std::cout << "测试点2" << std::endl;
                 
                 // 根据伪代码: if 达到负载因子阈值(this.box_list.back())
                 if (should_expand()) {
                     // 根据伪代码: this.box_list.push_back(new box)
                     expand_box();
                 }
+                std::cout << "测试点3" << std::endl;
                 
                 return std::make_pair(result, true);
             }
@@ -749,7 +764,8 @@ public:     // 公共函数
         std::cout << "  桶容量: " << box_capacity << "\n";
         std::cout << "  负载因子: " << load_factor() << "\n";
         std::cout << "  箱子数量: " << box_list.size() << "\n";
-        
+       
+
         size_type box_index = 0;
         for (const auto& box_mgr : box_list) {
             std::cout << "  箱子 " << box_index << " (非空桶数: " << box_mgr.used_bucket_count << "):\n";

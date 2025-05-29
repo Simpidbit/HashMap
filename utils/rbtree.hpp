@@ -198,7 +198,9 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
     }
 
     void push(T &&val) {
-      node_type *node = dynamic_cast<base_type*>(this)->push(val);
+        std::cout << "val.first = " << val.first << std::endl;
+        std::cout << "val.second = " << val.second << std::endl;
+      node_type *node = dynamic_cast<base_type*>(this)->push(std::move(val));
       if (node) this->_size++; 
     }
 

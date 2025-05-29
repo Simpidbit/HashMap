@@ -85,13 +85,16 @@ void test_erase_operations() {
 
 void test_expansion() {
     std::cout << "\n=== Testing Expansion ===\n";
-    
+   
     HashMap<int, int> map;
     std::cout << "Initial bucket count: " << map.bucket_count() << "\n";
     
     // Insert enough elements to trigger expansion
     for (int i = 0; i < 20; ++i) {
+        std::cout << "测试insert" << std::endl;
+        std::cout << "i = " << i << ", i * 10 = " << i * 10 << std::endl;
         map.insert(i, i * 10);
+        std::cout << "测试完毕" << std::endl;
         if (i == 12) {
             std::cout << "After 13 insertions - bucket count: " << map.bucket_count() << ", load factor: " << map.load_factor() << "\n";
         }

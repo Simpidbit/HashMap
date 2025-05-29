@@ -1,0 +1,13 @@
+simple_test_test 3 0.00110496
+test_constructors_test 3 0.000785806
+test_comprehensive_final_test 1 0
+test_erase_test 3 0.000669889
+test_expansion_test 3 0.000654222
+test_hashmap_test 3 0.000737583
+test_iterator_issues_test 3 0.000687319
+test_memory_fix_test 3 0.000954806
+test_xxhash_test 3 0.000567736
+test_basic_stl_test 3 0.000490055
+test_stl_compliance_test 1 0.00169629
+---
+test_comprehensive_final_test
