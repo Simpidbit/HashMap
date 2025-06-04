@@ -110,7 +110,7 @@ public:
      * @return 映射到指定范围内的哈希值
      * @throws std::invalid_argument 当min_val > max_val时抛出异常
      */
-    static uint32_t hash_linear(const void* input, size_t length, 
+    static uint32_t hash_linear(const void* input, size_t length,
                                uint32_t min_val, uint32_t max_val, uint32_t seed = 0) {
         if (min_val > max_val) {
             throw std::invalid_argument("min_val must be less than or equal to max_val");

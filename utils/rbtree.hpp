@@ -198,9 +198,9 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
     }
 
     void push(T &&val) {
-        std::cout << "val.first = " << val.first << std::endl;
-        std::cout << "val.second = " << val.second << std::endl;
+      std::cout << "rbtree.hpp: push (T &&val) will begin" << std::endl;
       node_type *node = dynamic_cast<base_type*>(this)->push(std::move(val));
+      std::cout << "rbtree.hpp: push (T &&val) OK" << std::endl;
       if (node) this->_size++; 
     }
 
@@ -212,7 +212,7 @@ class rbtree : protected _rbtree_hpp::RB_tree_t<T, rb_node<T> > {
       if (dynamic_cast<base_type *>(this)->remove(val)) this->_size--;
     }
 
-    const T* find(const T& target) {
+    const T* find(const T& target) const {
       rb_node<T> *node = this->search_value(target);
       if (node) return &node->value;
       else return nullptr;

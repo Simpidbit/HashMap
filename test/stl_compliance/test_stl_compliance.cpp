@@ -119,7 +119,6 @@ void test_capacity() {
     
     std::cout << "Initial bucket_count: " << map.bucket_count() << "\n";
     std::cout << "Initial load_factor: " << map.load_factor() << "\n";
-    std::cout << "Max load_factor: " << map.max_load_factor() << "\n";
     
     // Add elements to trigger expansion
     for (int i = 0; i < 20; ++i) {

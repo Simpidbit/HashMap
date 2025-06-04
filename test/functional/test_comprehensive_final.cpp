@@ -164,7 +164,6 @@ void test_stl_compliance() {
     
     // Test max_size and load factor
     std::cout << "Max size: " << map.max_size() << "\n";
-    std::cout << "Max load factor: " << map.max_load_factor() << "\n";
 }
 
 int main() {
