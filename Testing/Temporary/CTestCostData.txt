@@ -1,13 +1,12 @@
-simple_test_test 7 0.000420369
-test_constructors_test 7 0.000341107
-test_comprehensive_final_test 7 0
-test_erase_test 7 0.000343929
-test_expansion_test 7 0.000337744
-test_hashmap_test 7 0.000345411
-test_iterator_issues_test 7 0.000282065
-test_memory_fix_test 7 0.00234857
-test_xxhash_test 7 0.00019269
-test_basic_stl_test 7 0.00017478
-test_stl_compliance_test 5 0.000316317
+simple_test_test 15 0.000184167
+test_constructors_test 15 0.000160797
+test_comprehensive_final_test 15 0.000200625
+test_erase_test 15 0.000138983
+test_expansion_test 15 0.000126731
+test_hashmap_test 15 0.000166608
+test_iterator_issues_test 15 0.000119756
+test_memory_fix_test 15 0.000657697
+test_xxhash_test 15 0.000103269
+test_basic_stl_test 15 0.000103006
+test_stl_compliance_test 13 0.000192881
 ---
-test_comprehensive_final_test

@@ -566,7 +566,6 @@ public:
   insert( const Key&    key,
           const Value&  value )
   {
-    std::cout << "insert const & 内部" << std::endl;
     Key k(key);
     Value v(value);
     return this->insert(std::move(k), std::move(v));
@@ -576,19 +575,15 @@ public:
   insert( Key&&    key,
           Value&&  value )
   {
-    std::cout << "insert && 内部" << std::endl;
     Key k(key);
     Value v(value);
-    std::cout << "k = " << k << ", " << "v = " << v << std::endl;
 
     size_type keyhash = get_bucket_index(key);
 
-    std::cout << "keyhash = " << keyhash << std::endl;
       
     // 根据伪代码: for box : this.box_list
     for (auto& box_mgr : box_list) {
       if (!box_mgr.box_map.get(keyhash)) {  // 此箱中 keyhash 位置为空
-        std::cout << "找到空位箱！" << std::endl;
         // 插入新元素
         pair_type new_pair(k, v);
         box_mgr.box[keyhash].push(std::move(new_pair));
@@ -604,7 +599,6 @@ public:
         result.set_ptr(find_in_bucket(box_mgr.box[keyhash], k));
         return std::make_pair(result, true);
       } else if (const_pair_type* existing = find_in_bucket(box_mgr.box[keyhash], k)) {
-        std::cout << "Key 已存在，直接更新！" << std::endl;
         // 根据伪代码: box[keyhash][key] = value   # 更新value
         existing->second = value;
 
@@ -615,32 +609,21 @@ public:
         result.set_ptr(reinterpret_cast<const_pair_type*>(existing));
         return std::make_pair(result, false);
       } else if (&box_mgr == &box_list.back()) {
-        std::cout << "到最后一个箱" << std::endl;
         // 根据伪代码: box[keyhash][key] = value   # 插入到最新的box里
 
-        std::cout << "push 阶段开始" << std::endl;
         pair_type new_pair(k, v);
-        std::cout << "push 1" << std::endl;
-        std::cout << "new_pair.first = " << new_pair.first << std::endl;
-        std::cout << "new_pair.second = " << new_pair.second << std::endl;
         box_mgr.box[keyhash].push(std::move(new_pair));
-        std::cout << "push 2" << std::endl;
         this->count++;
-        std::cout << "push 阶段结束" << std::endl;
         
         // 创建指向插入元素的迭代器
-        std::cout << "iterator 阶段开始" << std::endl;
         iterator result;
         result.hashmap_ptr = this;
         result.is_end_iterator = false;
         result.set_ptr(find_in_bucket(box_mgr.box[keyhash], k));
-        std::cout << "iterator 阶段结束" << std::endl;
         
-        std::cout << "expansion 阶段开始" << std::endl;
         // 根据伪代码: if 达到负载因子阈值(this.box_list.back())
         if (should_expand()) expand_box();
         
-        std::cout << "expansion 阶段结束" << std::endl;
         return std::make_pair(result, true);
       }
     } // for loop
