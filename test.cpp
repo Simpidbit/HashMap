@@ -4,7 +4,7 @@
 
 int main()
 {
-    HashMap<std::string, int> map(0);
+    HashMap<std::string, int> map;
 
     /*
     map.set_hash_block_maker(
@@ -25,11 +25,11 @@ int main()
 
     map.insert(k1, v1);
     map.insert("World", 20);
-    map["Fuck"] = 666;
+    map["Yes"] = 666;
 
     std::cout << "Hello value: " << map["Hello"] << " OK." << std::endl;
     std::cout << "World value: " << map["World"] << " OK." << std::endl;
-    std::cout << "Fuck value: " << map["Fuck"] << " OK." << std::endl;
+    std::cout << "Yes value: " << map["Yes"] << " OK." << std::endl;
 
 
     return 0;
